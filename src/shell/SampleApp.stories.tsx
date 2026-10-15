@@ -26,7 +26,7 @@ import type { LinkComponentProps } from '../provider/link';
 import { AppShell } from './AppShell';
 import { BottomTabBar } from './BottomTabBar';
 import { Footer } from './Footer';
-import { Header } from './Header';
+import { Header, panelMenuToggleIcon } from './Header';
 import { HierarchyPicker } from './hierarchy/HierarchyPicker';
 import { PageHeader } from './PageHeader';
 import { SettingsMenu, SettingsMenuItems } from './SettingsMenu';
@@ -205,7 +205,14 @@ function OtherPage({ path }: { path: string }) {
   );
 }
 
-function SampleApp({ startPath = '/sites' }: { startPath?: string }) {
+function SampleApp({
+  startPath = '/sites',
+  hasPanelToggle = false,
+}: {
+  startPath?: string;
+  /** Panel icons on the header's toggle (accent while expanded), and no collapse button in the sidebar. */
+  hasPanelToggle?: boolean;
+}) {
   const [path, setPath] = useState(startPath);
   const [isCollapsed, setCollapsed] = useState(false);
   const [scope, setScope] = useState<HierarchyPath>(initialScope);
@@ -222,6 +229,12 @@ function SampleApp({ startPath = '/sites' }: { startPath?: string }) {
             <Header
               brand={brand}
               environmentLabel="Staging"
+              menuToggleIcon={hasPanelToggle ? panelMenuToggleIcon : undefined}
+              menuToggleClassName={
+                hasPanelToggle
+                  ? ({ isExpanded }) => (isExpanded ? 'text-accent-fg' : undefined)
+                  : undefined
+              }
               scopePicker={
                 <HierarchyPicker
                   tree={scopes}
@@ -264,6 +277,7 @@ function SampleApp({ startPath = '/sites' }: { startPath?: string }) {
               currentPath={path}
               isCollapsed={isCollapsed}
               onCollapsedChange={setCollapsed}
+              hasCollapseButton={!hasPanelToggle}
               drawerHeader={brand}
             />
           }
@@ -305,4 +319,14 @@ function SampleApp({ startPath = '/sites' }: { startPath?: string }) {
 export const SampleApp_: Story = {
   name: 'Sample app',
   render: () => <SampleApp />,
+};
+
+/**
+ * The header's menu toggle as the only sidebar control: panel icons on tablet and desktop (`panelMenuToggleIcon`),
+ * coloured while the sidebar is expanded, with the menu icon kept on phones. The sidebar's own collapse button is
+ * hidden (`hasCollapseButton={false}`).
+ */
+export const HeaderPanelToggle: Story = {
+  name: 'Header panel toggle',
+  render: () => <SampleApp hasPanelToggle />,
 };

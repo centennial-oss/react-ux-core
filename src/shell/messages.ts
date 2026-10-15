@@ -44,6 +44,7 @@ export const defaultShellMessages: ShellMessages = {
   version: ({ version }) => `Version ${version}`,
   build: ({ build }) => `Build ${build}`,
   pageSections: 'Page sections',
+  brandHome: ({ name }) => `${name} home`,
 };
 
 /** The strings `/shell` components read: the core strings and `/shell`'s own. */

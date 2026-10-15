@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
-import { FileText } from 'lucide-react';
+import { CloudLightning, FileText } from 'lucide-react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../test/axe';
@@ -7,7 +7,10 @@ import { Button } from '../components/Button/Button';
 import { MenuItem } from '../components/Menu/Menu';
 import { TabPanel } from '../components/Tabs/Tabs';
 import { UIProvider } from '../provider/UIProvider';
+import { Banner } from '../components/Banner/Banner';
+import { Brand } from './Brand';
 import { Footer } from './Footer';
+import { Page } from './Page';
 import { PageHeader } from './PageHeader';
 import { SettingsMenu } from './SettingsMenu';
 import { sortAlerts, StatusBar, worstSeverity } from './StatusBar';
@@ -218,5 +221,73 @@ describe('entry messages', () => {
     );
     expect(screen.getByText('Heures en UTC.')).toBeInTheDocument();
     expect(screen.getByText('Version 1.0')).toBeInTheDocument();
+  });
+});
+
+describe('Page', () => {
+  it('puts the header over notices and the content, in a width-capped column', () => {
+    const { container } = render(
+      <Page title="Customers" width="narrow" notices={<Banner tone="info">Notice</Banner>}>
+        <p>Content</p>
+      </Page>,
+    );
+    expect(screen.getByRole('heading', { level: 1, name: 'Customers' })).toBeInTheDocument();
+    const root = container.firstElementChild;
+    expect(root).toHaveClass('max-w-3xl');
+    const notice = screen.getByText('Notice');
+    const content = screen.getByText('Content');
+    expect(
+      screen.getByRole('heading', { level: 1 }).compareDocumentPosition(notice) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(notice.compareDocumentPosition(content) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('hands tab panels to the page header', async () => {
+    render(
+      <Page
+        title="Meter"
+        tabs={[
+          { id: 'commercial', label: 'Commercial' },
+          { id: 'technical', label: 'Technical' },
+        ]}
+      >
+        <TabPanel id="commercial">Commercial details</TabPanel>
+        <TabPanel id="technical">Technical details</TabPanel>
+      </Page>,
+    );
+    expect(screen.getByText('Commercial details')).toBeVisible();
+    await userEvent.click(screen.getByRole('tab', { name: 'Technical' }));
+    expect(screen.getByText('Technical details')).toBeVisible();
+  });
+});
+
+describe('Brand', () => {
+  it('links home, named for screen readers, through the app’s link component', () => {
+    render(
+      <UIProvider
+        LinkComponent={({ children, ...props }) => (
+          <a data-router="" {...props}>
+            {children}
+          </a>
+        )}
+      >
+        <Brand name="ThunderCloud" icon={CloudLightning} href="/" />
+      </UIProvider>,
+    );
+    const link = screen.getByRole('link', { name: 'ThunderCloud home' });
+    expect(link).toHaveAttribute('href', '/');
+    expect(link).toHaveAttribute('data-router');
+  });
+
+  it('can show only the mark below desktop widths, keeping the name for screen readers', () => {
+    render(<Brand name="ThunderCloud" icon={CloudLightning} href="/" isCompact homeLabel="Home" />);
+    expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument();
+    expect(screen.getByText('ThunderCloud')).toHaveClass('max-lg:sr-only');
+  });
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<Brand name="ThunderCloud" icon={CloudLightning} href="/" />);
+    await expectNoAxeViolations(container);
   });
 });

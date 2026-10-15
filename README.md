@@ -128,13 +128,15 @@ The main entry point has these components so far:
 - **Menus and overlays:** `Menu`, `MenuButton`, `SplitButton`, `OverflowMenu`, `Popover`, `Tooltip`, `InfoTip`,
   `Dialog`, `Drawer`, `ConfirmDialog`, `StepDialog`
 - **Feedback:** toasts (`useToast`), `Banner`, `Spinner`, `Skeleton`, `ProgressBar`, `EmptyState`, `ErrorState`
-- **Layout and display:** `Card`, `Disclosure`, `Accordion`, `CollapsibleCard`, `StatTile`, `DescriptionList`,
-  `Tabs`, `Pillbox`, `Badge`, `Chip`, `StatusDot`, `RelativeTime`, `Sparkline`, `Breadcrumbs`, `Tree`, `Separator`,
-  `VisuallyHidden`, `Kbd`
+- **Layout and display:** `Stack`, `Inline`, `Grid`, `Spacer`, `Text`, `Heading`, `ScrollRegion`, `Card`,
+  `Disclosure`, `Accordion`, `CollapsibleCard`, `StatTile`, `DescriptionList`, `Tabs`, `Pillbox`, `Badge`, `Chip`,
+  `StatusDot`, `RelativeTime`, `Sparkline`, `Breadcrumbs`, `Tree`, `Separator`, `VisuallyHidden`, `Kbd`,
+  `Checklist` (steps with a status and progress), `SecretReveal` (credentials shown once)
 - **Inputs:** `TextField`, `NumberField`, `TextArea`, `SearchField`, `Select`, `ComboBox`, `MultiSelect`,
   `Checkbox`, `CheckboxGroup`, `RadioGroup`, `Switch`, `Slider`, `RangeSlider`, `DatePicker`, `DateRangePicker`,
   `DateTimePicker`, `TimeField`, `TimeRangePicker`, `FileField`, `DropZone`, `ScheduleEditor` (a daily schedule with a
-  24-hour preview), `TierEditor` (contiguous numeric tiers), `ColorField`, `IconPicker`
+  24-hour preview), `TierEditor` (contiguous numeric tiers), `ColorField`, `IconPicker`, `JsonEditor` (checked as you
+  type, with formatting), `TemplateEditor` (an SMS template with `{{keyword}}` suggestions and a live example)
 
 The form entry point has `ConfigForm`, its containers (`DialogForm`, `CardForm`, `PageForm`, `WizardForm`), the
 field registry (`createFieldRegistry`), `UnsavedChangesDialog`, and the `createPatch`, `problemToSubmitResult` and
@@ -188,9 +190,9 @@ worker from beside its own module file; if your bundler moves that file, point M
 `setWorkerUrl` (with Vite: `import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'`).
 
 The shell entry point frames an app: `AppShell` (landmarks, a skip link, and the sidebar's form for the screen size),
-`Sidebar` (sections, expandable items, an icon rail, a drawer on phones), `Header`, `UserMenu`, `SettingsMenu`,
-`HierarchyPicker` (a scope switcher over levels, with search and recent scopes), `PageHeader`, `BottomTabBar`,
-`StatusBar` and `Footer`. Like everything else, they take data and callbacks: the current path, the collapsed state
+`Sidebar` (sections, expandable items, an icon rail, a drawer on phones), `Header` (whose menu toggle can show panel
+icons with `panelMenuToggleIcon`), `Brand`, `UserMenu`, `SettingsMenu`, `HierarchyPicker` (a scope switcher over
+levels, with search and recent scopes), `Page`, `PageHeader`, `BottomTabBar`, `StatusBar` and `Footer`. Like everything else, they take data and callbacks: the current path, the collapsed state
 and the chosen scope come from the app, and links render through your `LinkComponent`.
 
 ## Documentation

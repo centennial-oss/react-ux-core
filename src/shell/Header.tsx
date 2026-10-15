@@ -1,11 +1,37 @@
-import { Menu as MenuIcon } from 'lucide-react';
+import { Menu as MenuIcon, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { createContext, useContext, type ReactNode, type Ref } from 'react';
 import { Badge } from '../components/Badge/Badge';
 import { IconButton } from '../components/IconButton/IconButton';
 
 import { cn } from '../utils/cn';
-import { useNavToggle, useShell, useShellLayout } from './ShellContext';
+import type { IconComponent } from '../utils/icon';
+import { useNavToggle, useShell, useShellLayout, type ShellLayout } from './ShellContext';
 import { useShellMessages } from './messages';
+
+/** The header's menu toggle, as `menuToggleIcon` and `menuToggleClassName` see it. */
+export interface MenuToggleState {
+  /** True while the sidebar is expanded (desktop) or its drawer is open (phone, tablet). */
+  isExpanded: boolean;
+  layout: ShellLayout;
+}
+
+const PanelOpenIcon: IconComponent = ({ className, ...props }) => (
+  <PanelLeftOpen {...props} className={cn('rtl:-scale-x-100', className)} />
+);
+const PanelCloseIcon: IconComponent = ({ className, ...props }) => (
+  <PanelLeftClose {...props} className={cn('rtl:-scale-x-100', className)} />
+);
+
+/**
+ * A `menuToggleIcon` that shows panel icons on tablet and desktop (close while expanded, open while collapsed) and
+ * keeps the menu icon on phones. The panel icons mirror in right-to-left layouts.
+ */
+export function panelMenuToggleIcon({ isExpanded, layout }: MenuToggleState): IconComponent {
+  if (layout === 'phone') {
+    return MenuIcon;
+  }
+  return isExpanded ? PanelCloseIcon : PanelOpenIcon;
+}
 
 /** Menu items the header hands to its UserMenu on phones, where the header's other actions don't fit. */
 export const HeaderCompactActionsContext = createContext<ReactNode>(undefined);
@@ -35,6 +61,16 @@ export interface HeaderProps {
   environmentLabel?: ReactNode;
   /** Shows the menu toggle that opens or collapses the AppShell's sidebar. Defaults to true. */
   hasMenuToggle?: boolean;
+  /**
+   * Picks the menu toggle's icon from its state. Defaults to the menu (hamburger) icon in every state.
+   * `panelMenuToggleIcon` shows panel icons on tablet and desktop and keeps the menu icon on phones.
+   */
+  menuToggleIcon?: (state: MenuToggleState) => IconComponent;
+  /**
+   * Classes for the menu toggle, or a function of its state, for example to colour it while the sidebar is
+   * expanded: `({ isExpanded }) => isExpanded ? 'text-accent-fg' : undefined`.
+   */
+  menuToggleClassName?: string | ((state: MenuToggleState) => string | undefined);
   className?: string;
   ref?: Ref<HTMLDivElement>;
 }
@@ -53,6 +89,8 @@ export function Header({
   userMenu,
   environmentLabel,
   hasMenuToggle = true,
+  menuToggleIcon,
+  menuToggleClassName,
   className,
   ref,
   ...rest
@@ -71,6 +109,7 @@ export function Header({
         expand: messages.expandSidebar,
       }[toggle.label]
     : '';
+  const toggleState: MenuToggleState = { isExpanded: toggle?.isExpanded ?? false, layout };
   const hasEnvironment =
     environmentLabel !== undefined && environmentLabel !== null && environmentLabel !== false;
   return (
@@ -86,10 +125,15 @@ export function Header({
       >
         {hasMenuToggle && toggle && (
           <IconButton
-            icon={MenuIcon}
+            icon={menuToggleIcon?.(toggleState) ?? MenuIcon}
             aria-label={toggleLabel}
             aria-expanded={toggle.isExpanded}
             onPress={toggle.toggle}
+            className={
+              typeof menuToggleClassName === 'function'
+                ? menuToggleClassName(toggleState)
+                : menuToggleClassName
+            }
           />
         )}
         <div className="flex min-w-0 shrink-0 items-center gap-2">

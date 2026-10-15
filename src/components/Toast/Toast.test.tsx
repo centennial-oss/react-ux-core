@@ -1,5 +1,5 @@
 import { act, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
 import { UIProvider } from '../../provider/UIProvider';
@@ -29,6 +29,12 @@ function show(...args: Parameters<typeof toast>) {
   });
   return id;
 }
+
+// A mouse pointer over the toasts pauses their countdowns. An earlier test file in the same browser can leave the
+// pointer where toasts appear (along the bottom on phones), so each test starts with it in the top corner.
+beforeEach(async () => {
+  await userEvent.hover(document.documentElement, { position: { x: 0, y: 0 } });
+});
 
 afterEach(() => {
   act(() => {

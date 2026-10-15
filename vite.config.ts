@@ -100,10 +100,10 @@ export default defineConfig({
     emptyOutDir: false,
   },
   test: {
-    // Every browser test runs in headless Chromium, which is heavy. Locally at most TEST_WORKERS (default 2) test files
+    // Every browser test runs in headless Chromium, which is heavy. Locally at most TEST_WORKERS (default 4) test files
     // run at once, and the unit and story groups run one after the other, so a full run doesn't starve the machine.
     // CI uses Vitest's default.
-    maxWorkers: process.env.TEST_WORKERS ?? (process.env.CI ? undefined : 2),
+    maxWorkers: process.env.TEST_WORKERS ?? (process.env.CI ? undefined : 4),
     projects: [
       {
         extends: true,

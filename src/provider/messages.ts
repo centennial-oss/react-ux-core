@@ -327,6 +327,8 @@ export interface ShellMessages {
   build: (params: { build: string }) => string;
   /** Names a page header's tab list. */
   pageSections: string;
+  /** A Brand's link, read by screen readers, for example "Gridline home". */
+  brandHome: (params: { name: string }) => string;
 }
 
 /** Strings for `/map`. */
@@ -344,8 +346,94 @@ export interface MapMessages {
   markerCluster: (params: { count: number }) => string;
 }
 
+// The larger main-entry components below each ship their own defaults (in their component directory), so an app
+// carries only the strings of the components it imports.
+
+/** Strings for SecretReveal. */
+export interface SecretRevealMessages {
+  /** The warning banner's title. */
+  secretsTitle: string;
+  /** The warning banner's text. */
+  secretsWarning: string;
+  showSecret: (params: { label: string }) => string;
+  hideSecret: (params: { label: string }) => string;
+  copyValue: (params: { label: string }) => string;
+  /** The toast after a copy. */
+  valueCopied: (params: { label: string }) => string;
+  copyFailed: string;
+  copyFailedHint: string;
+}
+
+/** Status of a Checklist step. */
+export type ChecklistStatus = 'done' | 'current' | 'todo' | 'blocked';
+
+/** Strings for Checklist. */
+export interface ChecklistMessages {
+  /** Each status in words, beside the step's title, so status never relies on colour or shape alone. */
+  checklistStatus: (params: { status: ChecklistStatus }) => string;
+  /** The progress summary, for example "3 of 5 done". */
+  checklistProgress: (params: { done: number; total: number }) => string;
+}
+
+/** Why a text isn't valid JSON (see `checkJson`). */
+export type JsonProblemCode =
+  | 'end'
+  | 'value'
+  | 'propertyName'
+  | 'colon'
+  | 'objectSeparator'
+  | 'arraySeparator'
+  | 'trailingComma'
+  | 'escape'
+  | 'unterminatedString'
+  | 'controlCharacter'
+  | 'number'
+  | 'extraText';
+
+/** Strings for JsonEditor. */
+export interface JsonEditorMessages {
+  formatJson: string;
+  /** Shown while the JSON is valid. */
+  validJson: string;
+  /**
+   * A JSON problem with its position. `found` is the character at the problem, or undefined at the end of the text.
+   */
+  jsonProblem: (params: {
+    code: JsonProblemCode;
+    line: number;
+    column: number;
+    found: string | undefined;
+  }) => string;
+}
+
+/** Strings for TemplateEditor. */
+export interface TemplateEditorMessages {
+  /** The example's heading. */
+  templateExample: string;
+  /** Shown in the example before anything is typed. */
+  templateEmptyExample: string;
+  /** The keyword list's heading and the suggestions' name. */
+  templateKeywords: string;
+  /** Under the keyword list's heading. */
+  templateKeywordsHint: string;
+  /** A keyword's insert button. */
+  insertKeyword: string;
+  /** The insert button's accessible name. */
+  insertKeywordLabel: (params: { keyword: string }) => string;
+  /** The keyword's sample value, in the keyword list. */
+  keywordExample: (params: { example: string }) => string;
+  /** The counter under the message. */
+  smsCount: (params: { characters: number; limit: number; parts: number }) => string;
+  /** Announced when suggestions appear. */
+  keywordSuggestions: (params: { count: number }) => string;
+}
+
 /** Every string the library uses, for overriding through `UIProvider`. */
 export type Messages = CoreMessages &
+  SecretRevealMessages &
+  ChecklistMessages &
+  JsonEditorMessages &
+  TemplateEditorMessages &
   FormMessages &
   TableMessages &
   ChartMessages &

@@ -2,7 +2,7 @@
   {
     "name": "Main entry (all exports)",
     "path": "dist/index.js",
-    "limit": "42.75 kB"
+    "limit": "46.25 kB"
   },
   {
     "name": "Button",
@@ -101,6 +101,18 @@
     "path": "dist/index.js",
     "import": "{ TierEditor }",
     "limit": "15.25 kB"
+  },
+  {
+    "name": "JsonEditor",
+    "path": "dist/index.js",
+    "import": "{ JsonEditor }",
+    "limit": "13.75 kB"
+  },
+  {
+    "name": "TemplateEditor",
+    "path": "dist/index.js",
+    "import": "{ TemplateEditor }",
+    "limit": "16 kB"
   },
   {
     "name": "Gauge",

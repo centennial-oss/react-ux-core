@@ -12,12 +12,16 @@ export {
 export {
   defaultMessages,
   type ChartMessages,
+  type ChecklistMessages,
   type CoreMessages,
   type FormMessages,
+  type JsonEditorMessages,
   type MapMessages,
   type Messages,
+  type SecretRevealMessages,
   type ShellMessages,
   type TableMessages,
+  type TemplateEditorMessages,
 } from './provider/messages';
 export type { LinkComponentProps, LinkComponentType } from './provider/link';
 export type { Theme, ThemePreference } from './provider/theme';
@@ -49,6 +53,9 @@ export * from './components/EmptyState';
 export * from './components/ErrorState';
 
 // Layout and display
+export * from './components/Layout';
+export * from './components/Text';
+export * from './components/ScrollRegion';
 export * from './components/Card';
 export * from './components/Disclosure';
 export * from './components/StatTile';
@@ -65,6 +72,8 @@ export * from './components/Tree';
 export * from './components/Separator';
 export * from './components/VisuallyHidden';
 export * from './components/Kbd';
+export * from './components/Checklist';
+export * from './components/SecretReveal';
 
 // Inputs
 export {
@@ -92,3 +101,5 @@ export * from './components/ColorField';
 export * from './components/IconPicker';
 export * from './components/ScheduleEditor';
 export * from './components/TierEditor';
+export * from './components/JsonEditor';
+export * from './components/TemplateEditor';

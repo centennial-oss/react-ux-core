@@ -24,6 +24,11 @@ export interface SidebarProps {
   isCollapsed?: boolean;
   /** Shows a collapse button, and lets the header's menu toggle collapse and expand the sidebar on desktop. */
   onCollapsedChange?: (isCollapsed: boolean) => void;
+  /**
+   * Shows the collapse button at the bottom of the sidebar on desktop. Defaults to true. Turn it off to collapse and
+   * expand only from the header's menu toggle.
+   */
+  hasCollapseButton?: boolean;
   /** Shown at the top of the phone drawer, usually the brand. */
   drawerHeader?: ReactNode;
   /** Shown below the navigation (hidden in the icon rail). */
@@ -47,6 +52,7 @@ export function Sidebar({
   isActive,
   isCollapsed = false,
   onCollapsedChange,
+  hasCollapseButton = true,
   drawerHeader,
   footer,
   'aria-label': ariaLabel,
@@ -89,7 +95,7 @@ export function Sidebar({
     shell?.setNavOpen(false);
   };
 
-  const collapseButton = layout === 'desktop' && onCollapsedChange && (
+  const collapseButton = layout === 'desktop' && hasCollapseButton && onCollapsedChange && (
     <Tooltip
       content={isCollapsed ? messages.expandSidebar : messages.collapseSidebar}
       placement="end"

@@ -9,9 +9,9 @@ export default defineConfig({
   // One baseline set, named by story, theme and screen size; no OS suffix because they're always made on Linux.
   snapshotPathTemplate: '{testDir}/__snapshots__/{projectName}/{arg}{ext}',
   fullyParallel: true,
-  // Each worker is a Chromium instance. Locally (in Docker) VISUAL_WORKERS, default 2, keeps memory and CPU use modest;
+  // Each worker is a Chromium instance. Locally (in Docker) VISUAL_WORKERS, default 4, keeps memory and CPU use modest;
   // CI uses Playwright's default.
-  workers: process.env.CI ? undefined : Number(process.env.VISUAL_WORKERS ?? 2),
+  workers: process.env.CI ? undefined : Number(process.env.VISUAL_WORKERS ?? 4),
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',

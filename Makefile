@@ -11,9 +11,9 @@ STORYBOOK_PORT ?= 6006
 # Visual tests run in Docker by default; CI sets VISUAL_RUNNER=native because its job already runs in the image.
 VISUAL_RUNNER ?= docker
 # Resource caps for the visual test container and its Chromium workers, so a run doesn't take over the machine.
-DOCKER_CPUS ?= 2
-DOCKER_MEMORY ?= 2g
-VISUAL_WORKERS ?= 2
+DOCKER_CPUS ?= 4
+DOCKER_MEMORY ?= 4g
+VISUAL_WORKERS ?= 4
 DOCKER_RUN = docker run --rm --init --ipc=host --cpus=$(DOCKER_CPUS) --memory=$(DOCKER_MEMORY) \
 	-e VISUAL_WORKERS=$(VISUAL_WORKERS) -v "$(CURDIR)":/work -w /work $(PLAYWRIGHT_IMAGE)
 # Limits test and test-watch to matching test files, e.g. FILTER=ComboBox or FILTER=src/form.

@@ -1,11 +1,19 @@
 // The app shell kit: layout and navigation that take data and callbacks (no router or storage).
 export { AppShell, type AppShellProps } from './AppShell';
+export { Brand, type BrandProps } from './Brand';
 export { BottomTabBar, useIsKeyboardOpen, type BottomTabBarProps } from './BottomTabBar';
 export { Footer, type FooterProps } from './Footer';
-export { Header, useCompactActions, type HeaderProps } from './Header';
+export {
+  Header,
+  panelMenuToggleIcon,
+  useCompactActions,
+  type HeaderProps,
+  type MenuToggleState,
+} from './Header';
 export { HierarchyPicker, type HierarchyPickerProps } from './hierarchy/HierarchyPicker';
 export type { SearchLeaves } from './hierarchy/HierarchyPanel';
 export type { LoadChildren } from './hierarchy/model';
+export { Page, type PageProps } from './Page';
 export { PageHeader, type PageAction, type PageHeaderProps, type PageTab } from './PageHeader';
 export {
   SettingsMenu,

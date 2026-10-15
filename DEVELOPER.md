@@ -81,10 +81,10 @@ To try components on a real phone or tablet, connect it to the same Wi-Fi and op
   they match CI. After an intended visual change, run `make storybook-build update-snapshots` and review the changed
   images before committing them. Stories tagged `!visual` are skipped; use that for behaviour demos (controlled
   examples, timers) that look the same as another story.
-- Browser tests are heavy, so local runs are capped: at most 2 test files at once in Vitest (`TEST_WORKERS`), unit
-  tests before story tests, and the visual container limited to 2 CPUs and 2 GB with 2 Chromium workers
-  (`DOCKER_CPUS`, `DOCKER_MEMORY`, `VISUAL_WORKERS`). On a machine with room to spare, raise them, for example
-  `TEST_WORKERS=6 make test` or `make test-visual DOCKER_CPUS=4 DOCKER_MEMORY=4g VISUAL_WORKERS=4`. CI uses each
+- Browser tests are heavy, so local runs are capped: at most 4 test files at once in Vitest (`TEST_WORKERS`), unit
+  tests before story tests, and the visual container limited to 4 CPUs and 4 GB with 4 Chromium workers
+  (`DOCKER_CPUS`, `DOCKER_MEMORY`, `VISUAL_WORKERS`). Raise or lower them to suit your machine, for example
+  `TEST_WORKERS=8 make test` or `make test-visual DOCKER_CPUS=8 DOCKER_MEMORY=8g VISUAL_WORKERS=8`. CI uses each
   tool's defaults.
 
 ### Testing Tips
@@ -116,7 +116,7 @@ src/
                 (containers/), validation, value and upload helpers; index.ts is its public API
   table/        The /table entry: DataTable on TanStack Table, TableToolbar, filters, cells, CSV
   chart/        The /chart entry: TimeSeriesChart, CategoryChart, HourOfDayChart (Chart.js) and Gauge (SVG)
-  shell/        The /shell entry: AppShell, Sidebar, Header, menus, HierarchyPicker, PageHeader, bars, Footer
+  shell/        The /shell entry: AppShell, Sidebar, Header, Brand, menus, HierarchyPicker, Page, bars, Footer
   map/          The /map entry: Map on MapLibre GL, with React-drawn markers, clusters and a places list
   provider/     UIProvider, contexts and hooks, messages, theme, link component
   styles/       Design tokens, themes, utilities and base styles (built into dist/styles.css)
