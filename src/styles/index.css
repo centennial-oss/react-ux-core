@@ -1,0 +1,15 @@
+/*
+ * react-ux-core styles: tokens, themes, base layer and utilities. Published as dist/styles.css, which apps import
+ * after Tailwind:
+ *
+ *   @import 'tailwindcss';
+ *   @import '@centennial-oss/react-ux-core/styles.css';
+ *
+ * The build (scripts/build-css.mjs) inlines these files in this order.
+ */
+@import './tokens.css';
+@import './themes.css';
+@import './variants.css';
+@import './utilities.css';
+@import './animations.css';
+@import './base.css';

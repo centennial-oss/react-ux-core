@@ -1,0 +1,171 @@
+{
+  "name": "@centennial-oss/react-ux-core",
+  "version": "0.0.0",
+  "description": "Centennial Core UX for React.JS",
+  "license": "Apache-2.0",
+  "author": "Centennial OSS Inc.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/centennial-oss/react-ux-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/centennial-oss/react-ux-core/issues"
+  },
+  "homepage": "https://centennial-oss.github.io/react-ux-core/latest/",
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "ux"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./form": {
+      "types": "./dist/form/index.d.ts",
+      "import": "./dist/form/index.js"
+    },
+    "./table": {
+      "types": "./dist/table/index.d.ts",
+      "import": "./dist/table/index.js"
+    },
+    "./chart": {
+      "types": "./dist/chart/index.d.ts",
+      "import": "./dist/chart/index.js"
+    },
+    "./map": {
+      "types": "./dist/map/index.d.ts",
+      "import": "./dist/map/index.js"
+    },
+    "./shell": {
+      "types": "./dist/shell/index.d.ts",
+      "import": "./dist/shell/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "npm run clean && vite build && tsc -p tsconfig.build.json && node scripts/build-css.mjs",
+    "clean": "rm -rf dist",
+    "dev": "vite build --watch",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "storybook:build": "storybook build --output-dir storybook-static",
+    "prepublishOnly": "node scripts/check-pack.mjs"
+  },
+  "peerDependencies": {
+    "@internationalized/date": "^3.12.0",
+    "@tanstack/react-form": "^1.33.0",
+    "@tanstack/react-table": "^9.2.0",
+    "@tanstack/react-virtual": "^3.14.0",
+    "chart.js": "^4.5.0",
+    "chartjs-adapter-luxon": "^1.3.0",
+    "chartjs-plugin-zoom": "^2.2.0",
+    "lucide-react": "^1.0.0",
+    "luxon": "^3.7.0",
+    "maplibre-gl": "^6.11.0",
+    "react": "^19.0.0",
+    "react-aria-components": "^1.22.0",
+    "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/react-form": {
+      "optional": true
+    },
+    "@tanstack/react-table": {
+      "optional": true
+    },
+    "@tanstack/react-virtual": {
+      "optional": true
+    },
+    "chart.js": {
+      "optional": true
+    },
+    "chartjs-adapter-luxon": {
+      "optional": true
+    },
+    "chartjs-plugin-zoom": {
+      "optional": true
+    },
+    "luxon": {
+      "optional": true
+    },
+    "maplibre-gl": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "devDependencies": {
+    "@changesets/cli": "^3.0.3",
+    "@eslint/js": "^9.39.5",
+    "@internationalized/date": "^3.12.4",
+    "@playwright/test": "^1.64.1",
+    "@size-limit/preset-small-lib": "^14.2.0",
+    "@storybook/addon-a11y": "^10.6.2",
+    "@storybook/addon-docs": "^10.6.2",
+    "@storybook/addon-vitest": "^10.6.2",
+    "@storybook/react-vite": "^10.6.2",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/react-form": "^1.33.5",
+    "@tanstack/react-table": "^9.2.4",
+    "@tanstack/react-virtual": "^3.14.13",
+    "@testing-library/react": "^16.3.3",
+    "@types/luxon": "^3.7.6",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "@vitest/browser-playwright": "^5.0.4",
+    "axe-core": "^4.14.0",
+    "chart.js": "^4.5.1",
+    "chartjs-adapter-luxon": "^1.3.1",
+    "chartjs-plugin-zoom": "^2.2.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-storybook": "^10.6.2",
+    "globals": "^17.13.0",
+    "lucide-react": "^1.57.0",
+    "luxon": "^3.7.2",
+    "maplibre-gl": "^6.11.2",
+    "playwright": "^1.64.1",
+    "prettier": "^3.9.10",
+    "react": "^19.3.1",
+    "react-aria-components": "^1.22.1",
+    "react-dom": "^19.3.1",
+    "size-limit": "^14.2.0",
+    "storybook": "^10.6.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4",
+    "zod": "^4.6.7"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.7.0"
+  }
+}

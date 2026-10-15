@@ -1,0 +1,24 @@
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-surface-1);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+  }
+
+  /* Never remove visible focus. Components may restyle it, but keyboard focus always shows. */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Windows High Contrast / forced colours: keep focus rings in a system colour. */
+  @media (forced-colors: active) {
+    :focus-visible {
+      outline-color: Highlight;
+    }
+  }
+}

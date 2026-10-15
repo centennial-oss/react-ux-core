@@ -1,0 +1,7 @@
+/*
+ * Theme variants. Tailwind's dark: variant follows data-theme (set by UIProvider) instead of the media query, so it
+ * always matches the active theme, including an explicit user choice. Components rarely need these because the
+ * colour tokens already switch per theme.
+ */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant high-contrast (&:where([data-theme='high-contrast'], [data-theme='high-contrast'] *));

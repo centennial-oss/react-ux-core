@@ -1,0 +1,27 @@
+name: Release Preflight
+
+# Runs the whole release (every gate, npm publish --dry-run, release notes, Storybook site assembly) without
+# publishing anything. The package, Storybook and assembled site are uploaded as workflow artifacts to inspect.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to stamp into the preflight Storybook (defaults to package.json's version)
+        required: false
+        type: string
+        default: ''
+
+# The shared build's publish job declares these; preflight never uses them to publish.
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  preflight:
+    if: github.repository_owner == 'centennial-oss'
+    uses: ./.github/workflows/release-build.yml
+    secrets: inherit
+    with:
+      version: ${{ inputs.version }}
+      publish: false

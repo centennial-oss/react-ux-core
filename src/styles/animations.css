@@ -1,0 +1,61 @@
+/*
+ * Keyframes for overlays. Plain CSS (not @theme), so they're always present: some are passed to React Aria by name
+ * (sheet swipe and stack animations). Durations come from the motion tokens, which are zero under reduced motion.
+ */
+@keyframes rux-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rux-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rux-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes rux-pop-out {
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes rux-sheet-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rux-sheet-scale-back {
+  to {
+    transform: translateZ(-120px);
+  }
+}
+
+/* Toast countdown ring: the stroke of a circle with r=10 (circumference 62.832) runs down over the toast's timeout. */
+@keyframes rux-countdown {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 62.832;
+  }
+}
+
+@keyframes rux-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}

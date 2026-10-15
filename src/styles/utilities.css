@@ -1,0 +1,37 @@
+/* Z-index layers as utilities: z-sticky, z-dropdown, z-overlay, z-modal, z-toast. */
+@utility z-sticky {
+  z-index: var(--z-sticky);
+}
+@utility z-dropdown {
+  z-index: var(--z-dropdown);
+}
+@utility z-overlay {
+  z-index: var(--z-overlay);
+}
+@utility z-modal {
+  z-index: var(--z-modal);
+}
+@utility z-toast {
+  z-index: var(--z-toast);
+}
+
+/*
+ * hit-area: expands an element's touch target to at least --hit-size without changing its visible size.
+ * An invisible ::before grows past the element's edges only when the element is smaller than --hit-size.
+ */
+@utility hit-area {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block: min(0px, calc((100% - var(--hit-size)) / 2));
+    inset-inline: min(0px, calc((100% - var(--hit-size)) / 2));
+  }
+}
+
+/* The standard focus ring, shown for keyboard focus only (React Aria sets data-focus-visible). */
+@utility focus-ring {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
