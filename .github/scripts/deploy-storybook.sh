@@ -7,7 +7,7 @@
 # Clones the gh-pages branch into <site-dir> (or starts it empty if the branch doesn't exist), then:
 #   - stable versions go to v<version>/ and replace latest/;
 #   - prereleases replace next/;
-#   - versions.json, a root index.html that redirects to latest/, and .nojekyll are updated.
+#   - versions.json, a root index.html that redirects to latest/, .nojekyll and CNAME (the custom domain) are updated.
 # With --push it commits and pushes the branch; without it the assembled site is left in <site-dir> for inspection
 # (release preflight uploads it as an artifact). Needs GITHUB_TOKEN and GITHUB_REPOSITORY in CI.
 
@@ -19,6 +19,9 @@ site_dir="$3"
 push="${4:-}"
 scripts_dir="$(cd "$(dirname "$0")" && pwd)"
 
+# The site's custom domain. GitHub Pages reads it from the CNAME file, so writing it on every deploy keeps the
+# domain set even if the branch is ever rebuilt from scratch.
+domain="${PAGES_DOMAIN:-react-ux-core.centennialoss.org}"
 # PAGES_REMOTE overrides the remote (for testing against a local repository).
 remote="${PAGES_REMOTE:-https://x-access-token:${GITHUB_TOKEN:-}@github.com/${GITHUB_REPOSITORY:-centennial-oss/react-ux-core}.git}"
 
@@ -44,6 +47,7 @@ done
 
 node "$scripts_dir/update-versions.mjs" "$site_dir" "$version"
 touch "$site_dir/.nojekyll"
+echo "$domain" > "$site_dir/CNAME"
 cat > "$site_dir/index.html" << 'HTML'
 <!doctype html>
 <html lang="en">

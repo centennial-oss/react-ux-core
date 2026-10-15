@@ -196,7 +196,7 @@ and the chosen scope come from the app, and links render through your `LinkCompo
 ## Documentation
 
 Every component is documented, with live examples, in the Storybook site at
-<https://centennial-oss.github.io/react-ux-core/latest/>. Each released version keeps its own copy, so you can read the
+<https://react-ux-core.centennialoss.org/latest/>. Each released version keeps its own copy, so you can read the
 docs for the exact version you use. The site goes live with the first release.
 
 ## Privacy

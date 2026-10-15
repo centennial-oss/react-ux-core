@@ -180,8 +180,9 @@ prerelease mode before the stable release.
 - npm: the `centennial-oss` org with at least two owners using 2FA, and a trusted publisher for this package naming
   the GitHub repository `centennial-oss/react-ux-core` and the workflow `release.yml`.
 - GitHub: a tag ruleset so only maintainers can create `v*` tags; private vulnerability reporting turned on (for
-  `SECURITY.md`); and, after the first release creates the `gh-pages` branch, Pages set to "Deploy from a branch:
-  `gh-pages` / (root)".
+  `SECURITY.md`); a `gh-pages` branch (a placeholder is fine; the first release replaces it) with Pages set to
+  "Deploy from a branch: `gh-pages` / (root)"; and the custom domain `react-ux-core.centennialoss.org`, verified for
+  the organization, with HTTPS enforced. The deploy writes the domain to `CNAME` on every release.
 
 ## Co-developing with a Consumer App
 
