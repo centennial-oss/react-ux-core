@@ -131,12 +131,37 @@ The main entry point has these components so far:
 - **Layout and display:** `Stack`, `Inline`, `Grid`, `Spacer`, `Text`, `Heading`, `ScrollRegion`, `Card`,
   `Disclosure`, `Accordion`, `CollapsibleCard`, `StatTile`, `DescriptionList`, `Tabs`, `Pillbox`, `Badge`, `Chip`,
   `StatusDot`, `RelativeTime`, `Sparkline`, `Breadcrumbs`, `Tree`, `Separator`, `VisuallyHidden`, `Kbd`,
-  `Checklist` (steps with a status and progress), `SecretReveal` (credentials shown once)
+  `Checklist` (steps with a status and progress), `SecretReveal` (credentials shown once), `Flag` (see below)
 - **Inputs:** `TextField`, `NumberField`, `TextArea`, `SearchField`, `Select`, `ComboBox`, `MultiSelect`,
   `Checkbox`, `CheckboxGroup`, `RadioGroup`, `Switch`, `Slider`, `RangeSlider`, `DatePicker`, `DateRangePicker`,
   `DateTimePicker`, `TimeField`, `TimeRangePicker`, `FileField`, `DropZone`, `ScheduleEditor` (a daily schedule with a
-  24-hour preview), `TierEditor` (contiguous numeric tiers), `ColorField`, `IconPicker`, `JsonEditor` (checked as you
-  type, with formatting), `TemplateEditor` (an SMS template with `{{keyword}}` suggestions and a live example)
+  24-hour preview), `TierEditor` (contiguous numeric tiers), `ColorField`, `IconPicker`, `FlagPicker`, `TilePicker` (the
+  searchable grid of tiles in titled rows that IconPicker and FlagPicker are built on, with `TileGrid` for inline
+  use), `JsonEditor` (checked as you type, with formatting), `TemplateEditor` (an SMS template with `{{keyword}}` suggestions and a live example)
+
+`Flag` and `FlagPicker` show countries your app registers. The library knows four (the United States, France, China
+and Brazil) as a reference; register the rest, with any fields of your own, through `FlagProvider`, and serve the flag
+images yourself, as `/images/flags/<code>.svg` by default. The MIT-licensed
+[flag-icons](https://github.com/lipis/flag-icons) set has an SVG for every ISO 3166-1 code.
+
+```tsx
+interface AppCountry extends CountryInfo {
+  currency: string;
+}
+
+const countries: AppCountry[] = [
+  { code: 'de', name: 'Germany', nativeName: 'Deutschland', languages: ['de'], currency: 'EUR' },
+];
+
+<FlagProvider countries={countries} basePath="/static/flags">
+  <Flag country="Germany" details={['name', 'languages']} />
+  <FlagPicker<AppCountry>
+    label="Country"
+    rows={[{ id: 'europe', title: 'Europe', countries: ['fr', 'de'] }]}
+    onChange={(code, country) => setCurrency(country?.currency)}
+  />
+</FlagProvider>;
+```
 
 The form entry point has `ConfigForm`, its containers (`DialogForm`, `CardForm`, `PageForm`, `WizardForm`), the
 field registry (`createFieldRegistry`), `UnsavedChangesDialog`, and the `createPatch`, `problemToSubmitResult` and

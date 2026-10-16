@@ -34,6 +34,8 @@ for (const story of stories) {
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
       // Maps draw after their style loads.
       await expect(page.locator('[data-map-status="loading"]')).toHaveCount(0, { timeout: 15_000 });
+      // Images (such as flags) load after the story renders.
+      await page.waitForFunction(() => [...document.images].every((image) => image.complete));
 
       if (wholePage) {
         // These stories open an overlay on load. Overlays mount a moment after the story, animate in, are placed by

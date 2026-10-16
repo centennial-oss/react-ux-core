@@ -4,6 +4,8 @@ import pkg from '../package.json' with { type: 'json' };
 export default defineMain({
   framework: '@storybook/react-vite',
   stories: ['../src/**/*.stories.@(ts|tsx)'],
+  // Files the stories load at run time, such as the demo flag images (public/images/flags).
+  staticDirs: ['./public'],
   addons: ['@storybook/addon-docs', '@storybook/addon-a11y', '@storybook/addon-vitest'],
   // No usage telemetry, in keeping with the project's privacy stance (PRIVACY.md).
   core: { disableTelemetry: true, disableWhatsNewNotifications: true },

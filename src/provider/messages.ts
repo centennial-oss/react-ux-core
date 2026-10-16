@@ -428,8 +428,17 @@ export interface TemplateEditorMessages {
   keywordSuggestions: (params: { count: number }) => string;
 }
 
+/** Strings for FlagPicker. */
+export interface FlagPickerMessages {
+  /** Names the search field above the flags. */
+  searchCountries: string;
+  /** Shown in the trigger when nothing is chosen. */
+  noCountry: string;
+}
+
 /** Every string the library uses, for overriding through `UIProvider`. */
 export type Messages = CoreMessages &
+  FlagPickerMessages &
   SecretRevealMessages &
   ChecklistMessages &
   JsonEditorMessages &

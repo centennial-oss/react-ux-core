@@ -14,6 +14,7 @@ export {
   type ChartMessages,
   type ChecklistMessages,
   type CoreMessages,
+  type FlagPickerMessages,
   type FormMessages,
   type JsonEditorMessages,
   type MapMessages,
@@ -98,7 +99,10 @@ export * from './components/TimeField';
 export * from './components/TimeRangePicker';
 export * from './components/FileField';
 export * from './components/ColorField';
+export * from './components/TilePicker';
 export * from './components/IconPicker';
+export * from './components/Flag';
+export * from './components/FlagPicker';
 export * from './components/ScheduleEditor';
 export * from './components/TierEditor';
 export * from './components/JsonEditor';
