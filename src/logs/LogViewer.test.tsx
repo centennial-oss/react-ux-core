@@ -148,11 +148,14 @@ describe('LogViewer', () => {
     const { container } = render(<LogViewer lines={nightLog} timeZone="UTC" />);
     const field = screen.getByRole('searchbox', { name: 'Search the log' });
     await userEvent.type(field, 'exposure');
+    // "exposur" already matches the same lines, so wait for the whole word before counting.
+    await expect
+      .poll(() => getLog().querySelector('mark[data-current]')?.textContent)
+      .toBe('Exposure');
     await expect.poll(() => getLog().querySelectorAll('mark').length).toBe(3);
     expect(position('1 of 3')).toBeInTheDocument();
     const live = container.querySelector('[aria-live="polite"]');
     await expect.poll(() => live?.textContent).toBe('3 matches');
-    expect(getLog().querySelector('mark[data-current]')?.textContent).toBe('Exposure');
 
     await userEvent.keyboard('{Enter}');
     expect(position('2 of 3')).toBeInTheDocument();

@@ -42,12 +42,13 @@ describe('AudioPlayer', () => {
 
   it('plays and pauses real audio, reporting the time', async () => {
     const audio = createRef<HTMLAudioElement>();
-    const onTimeUpdate = vi.fn();
+    const onTimeUpdate = vi.fn<(ms: number) => void>();
     render(<AudioPlayer track={first} mediaRef={audio} onTimeUpdate={onTimeUpdate} />);
     await userEvent.click(screen.getByRole('button', { name: 'Play' }));
     await expect.poll(() => audio.current?.paused).toBe(false);
     await expect.poll(() => audio.current?.currentTime ?? 0).toBeGreaterThan(0.2);
-    expect(onTimeUpdate.mock.lastCall?.[0]).toBeGreaterThan(0);
+    // timeupdate fires a few times a second, so the report can trail the element's own clock.
+    await expect.poll(() => onTimeUpdate.mock.lastCall?.[0] ?? 0).toBeGreaterThan(0);
     await userEvent.click(screen.getByRole('button', { name: 'Pause' }));
     await expect.poll(() => audio.current?.paused).toBe(true);
   });

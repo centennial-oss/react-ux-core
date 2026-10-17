@@ -99,7 +99,11 @@ describe('VideoPlayer', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Captions' }));
     await userEvent.click(await screen.findByRole('menuitemradio', { name: 'English' }));
     await expect.poll(() => video.current?.textTracks[0]?.mode).toBe('showing');
-    screen.getByRole('slider', { name: 'Position' }).focus();
+    // On phones the menu is a sheet: let it close (and hand focus back) before using the keyboard.
+    await expect.poll(() => screen.queryByRole('menu')).toBeNull();
+    const position = screen.getByRole('slider', { name: 'Position' });
+    position.focus();
+    await expect.poll(() => document.activeElement).toBe(position);
     await userEvent.keyboard('c');
     await expect.poll(() => video.current?.textTracks[0]?.mode).toBe('disabled');
     await userEvent.keyboard('c');

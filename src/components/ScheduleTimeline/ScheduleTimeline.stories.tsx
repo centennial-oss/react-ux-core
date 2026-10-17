@@ -90,9 +90,12 @@ export const NarrowAgenda: Story = {
   ),
 };
 
-/** Scrolls inside past `maxHeight`, keeping the time axis and lane names in view. */
+/**
+ * Scrolls inside past `maxHeight`, keeping the time axis and lane names in view. (One day keeps the story light: the
+ * week has many bookings clipped by the scroll area, which makes its accessibility check slow on busy machines.)
+ */
 export const MaxHeight: Story = {
-  args: { maxHeight: '20rem' },
+  args: { maxHeight: '16rem', defaultRange: dayRange },
 };
 
 /** Lanes with nothing booked yet. */

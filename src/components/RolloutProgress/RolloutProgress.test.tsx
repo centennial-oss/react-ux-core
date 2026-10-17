@@ -227,9 +227,11 @@ describe('RolloutProgress', () => {
     const progress = screen.getByRole('progressbar', { name: 'Mount firmware 4.2' });
     const startValue = progress.getAttribute('aria-valuenow');
     const maunaKea = screen.getByRole('button', { name: /^Mauna Kea/ });
-    await userEvent.click(maunaKea);
+    // Clicked on the element itself: the button's name holds live counts, so a locator built from it goes stale
+    // between ticks.
+    maunaKea.click();
     await expect.poll(() => maunaKea.getAttribute('aria-expanded')).toBe('true');
-    await userEvent.click(maunaKea);
+    maunaKea.click();
     await expect.poll(() => maunaKea.getAttribute('aria-expanded')).toBe('false');
     // The updates kept coming meanwhile.
     await expect.poll(() => progress.getAttribute('aria-valuenow')).not.toBe(startValue);

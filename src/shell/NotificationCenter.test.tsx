@@ -169,8 +169,10 @@ describe('NotificationBell', () => {
     expect(bell.textContent).toBe('8');
     await userEvent.click(bell);
     const dialog = await screen.findByRole('dialog', { name: 'Notifications' });
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Mark all read' }));
-    expect(within(dialog).getByText('All read')).toBeInTheDocument();
+    // Clicked on the element itself: on phones the drawer is a sheet still sliding in, and a pointer click can land
+    // while the button is outside the viewport.
+    within(dialog).getByRole('button', { name: 'Mark all read' }).click();
+    expect(await within(dialog).findByText('All read')).toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
     // Focus moved into the list, so Escape still reaches the drawer.
     await expect.poll(() => screen.queryByRole('dialog')).toBeNull();

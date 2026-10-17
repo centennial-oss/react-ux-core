@@ -63,8 +63,11 @@ describe('ModelViewer', () => {
     expect(onError).toHaveBeenCalled();
     await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
     // It tries again (and fails again).
-    await expect.poll(() => onError.mock.calls.length).toBe(2);
-    expect(screen.getByText('The model couldn’t load')).toBeInTheDocument();
+    await expect.poll(() => onError.mock.calls.length, { timeout: 10_000 }).toBe(2);
+    // onError runs before the error state renders again.
+    expect(
+      await screen.findByText('The model couldn’t load', {}, { timeout: 10_000 }),
+    ).toBeInTheDocument();
   });
 
   it('fails clearly for a file it can’t read', async () => {

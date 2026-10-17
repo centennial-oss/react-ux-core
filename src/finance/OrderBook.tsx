@@ -428,9 +428,12 @@ export function OrderBook({
     [],
   );
 
-  // One timer for every mark: it fires at the next flash end or arrow expiry.
+  // One timer for every mark: it fires at the next flash end or arrow expiry. Each firing bumps `markTick`, so the
+  // timer is set again even when it fired a moment early and nothing was due yet (the marks would be unchanged).
+  const [markTick, setMarkTick] = useState(0);
   const markTimer = useDeadlineTimer(() => {
     setMarks((previous) => pruneMarks(previous, performance.now()));
+    setMarkTick((tick) => tick + 1);
   });
   useEffect(() => {
     let next = Number.POSITIVE_INFINITY;
@@ -442,7 +445,7 @@ export function OrderBook({
     } else {
       markTimer.start(Math.max(0, next - performance.now()));
     }
-  }, [marks, markTimer]);
+  }, [marks, markTick, markTimer]);
 
   // Marks belong to one grouping; a new grouping starts clean.
   const [markedGrouping, setMarkedGrouping] = useState(grouping);
