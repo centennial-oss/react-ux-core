@@ -329,3 +329,29 @@ describe('AppShell', () => {
     await expectNoAxeViolations(container);
   });
 });
+
+describe('Header pinnedActions', () => {
+  it('shows pinned actions on every layout, while other actions move into the menu on phones', () => {
+    render(
+      <UIProvider>
+        <AppShell
+          header={
+            <Header
+              brand={<span>Gridline</span>}
+              actions={<IconButton icon={CircleHelp} aria-label="Help" />}
+              pinnedActions={<IconButton icon={Receipt} aria-label="Notifications" />}
+            />
+          }
+        >
+          <p>Page</p>
+        </AppShell>
+      </UIProvider>,
+    );
+    expect(screen.getByRole('button', { name: 'Notifications' })).toBeVisible();
+    if (layout === 'phone') {
+      expect(screen.queryByRole('button', { name: 'Help' })).toBeNull();
+    } else {
+      expect(screen.getByRole('button', { name: 'Help' })).toBeVisible();
+    }
+  });
+});

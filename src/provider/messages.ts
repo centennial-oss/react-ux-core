@@ -3,12 +3,61 @@
  * `UIProvider`'s `messages` prop, for example by feeding in strings from their own i18n system.
  *
  * The strings are typed here, all together (`Messages`), but each entry point ships only its own defaults: the main
- * entry the core strings below, and `/form`, `/table`, `/chart`, `/shell` and `/map` theirs, merged with the app's
- * overrides when their components render.
+ * entry the core strings below (and its larger components their own), and every other entry point its own, merged
+ * with the app's overrides when their components render.
  *
  * Messages that need values are functions that take named parameters, so translations control word order and
  * plurals. Components never concatenate translated fragments.
  */
+
+import type { ModelViewerMessages } from '../3d/messages';
+import type { CanvasMessages } from '../canvas/messages';
+import type { ChatMessages } from '../chat/messages';
+import type { ChartAnnotationMessages } from '../chart/annotationMessages';
+import type { ChartPlotMessages } from '../chart/plotMessages';
+import type { CodesMessages } from '../codes/messages';
+import type { ActivityTimelineMessages } from '../components/ActivityTimeline/messages';
+import type { AvatarMessages } from '../components/Avatar/messages';
+import type { CidrFieldMessages } from '../components/CidrField/messages';
+import type { CommandPaletteMessages } from '../components/CommandPalette/messages';
+import type { CopyFieldMessages } from '../components/CopyField/messages';
+import type { KeyValueEditorMessages } from '../components/KeyValueEditor/messages';
+import type { KnobMessages } from '../components/Knob/messages';
+import type { MoneyFieldMessages } from '../components/MoneyField/messages';
+import type { PaginationMessages } from '../components/Pagination/messages';
+import type { PriceTickerMessages } from '../components/PriceTicker/messages';
+import type { PropertyInspectorMessages } from '../components/PropertyInspector/messages';
+import type { RolloutProgressMessages } from '../components/RolloutProgress/messages';
+import type { RuleBuilderMessages } from '../components/RuleBuilder/messages';
+import type { ScheduleTimelineMessages } from '../components/ScheduleTimeline/messages';
+import type { SegmentedMeterMessages } from '../components/SegmentedMeter/messages';
+import type { SlugFieldMessages } from '../components/SlugField/messages';
+import type { SplitViewMessages } from '../components/SplitView/messages';
+import type { TextFieldMessages } from '../components/TextField/messages';
+import type { TreeMessages } from '../components/Tree/messages';
+import type { UnitFieldMessages } from '../components/UnitField/messages';
+import type { UptimeBarMessages } from '../components/UptimeBar/messages';
+import type { DicomMessages } from '../dicom/messages';
+import type { DiffMessages } from '../diff/messages';
+import type { EditorMessages } from '../editor/messages';
+import type { FinanceMessages } from '../finance/messages';
+import type { GraphMessages } from '../graph/messages';
+import type { LogViewerMessages } from '../logs/messages';
+import type { ChoroplethMessages } from '../map/choroplethMessages';
+import type { MarkdownEditorMessages } from '../markdown/editorMessages';
+import type { MathMessages } from '../math/messages';
+import type { MediaFilesMessages } from '../media/files/messages';
+import type { MediaImageMessages } from '../media/image/messages';
+import type { MediaPlayerMessages } from '../media/player/messages';
+import type { MusicMessages } from '../music/messages';
+import type { NotificationMessages } from '../shell/notificationMessages';
+import type { EditableTableMessages } from '../table/editableMessages';
+import type { FlowsheetMessages } from '../table/flowsheetMessages';
+import type { TerminalMessages } from '../terminal/messages';
+
+// The interfaces imported above are defined beside their components (each ships its own defaults); they are
+// joined into `Messages` below.
+
 /** Strings the main entry point uses (and the entry points share). */
 export interface CoreMessages {
   /** Label for buttons and controls that close a dialog, popover, toast or banner. */
@@ -507,7 +556,51 @@ export type Messages = CoreMessages &
   ShellMessages &
   MapMessages &
   CodeMessages &
-  MarkdownMessages;
+  MarkdownMessages &
+  ModelViewerMessages &
+  CanvasMessages &
+  ChatMessages &
+  ChartAnnotationMessages &
+  ChartPlotMessages &
+  CodesMessages &
+  ActivityTimelineMessages &
+  AvatarMessages &
+  CidrFieldMessages &
+  CommandPaletteMessages &
+  CopyFieldMessages &
+  KeyValueEditorMessages &
+  KnobMessages &
+  MoneyFieldMessages &
+  PaginationMessages &
+  PriceTickerMessages &
+  PropertyInspectorMessages &
+  RolloutProgressMessages &
+  RuleBuilderMessages &
+  ScheduleTimelineMessages &
+  SegmentedMeterMessages &
+  SlugFieldMessages &
+  SplitViewMessages &
+  TextFieldMessages &
+  TreeMessages &
+  UnitFieldMessages &
+  UptimeBarMessages &
+  DicomMessages &
+  DiffMessages &
+  EditorMessages &
+  FinanceMessages &
+  GraphMessages &
+  LogViewerMessages &
+  ChoroplethMessages &
+  MarkdownEditorMessages &
+  MathMessages &
+  MediaFilesMessages &
+  MediaImageMessages &
+  MediaPlayerMessages &
+  MusicMessages &
+  NotificationMessages &
+  EditableTableMessages &
+  FlowsheetMessages &
+  TerminalMessages;
 
 /** The English defaults of the core strings (each entry point has its own for the rest). */
 export const defaultMessages: CoreMessages = {

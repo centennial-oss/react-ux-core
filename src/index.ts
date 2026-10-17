@@ -123,3 +123,24 @@ export * from './components/TierEditor';
 export * from './components/JsonEditor';
 export * from './components/TemplateEditor';
 export * from './components/ReorderableList';
+
+// Added with FR-015 to FR-077 (placeholders until each component lands)
+export * from './components/CommandPalette';
+export * from './components/SplitView';
+export * from './components/CopyField';
+export * from './components/KeyValueEditor';
+export * from './components/SlugField';
+export * from './components/CidrField';
+export * from './components/UnitField';
+export * from './components/MoneyField';
+export * from './components/Knob';
+export * from './components/Avatar';
+export * from './components/Pagination';
+export * from './components/ActivityTimeline';
+export * from './components/UptimeBar';
+export * from './components/SegmentedMeter';
+export * from './components/PriceTicker';
+export * from './components/RolloutProgress';
+export * from './components/ScheduleTimeline';
+export * from './components/RuleBuilder';
+export * from './components/PropertyInspector';

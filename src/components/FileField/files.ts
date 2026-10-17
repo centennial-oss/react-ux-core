@@ -17,6 +17,10 @@ export interface FileItem<R = unknown> {
   name?: string;
   /** Size in bytes, shown instead of the file's own size. Without either, no size is shown. */
   size?: number;
+  /** The MIME type of a file without `file` (one uploaded earlier), for its preview icon with `hasPreviews`. */
+  type?: string;
+  /** With `hasPreviews`: an image URL to show for an item without `file`, such as a stored image's thumbnail. */
+  previewSrc?: string;
   status: FileItemStatus;
   /** Upload progress from 0 to 1 while `uploading`. Unset means unknown (an indeterminate bar). */
   progress?: number;

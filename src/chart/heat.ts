@@ -161,7 +161,8 @@ function luminance(hex: string): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-function contrast(a: string, b: string): number {
+/** The WCAG contrast ratio between two hex colours. */
+export function contrast(a: string, b: string): number {
   const [lighter, darker] = [luminance(a), luminance(b)].sort((x, y) => y - x) as [number, number];
   return (lighter + 0.05) / (darker + 0.05);
 }

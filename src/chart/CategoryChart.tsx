@@ -11,6 +11,7 @@ import { formatValue } from './format';
 import { valueAxisBounds, valueAxisTitle, type ValueAxisOptions } from './valueAxis';
 import { downloadPng, useChart, useChartLook } from './useChart';
 import { useChartMessages } from './messages';
+import { WaterfallPlot, type CategoryWaterfallProps } from './Waterfall';
 
 export interface CategorySeries {
   id: string;
@@ -21,7 +22,8 @@ export interface CategorySeries {
   data: readonly (number | null)[];
 }
 
-export interface CategoryChartProps extends ChartFrameOptions {
+/** CategoryChart's props for bars and donuts. */
+export interface CategoryBarChartProps extends ChartFrameOptions {
   /** The category labels. */
   categories: readonly string[];
   series: readonly CategorySeries[];
@@ -36,12 +38,19 @@ export interface CategoryChartProps extends ChartFrameOptions {
   valueAxis?: ValueAxisOptions;
 }
 
+/** Bars and donuts (`type` and `series`), or a waterfall (`type: 'waterfall'` and `steps`). */
+export type CategoryChartProps = CategoryBarChartProps | CategoryWaterfallProps;
+
 /**
- * A chart of values by category: bars (vertical, horizontal or stacked) or a donut. The legend shows, hides and
- * highlights series (categories, for a donut); it has a title, a generated summary, "View as table", PNG and CSV
- * export, and full screen.
+ * A chart of values by category: bars (vertical, horizontal or stacked), a donut, or a waterfall. The legend shows,
+ * hides and highlights series (categories, for a donut); it has a title, a generated summary, "View as table", PNG
+ * and CSV export, and full screen.
  */
-export function CategoryChart({
+export function CategoryChart(props: CategoryChartProps) {
+  return props.type === 'waterfall' ? <WaterfallPlot {...props} /> : <CategoryBars {...props} />;
+}
+
+function CategoryBars({
   categories,
   series,
   type,
@@ -49,7 +58,7 @@ export function CategoryChart({
   valueAxis: valueAxisOptions,
   exportFileName,
   ...frame
-}: CategoryChartProps) {
+}: CategoryBarChartProps) {
   const messages = useChartMessages();
   const { locale } = useLocale();
   const { palette, isReducedMotion } = useChartLook();

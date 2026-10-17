@@ -2,7 +2,7 @@
   {
     "name": "Main entry (all exports)",
     "path": "dist/index.js",
-    "limit": "53 kB"
+    "limit": "98.75 kB"
   },
   {
     "name": "Button",
@@ -38,13 +38,13 @@
     "name": "FileField",
     "path": "dist/index.js",
     "import": "{ FileField }",
-    "limit": "16 kB"
+    "limit": "17 kB"
   },
   {
     "name": "Tree",
     "path": "dist/index.js",
     "import": "{ Tree }",
-    "limit": "10 kB"
+    "limit": "13.75 kB"
   },
   {
     "name": "Form entry (all exports)",
@@ -60,29 +60,29 @@
   {
     "name": "Table entry (all exports)",
     "path": "dist/table/index.js",
-    "limit": "28.75 kB"
+    "limit": "43.25 kB"
   },
   {
     "name": "DataTable",
     "path": "dist/table/index.js",
     "import": "{ DataTable }",
-    "limit": "21 kB"
+    "limit": "22.75 kB"
   },
   {
     "name": "Chart entry (all exports)",
     "path": "dist/chart/index.js",
-    "limit": "32.5 kB"
+    "limit": "49.75 kB"
   },
   {
     "name": "TimeSeriesChart",
     "path": "dist/chart/index.js",
     "import": "{ TimeSeriesChart }",
-    "limit": "26.5 kB"
+    "limit": "31.75 kB"
   },
   {
     "name": "Shell entry (all exports)",
     "path": "dist/shell/index.js",
-    "limit": "27.25 kB"
+    "limit": "30.25 kB"
   },
   {
     "name": "AppShell + Sidebar + Header",
@@ -124,7 +124,7 @@
     "name": "Gauge",
     "path": "dist/chart/index.js",
     "import": "{ Gauge }",
-    "limit": "11.5 kB"
+    "limit": "12.5 kB"
   },
   {
     "name": "ReorderableList",
@@ -142,12 +142,12 @@
     "name": "HeatmapChart",
     "path": "dist/chart/index.js",
     "import": "{ HeatmapChart, CalendarHeatmap }",
-    "limit": "27 kB"
+    "limit": "30.25 kB"
   },
   {
     "name": "Map entry (all exports)",
     "path": "dist/map/index.js",
-    "limit": "16 kB"
+    "limit": "19.25 kB"
   },
   {
     "name": "Code entry (all exports)",
@@ -157,12 +157,238 @@
   {
     "name": "Markdown entry (all exports)",
     "path": "dist/markdown/index.js",
-    "limit": "16 kB"
+    "limit": "28.75 kB"
   },
   {
     "name": "Timer",
     "path": "dist/index.js",
     "import": "{ Timer }",
     "limit": "12.5 kB"
+  },
+  {
+    "name": "Logs entry (all exports)",
+    "path": "dist/logs/index.js",
+    "limit": "22 kB"
+  },
+  {
+    "name": "Diff entry (all exports)",
+    "path": "dist/diff/index.js",
+    "limit": "25.75 kB"
+  },
+  {
+    "name": "Media entry (all exports)",
+    "path": "dist/media/index.js",
+    "limit": "65.75 kB"
+  },
+  {
+    "name": "Graph entry (all exports)",
+    "path": "dist/graph/index.js",
+    "limit": "26.75 kB"
+  },
+  {
+    "name": "Canvas entry (all exports)",
+    "path": "dist/canvas/index.js",
+    "limit": "18.75 kB"
+  },
+  {
+    "name": "Chat entry (all exports)",
+    "path": "dist/chat/index.js",
+    "limit": "66.5 kB"
+  },
+  {
+    "name": "Finance entry (all exports)",
+    "path": "dist/finance/index.js",
+    "limit": "27.25 kB"
+  },
+  {
+    "name": "DICOM entry (all exports)",
+    "path": "dist/dicom/index.js",
+    "limit": "28.5 kB"
+  },
+  {
+    "name": "3D entry (all exports)",
+    "path": "dist/3d/index.js",
+    "limit": "18.25 kB"
+  },
+  {
+    "name": "Editor entry (all exports)",
+    "path": "dist/editor/index.js",
+    "limit": "33 kB"
+  },
+  {
+    "name": "Terminal entry (all exports)",
+    "path": "dist/terminal/index.js",
+    "limit": "20.5 kB"
+  },
+  {
+    "name": "Music entry (all exports)",
+    "path": "dist/music/index.js",
+    "limit": "40.25 kB"
+  },
+  {
+    "name": "Math entry (all exports)",
+    "path": "dist/math/index.js",
+    "limit": "24.5 kB"
+  },
+  {
+    "name": "Codes entry (all exports)",
+    "path": "dist/codes/index.js",
+    "limit": "24.75 kB"
+  },
+  {
+    "name": "CommandPalette",
+    "path": "dist/index.js",
+    "import": "{ CommandPalette, CommandPaletteTrigger }",
+    "limit": "15.5 kB"
+  },
+  {
+    "name": "SplitView",
+    "path": "dist/index.js",
+    "import": "{ SplitView }",
+    "limit": "14.5 kB"
+  },
+  {
+    "name": "KeyValueEditor",
+    "path": "dist/index.js",
+    "import": "{ KeyValueEditor }",
+    "limit": "17.75 kB"
+  },
+  {
+    "name": "CopyField",
+    "path": "dist/index.js",
+    "import": "{ CopyField }",
+    "limit": "14 kB"
+  },
+  {
+    "name": "DurationField",
+    "path": "dist/index.js",
+    "import": "{ DurationField }",
+    "limit": "16.5 kB"
+  },
+  {
+    "name": "MoneyField",
+    "path": "dist/index.js",
+    "import": "{ MoneyField }",
+    "limit": "16.25 kB"
+  },
+  {
+    "name": "Knob",
+    "path": "dist/index.js",
+    "import": "{ Knob }",
+    "limit": "12.5 kB"
+  },
+  {
+    "name": "Avatar",
+    "path": "dist/index.js",
+    "import": "{ Avatar, AvatarGroup }",
+    "limit": "12.5 kB"
+  },
+  {
+    "name": "Pagination",
+    "path": "dist/index.js",
+    "import": "{ Pagination }",
+    "limit": "15 kB"
+  },
+  {
+    "name": "ActivityTimeline",
+    "path": "dist/index.js",
+    "import": "{ ActivityTimeline }",
+    "limit": "15 kB"
+  },
+  {
+    "name": "RolloutProgress",
+    "path": "dist/index.js",
+    "import": "{ RolloutProgress }",
+    "limit": "22 kB"
+  },
+  {
+    "name": "ScheduleTimeline",
+    "path": "dist/index.js",
+    "import": "{ ScheduleTimeline }",
+    "limit": "21 kB"
+  },
+  {
+    "name": "RuleBuilder",
+    "path": "dist/index.js",
+    "import": "{ RuleBuilder }",
+    "limit": "29.25 kB"
+  },
+  {
+    "name": "PropertyInspector",
+    "path": "dist/index.js",
+    "import": "{ PropertyInspector }",
+    "limit": "26 kB"
+  },
+  {
+    "name": "CidrField",
+    "path": "dist/index.js",
+    "import": "{ CidrField, CidrList }",
+    "limit": "18.25 kB"
+  },
+  {
+    "name": "EditableTable",
+    "path": "dist/table/index.js",
+    "import": "{ EditableTable }",
+    "limit": "18.5 kB"
+  },
+  {
+    "name": "LiveTimeSeries",
+    "path": "dist/chart/index.js",
+    "import": "{ LiveTimeSeries }",
+    "limit": "33.5 kB"
+  },
+  {
+    "name": "CandlestickChart",
+    "path": "dist/chart/index.js",
+    "import": "{ CandlestickChart }",
+    "limit": "31.75 kB"
+  },
+  {
+    "name": "Treemap",
+    "path": "dist/chart/index.js",
+    "import": "{ Treemap }",
+    "limit": "31 kB"
+  },
+  {
+    "name": "MarkdownEditor",
+    "path": "dist/markdown/index.js",
+    "import": "{ MarkdownEditor }",
+    "limit": "28 kB"
+  },
+  {
+    "name": "NotificationBell",
+    "path": "dist/shell/index.js",
+    "import": "{ NotificationBell }",
+    "limit": "17.75 kB"
+  },
+  {
+    "name": "QRCode",
+    "path": "dist/codes/index.js",
+    "import": "{ QRCode }",
+    "limit": "20.5 kB"
+  },
+  {
+    "name": "ImageViewer",
+    "path": "dist/media/index.js",
+    "import": "{ ImageViewer }",
+    "limit": "17 kB"
+  },
+  {
+    "name": "PdfViewer",
+    "path": "dist/media/index.js",
+    "import": "{ PdfViewer }",
+    "limit": "25.5 kB"
+  },
+  {
+    "name": "AudioPlayer",
+    "path": "dist/media/index.js",
+    "import": "{ AudioPlayer }",
+    "limit": "23.75 kB"
+  },
+  {
+    "name": "MathFormula",
+    "path": "dist/math/index.js",
+    "import": "{ MathFormula }",
+    "limit": "14.5 kB"
   }
 ]

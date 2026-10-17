@@ -152,6 +152,24 @@ export function ReorderableList({
       ?.focus();
   }, [order]);
 
+  // GridList drops the aria-describedby it's given, so the description is linked on the element directly. This runs
+  // after every render, since GridList re-renders the element's attributes.
+  const hasDescription = description !== undefined;
+  useLayoutEffect(() => {
+    const grid = listRef.current;
+    if (!grid) {
+      return;
+    }
+    const ids = (grid.getAttribute('aria-describedby') ?? '').split(' ').filter((id) => id !== '');
+    const others = ids.filter((id) => id !== descriptionId);
+    const next = hasDescription ? [...others, descriptionId] : others;
+    if (next.length > 0) {
+      grid.setAttribute('aria-describedby', next.join(' '));
+    } else {
+      grid.removeAttribute('aria-describedby');
+    }
+  });
+
   const { dragAndDropHooks } = useDragAndDrop({
     isDisabled: isLocked,
     getItems: (keys) =>
@@ -189,7 +207,6 @@ export function ReorderableList({
         ref={listRef}
         aria-labelledby={label !== undefined ? labelId : undefined}
         aria-label={label === undefined ? ariaLabel : undefined}
-        aria-describedby={description !== undefined ? descriptionId : undefined}
         items={ordered}
         // Always passed: GridList calls its drag-and-drop hooks only when this is set, so switching it on and off while
         // mounted would change its hook order. `isDisabled` on useDragAndDrop locks dragging instead.

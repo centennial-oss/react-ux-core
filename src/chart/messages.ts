@@ -1,6 +1,8 @@
 // English defaults of the chart entry point's strings (see `Messages` in provider/messages.ts).
 import { useEntryMessages } from '../provider/context';
 import type { CoreMessages, ChartMessages } from '../provider/messages';
+import { defaultChartAnnotationMessages, type ChartAnnotationMessages } from './annotationMessages';
+import { defaultChartPlotMessages, type ChartPlotMessages } from './plotMessages';
 
 export const defaultChartMessages: ChartMessages = {
   viewAsTable: 'View as table',
@@ -37,9 +39,19 @@ export const defaultChartMessages: ChartMessages = {
 };
 
 /** The strings `/chart` components read: the core strings and `/chart`'s own. */
-export type ChartStrings = CoreMessages & ChartMessages;
+export type ChartStrings = CoreMessages &
+  ChartMessages &
+  ChartAnnotationMessages &
+  ChartPlotMessages;
+
+/** Every `/chart` default, made once so the merged strings stay memoised. */
+const defaults: ChartMessages & ChartAnnotationMessages & ChartPlotMessages = {
+  ...defaultChartMessages,
+  ...defaultChartAnnotationMessages,
+  ...defaultChartPlotMessages,
+};
 
 /** `/chart`'s strings, with the app's overrides from `UIProvider`. */
 export function useChartMessages(): ChartStrings {
-  return useEntryMessages(defaultChartMessages);
+  return useEntryMessages(defaults);
 }

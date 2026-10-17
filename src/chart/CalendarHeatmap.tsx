@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { useLocale } from 'react-aria-components';
 import type { ChartFrameOptions } from './ChartFrame';
 import type { HeatScale } from './heat';
+import type { HeatCellSize } from './heatLayout';
 import { HeatmapChart, type HeatmapAxisItem } from './HeatmapChart';
 import { useChartMessages } from './messages';
 
@@ -22,6 +23,13 @@ export interface CalendarHeatmapProps extends Omit<ChartFrameOptions, 'height'> 
   unit?: string;
   /** Called with a day's ISO date when it's pressed. */
   onDayPress?: (date: string) => void;
+  /**
+   * `fit` shrinks cells (down to 10 px, or 24 px on touch screens) so every week fits the width before scrolling;
+   * `sm`, `md` and `lg` are fixed sizes. Defaults to `fit`.
+   */
+  cellSize?: HeatCellSize;
+  /** Where a calendar that still scrolls starts. Defaults to `end` (the latest weeks). */
+  initialScroll?: 'start' | 'end';
 }
 
 const DAY = 86_400_000;
@@ -53,6 +61,8 @@ export function CalendarHeatmap({
   unit,
   onDayPress,
   emptyState,
+  cellSize = 'fit',
+  initialScroll = 'end',
   ...frame
 }: CalendarHeatmapProps) {
   const messages = useChartMessages();
@@ -75,10 +85,23 @@ export function CalendarHeatmap({
       id: String(row),
       label: weekday.format(new Date(gridStart + row * DAY)),
     }));
-    const columns: HeatmapAxisItem[] = Array.from({ length: weeks }, (_, week) => ({
-      id: isoDay(gridStart + week * 7 * DAY),
-      label: short.format(new Date(Math.max(first, gridStart + week * 7 * DAY))),
-    }));
+    const monthName = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' });
+    const columns: HeatmapAxisItem[] = Array.from({ length: weeks }, (_, week) => {
+      const weekStart = Math.max(first, gridStart + week * 7 * DAY);
+      const weekEnd = Math.min(last, gridStart + (week * 7 + 6) * DAY);
+      // The week a month starts in (or the first week) is labelled with the month's name.
+      let mark: string | undefined;
+      for (let day = weekStart; day <= weekEnd; day += DAY) {
+        if (new Date(day).getUTCDate() === 1 || (week === 0 && day === weekStart)) {
+          mark = monthName.format(new Date(day));
+        }
+      }
+      return {
+        id: isoDay(gridStart + week * 7 * DAY),
+        label: short.format(new Date(weekStart)),
+        mark,
+      };
+    });
     const grid = rows.map((_, row) =>
       columns.map((__, week) => {
         const time = gridStart + (week * 7 + row) * DAY;
@@ -103,6 +126,8 @@ export function CalendarHeatmap({
       values={calendar.grid}
       scale={{ min: 0, ...scale }}
       unit={unit}
+      cellSize={cellSize}
+      initialScroll={initialScroll}
       notice={calendar.isInactive ? (emptyState ?? messages.calendarNoActivity) : undefined}
       cellLabel={(row, column, value) => {
         return messages.calendarDay({ date: full.format(new Date(dateOf(row, column))), value });

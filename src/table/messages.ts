@@ -1,6 +1,8 @@
 // English defaults of the table entry point's strings (see `Messages` in provider/messages.ts).
 import { useEntryMessages } from '../provider/context';
 import type { CoreMessages, TableMessages } from '../provider/messages';
+import { defaultEditableTableMessages, type EditableTableMessages } from './editableMessages';
+import { defaultFlowsheetMessages, type FlowsheetMessages } from './flowsheetMessages';
 
 export const defaultTableMessages: TableMessages = {
   sortedBy: ({ column, direction }) => `Sorted by ${column}, ${direction}`,
@@ -35,7 +37,17 @@ export const defaultTableMessages: TableMessages = {
 /** The strings `/table` components read: the core strings and `/table`'s own. */
 export type TableStrings = CoreMessages & TableMessages;
 
+/** Every `/table` string, with EditableTable's, LineItemsEditor's and Flowsheet's. */
+export type TableEntryStrings = TableStrings & EditableTableMessages & FlowsheetMessages;
+
+/** Every `/table` default, made once so the merged strings stay memoised. */
+const defaults: TableMessages & EditableTableMessages & FlowsheetMessages = {
+  ...defaultTableMessages,
+  ...defaultEditableTableMessages,
+  ...defaultFlowsheetMessages,
+};
+
 /** `/table`'s strings, with the app's overrides from `UIProvider`. */
-export function useTableMessages(): TableStrings {
-  return useEntryMessages(defaultTableMessages);
+export function useTableMessages(): TableEntryStrings {
+  return useEntryMessages(defaults);
 }

@@ -1,11 +1,9 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useLocale } from 'react-aria-components';
+import { useContext, useMemo } from 'react';
 import { Button } from '../components/Button/Button';
-import { IconButton } from '../components/IconButton/IconButton';
-import { Option } from '../components/ListBox/ListBoxParts';
-import { Select } from '../components/Select/Select';
+import { Pagination } from '../components/Pagination/Pagination';
+import type { PaginationMessages } from '../components/Pagination/messages';
+import { MessagesContext } from '../provider/context';
 
-import { cn } from '../utils/cn';
 import type { TablePagination } from './types';
 import { useTableMessages } from './messages';
 
@@ -23,7 +21,10 @@ export interface TablePagerProps {
   isDisabled: boolean;
 }
 
-/** Range text and previous/next buttons for client, offset and cursor paging; "Load more" on phones. */
+/**
+ * The table's pager: `Pagination` (without page numbers) for client, offset and cursor paging, worded in rows with
+ * the table's strings; "Load more" on phones when the app appends pages.
+ */
 export function TablePager({
   pagination,
   pageRowCount,
@@ -34,8 +35,21 @@ export function TablePager({
   isDisabled,
 }: TablePagerProps) {
   const messages = useTableMessages();
-  const { locale } = useLocale();
-  const format = (value: number) => new Intl.NumberFormat(locale).format(value);
+  const provided = useContext(MessagesContext);
+  // Pagination reads its strings from context, so the table's row-worded strings go in under Pagination's keys.
+  const pagerMessages = useMemo(
+    () =>
+      ({
+        ...provided,
+        previousPage: messages.previousPage,
+        nextPage: messages.nextPage,
+        itemsPerPage: messages.rowsPerPage,
+        itemRange: messages.rowRange,
+        approximateItems: messages.approximateRows,
+        itemCount: messages.rowCount,
+      }) satisfies Partial<PaginationMessages>,
+    [provided, messages],
+  );
 
   if (isCompact && pagination.mode !== 'client' && pagination.onLoadMore) {
     const hasMore =
@@ -54,87 +68,47 @@ export function TablePager({
     ) : null;
   }
 
-  let range: string;
-  let hasPrevious: boolean;
-  let hasNext: boolean;
-  let previous: () => void;
-  let next: () => void;
-  if (pagination.mode === 'cursor') {
-    range =
-      pagination.approximateTotal === undefined
-        ? messages.rowCount({ count: pageRowCount })
-        : messages.approximateRows({ total: format(pagination.approximateTotal) });
-    hasPrevious = pagination.hasPrevious;
-    hasNext = pagination.hasNext;
-    previous = pagination.onPrevious;
-    next = pagination.onNext;
-  } else {
-    const isClient = pagination.mode === 'client';
-    const pageIndex = isClient ? clientPageIndex : pagination.pageIndex;
-    const total = isClient ? totalRowCount : pagination.total;
-    const start = total === 0 ? 0 : pageIndex * pagination.pageSize + 1;
-    const end = Math.min(total, pageIndex * pagination.pageSize + pageRowCount);
-    range = messages.rowRange({ start: format(start), end: format(end), total: format(total) });
-    hasPrevious = pageIndex > 0;
-    hasNext = end < total;
-    const go = isClient ? onClientPageChange : pagination.onPageChange;
-    previous = () => {
-      go(pageIndex - 1);
-    };
-    next = () => {
-      go(pageIndex + 1);
-    };
-  }
-
   return (
-    <div
-      className={cn(
-        'flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-sm text-fg-muted',
+    <MessagesContext.Provider value={pagerMessages}>
+      {pagination.mode === 'cursor' ? (
+        <Pagination
+          mode="cursor"
+          hasNext={pagination.hasNext}
+          hasPrevious={pagination.hasPrevious}
+          onNext={pagination.onNext}
+          onPrevious={pagination.onPrevious}
+          approximateTotal={pagination.approximateTotal}
+          pageItemCount={pageRowCount}
+          isCompact={isCompact}
+          isDisabled={isDisabled}
+        />
+      ) : pagination.mode === 'client' ? (
+        <Pagination
+          mode="offset"
+          pageIndex={clientPageIndex}
+          pageSize={pagination.pageSize}
+          total={totalRowCount}
+          onPageChange={onClientPageChange}
+          pageItemCount={pageRowCount}
+          hasPageNumbers={false}
+          isCompact={isCompact}
+          isDisabled={isDisabled}
+        />
+      ) : (
+        <Pagination
+          mode="offset"
+          pageIndex={pagination.pageIndex}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          onPageChange={pagination.onPageChange}
+          pageSizeOptions={pagination.pageSizeOptions}
+          onPageSizeChange={pagination.onPageSizeChange}
+          pageItemCount={pageRowCount}
+          hasPageNumbers={false}
+          isCompact={isCompact}
+          isDisabled={isDisabled}
+        />
       )}
-    >
-      {pagination.mode === 'offset' &&
-        pagination.pageSizeOptions &&
-        pagination.onPageSizeChange &&
-        !isCompact && (
-          <Select
-            label={messages.rowsPerPage}
-            labelPosition="side"
-            size="sm"
-            value={String(pagination.pageSize)}
-            onChange={(key) => {
-              pagination.onPageSizeChange?.(Number(key));
-            }}
-            isDisabled={isDisabled}
-            className="w-auto"
-          >
-            {pagination.pageSizeOptions.map((size) => (
-              <Option key={size} id={String(size)}>
-                {String(size)}
-              </Option>
-            ))}
-          </Select>
-        )}
-      <span className="tabular-nums">{range}</span>
-      <div className="flex gap-1">
-        <IconButton
-          icon={ChevronLeft}
-          aria-label={messages.previousPage}
-          variant="outline"
-          size="sm"
-          className="rtl:rotate-180"
-          isDisabled={isDisabled || !hasPrevious}
-          onPress={previous}
-        />
-        <IconButton
-          icon={ChevronRight}
-          aria-label={messages.nextPage}
-          variant="outline"
-          size="sm"
-          className="rtl:rotate-180"
-          isDisabled={isDisabled || !hasNext}
-          onPress={next}
-        />
-      </div>
-    </div>
+    </MessagesContext.Provider>
   );
 }

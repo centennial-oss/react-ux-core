@@ -1,5 +1,5 @@
 import { Eye, EyeOff, X } from 'lucide-react';
-import { useRef, useState, type ReactNode, type Ref } from 'react';
+import { useId, useRef, useState, type ReactNode, type Ref } from 'react';
 import {
   Button as AriaButton,
   Input,
@@ -19,6 +19,7 @@ import {
   inputHeightClasses,
   type FieldBaseProps,
 } from '../Field/Field';
+import { CharacterCount, characterCountState, RecommendedLengthAnnouncer } from './CharacterCount';
 
 export type TextFieldType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
 
@@ -49,6 +50,16 @@ export interface TextFieldProps
   suffix?: ReactNode;
   /** Shows a clear button while there's a value. */
   isClearable?: boolean;
+  /**
+   * Shows a counter under the field ("count / maxLength", or "count / recommendedLength recommended"); needs
+   * `maxLength` or `recommendedLength`. Screen readers hear it with the field's description, not on every keystroke.
+   */
+  hasCharacterCount?: boolean;
+  /**
+   * A soft limit, such as about 60 characters for an SEO title. Past it the counter turns to the warning tone (shown
+   * even without `hasCharacterCount`) and the change is announced once; the field stays valid.
+   */
+  recommendedLength?: number;
   /** Defaults to `md`. On touch screens the height grows to the minimum touch target. */
   size?: 'sm' | 'md';
   className?: string;
@@ -70,12 +81,15 @@ export function TextField({
   prefix,
   suffix,
   isClearable = false,
+  hasCharacterCount = false,
+  recommendedLength,
   size = 'md',
   className,
   inputRef,
   value: valueProp,
   defaultValue,
   onChange,
+  'aria-describedby': ariaDescribedBy,
   ...rest
 }: TextFieldProps) {
   const messages = useMessages();
@@ -83,15 +97,26 @@ export function TextField({
   const [isRevealed, setRevealed] = useState(false);
   const localInputRef = useRef<HTMLInputElement | null>(null);
   const hints = typeHints[type];
+  const countId = useId();
+  const count = characterCountState({
+    count: value.length,
+    maxLength: rest.maxLength,
+    recommendedLength,
+    hasCharacterCount,
+  });
+  const describedBy = [ariaDescribedBy, count.isShown ? countId : undefined]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <AriaTextField
       {...hints}
       {...rest}
       type={type === 'password' && isRevealed ? 'text' : type}
+      aria-describedby={describedBy || undefined}
       value={value}
       onChange={setValue}
-      className={fieldRootClasses(className)}
+      className={fieldRootClasses(cn(recommendedLength !== undefined && 'relative', className))}
     >
       <FieldFrame
         label={label}
@@ -142,7 +167,17 @@ export function TextField({
           )}
           {suffix !== undefined && <span className="shrink-0 pe-3 text-fg-muted">{suffix}</span>}
         </div>
+        {count.isShown && (
+          <CharacterCount
+            id={countId}
+            count={value.length}
+            maxLength={rest.maxLength}
+            recommendedLength={recommendedLength}
+            isOver={count.isOver}
+          />
+        )}
       </FieldFrame>
+      <RecommendedLengthAnnouncer recommendedLength={recommendedLength} isOver={count.isOver} />
     </AriaTextField>
   );
 }

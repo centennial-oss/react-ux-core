@@ -55,6 +55,11 @@ export interface HeaderProps {
    * on phones in place of `actions`.
    */
   compactActions?: ReactNode;
+  /**
+   * Actions shown on every layout, phones included, just before the user menu: keep these few and small, such as a
+   * `NotificationBell` or a `CommandPaletteTrigger`.
+   */
+  pinnedActions?: ReactNode;
   /** Usually a `UserMenu`. */
   userMenu?: ReactNode;
   /** Marks a non-production deployment ("Staging"), with a stripe and a badge. */
@@ -86,6 +91,7 @@ export function Header({
   statusBar,
   actions,
   compactActions,
+  pinnedActions,
   userMenu,
   environmentLabel,
   hasMenuToggle = true,
@@ -151,6 +157,9 @@ export function Header({
           {statusBar}
           {!isCompact && actions !== undefined && (
             <div className="flex items-center gap-1">{actions}</div>
+          )}
+          {pinnedActions !== undefined && (
+            <div className="flex items-center gap-1">{pinnedActions}</div>
           )}
           {userMenu}
         </div>

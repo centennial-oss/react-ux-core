@@ -74,3 +74,25 @@ export const Controlled: Story = {
     );
   },
 };
+
+/** A vertical range, with the start thumb below the end thumb. */
+export const Vertical: Story = {
+  render: () => (
+    <div className="flex gap-8">
+      <RangeSlider
+        label="Comfort band"
+        orientation="vertical"
+        minValue={10}
+        maxValue={30}
+        defaultValue={[19, 23]}
+        formatOptions={{ style: 'unit', unit: 'celsius' }}
+        ticks={[
+          { value: 10, label: '10°' },
+          { value: 20, label: '20°' },
+          { value: 30, label: '30°' },
+        ]}
+      />
+      <RangeSlider label="Disabled" orientation="vertical" defaultValue={[20, 60]} isDisabled />
+    </div>
+  ),
+};

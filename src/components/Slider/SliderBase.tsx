@@ -1,7 +1,8 @@
 // The shared frame and track behind Slider and RangeSlider: label and value on one row, the track with its fill,
 // tick marks and thumbs, tick labels, then the description and error. React Aria's Slider has no description or
 // validation of its own, so both are wired here: their ids join the thumbs' aria-describedby, and `isInvalid` sets
-// aria-invalid on each thumb.
+// aria-invalid on each thumb. `orientation="vertical"` makes a fader: the label and value sit on top, the track runs
+// from the minimum at the bottom to the maximum at the top, and tick labels sit beside it.
 
 import { useId, type ReactNode, type Ref } from 'react';
 import {
@@ -33,6 +34,10 @@ export interface SliderSharedProps extends Omit<FieldBaseProps, 'errorMessage'> 
   ticks?: readonly SliderTick[];
   /** Hides the formatted value shown beside the label. */
   isValueHidden?: boolean;
+  /** `vertical` makes a fader, with the minimum at the bottom; ArrowUp and ArrowDown move it. Defaults to `horizontal`. */
+  orientation?: 'horizontal' | 'vertical';
+  /** The track's length when `vertical`: `sm` (7rem), `md` (10rem, the default) or `lg` (14rem). */
+  trackLength?: 'sm' | 'md' | 'lg';
   className?: string;
   /** The slider's root element. */
   ref?: Ref<HTMLDivElement>;
@@ -54,6 +59,14 @@ function isInFill(values: number[], start: number, value: number): boolean {
   return values.length > 1 ? value >= first && value <= last : value >= start && value <= first;
 }
 
+const trackLengths = { sm: 'h-28', md: 'h-40', lg: 'h-56' } as const;
+
+const thumbStateClasses = [
+  'transition-[background-color] duration-(--duration-fast) ease-standard',
+  'data-focus-visible:focus-ring data-hovered:bg-surface-3 data-dragging:bg-surface-4',
+  'data-disabled:cursor-not-allowed',
+].join(' ');
+
 const tickLabelAlign = (percent: number) =>
   percent <= 0
     ? ''
@@ -69,6 +82,8 @@ export function SliderBase<T extends number | number[]>({
   labelPosition = 'top',
   ticks,
   isValueHidden = false,
+  orientation = 'horizontal',
+  trackLength = 'md',
   thumbLabels,
   className,
   'aria-describedby': ariaDescribedBy,
@@ -85,6 +100,115 @@ export function SliderBase<T extends number | number[]>({
     .filter(Boolean)
     .join(' ');
   const hasTickLabels = ticks?.some((tick) => tick.label !== undefined) ?? false;
+  const fillClasses = cn('rounded-full', isInvalid ? 'bg-danger-solid' : 'bg-accent-solid');
+  const footer = (
+    <>
+      {description !== undefined && (
+        <Text id={descriptionId} className="text-xs text-fg-muted">
+          {description}
+        </Text>
+      )}
+      {isErrorShown && (
+        <Text id={errorId} className="text-xs font-medium text-danger-fg">
+          {errorMessage}
+        </Text>
+      )}
+    </>
+  );
+
+  if (orientation === 'vertical') {
+    return (
+      <AriaSlider
+        {...rest}
+        orientation="vertical"
+        aria-describedby={describedBy || undefined}
+        data-invalid={isInvalid || undefined}
+        // Not a size container like other field roots: a fader sizes to its content (label, track, tick labels).
+        className={cn(
+          'group/field flex min-w-0 flex-col items-center gap-1.5 text-center text-sm text-fg',
+          className,
+        )}
+      >
+        {({ state }) => (
+          <>
+            {label !== undefined && <FieldLabel>{label}</FieldLabel>}
+            {!isValueHidden && <SliderOutput className="text-fg-muted tabular-nums" />}
+            <div className="flex items-stretch">
+              {/* The track is inset top and bottom so a thumb at either end stays inside the field. */}
+              <SliderTrack
+                className={cn(
+                  'relative my-[max(0.5rem,calc(var(--hit-size)/2))] flex w-hit cursor-pointer justify-center',
+                  'data-disabled:cursor-not-allowed data-disabled:opacity-50',
+                  trackLengths[trackLength],
+                )}
+              >
+                <div className="relative h-full w-1.5 rounded-full bg-surface-4">
+                  <SliderFill className={fillClasses} />
+                  {ticks?.map((tick) => (
+                    <span
+                      key={tick.value}
+                      aria-hidden="true"
+                      className={cn(
+                        'absolute left-1/2 size-1 -translate-x-1/2 translate-y-1/2 rounded-full',
+                        isInFill(state.values, state.getThumbMinValue(0), tick.value)
+                          ? 'bg-accent-on-solid'
+                          : 'bg-fg-muted',
+                      )}
+                      // eslint-disable-next-line no-restricted-syntax -- dynamic geometry: the tick's position on the scale
+                      style={{ bottom: `${String(state.getValuePercent(tick.value) * 100)}%` }}
+                    />
+                  ))}
+                </div>
+                {state.values.map((_, index) => (
+                  <SliderThumb
+                    key={index}
+                    index={index}
+                    aria-label={thumbLabels?.[index]}
+                    // eslint-disable-next-line @typescript-eslint/no-deprecated -- see the horizontal thumb
+                    isInvalid={isInvalid}
+                    className={cn(
+                      // A fader cap: wider than tall, centred on the track.
+                      'hit-area left-1/2 h-4 w-8 rounded-control border-2 bg-surface-2 shadow-raised',
+                      thumbStateClasses,
+                      isInvalid ? 'border-danger-solid' : 'border-accent-solid',
+                    )}
+                  />
+                ))}
+              </SliderTrack>
+              {hasTickLabels && (
+                <div className="relative my-[max(0.5rem,calc(var(--hit-size)/2))] text-start text-xs text-fg-muted">
+                  {/* An invisible copy of the labels gives the column its width; the visible ones are positioned. */}
+                  <div
+                    aria-hidden="true"
+                    className="invisible flex h-0 flex-col overflow-hidden ps-1"
+                  >
+                    {ticks?.map((tick) => (
+                      <span key={tick.value} className="whitespace-nowrap">
+                        {tick.label}
+                      </span>
+                    ))}
+                  </div>
+                  {ticks?.map((tick) =>
+                    tick.label === undefined ? null : (
+                      <span
+                        key={tick.value}
+                        className="absolute start-0 translate-y-1/2 ps-1 whitespace-nowrap"
+                        // eslint-disable-next-line no-restricted-syntax -- dynamic geometry: the label sits beside its tick
+                        style={{ bottom: `${String(state.getValuePercent(tick.value) * 100)}%` }}
+                      >
+                        {tick.label}
+                      </span>
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
+            {footer}
+          </>
+        )}
+      </AriaSlider>
+    );
+  }
 
   return (
     <AriaSlider
@@ -117,9 +241,7 @@ export function SliderBase<T extends number | number[]>({
            */}
           <SliderTrack className="relative mx-[max(0.875rem,calc(var(--hit-size)/2))] flex h-hit cursor-pointer items-center data-disabled:cursor-not-allowed data-disabled:opacity-50">
             <div className="relative h-1.5 w-full rounded-full bg-surface-4">
-              <SliderFill
-                className={cn('rounded-full', isInvalid ? 'bg-danger-solid' : 'bg-accent-solid')}
-              />
+              <SliderFill className={fillClasses} />
               {ticks?.map((tick) => (
                 <span
                   key={tick.value}
@@ -150,9 +272,7 @@ export function SliderBase<T extends number | number[]>({
                 isInvalid={isInvalid}
                 className={cn(
                   'hit-area top-1/2 size-5 rounded-full border-2 bg-surface-2 shadow-raised',
-                  'transition-[background-color] duration-(--duration-fast) ease-standard',
-                  'data-focus-visible:focus-ring data-hovered:bg-surface-3 data-dragging:bg-surface-4',
-                  'data-disabled:cursor-not-allowed',
+                  thumbStateClasses,
                   isInvalid ? 'border-danger-solid' : 'border-accent-solid',
                 )}
               />
@@ -178,16 +298,7 @@ export function SliderBase<T extends number | number[]>({
               })}
             </div>
           )}
-          {description !== undefined && (
-            <Text id={descriptionId} className="text-xs text-fg-muted">
-              {description}
-            </Text>
-          )}
-          {isErrorShown && (
-            <Text id={errorId} className="text-xs font-medium text-danger-fg">
-              {errorMessage}
-            </Text>
-          )}
+          {footer}
         </FieldLayout>
       )}
     </AriaSlider>

@@ -6,6 +6,7 @@ import { cn } from '../../utils/cn';
 import type { IconComponent } from '../../utils/icon';
 import { ProgressBar } from '../ProgressBar/ProgressBar';
 import { fileItemName, fileItemSize, formatFileSize, type FileItem } from './files';
+import { FileThumbnail } from './FileThumbnail';
 
 const rowButtonClasses = [
   'hit-area inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-control text-fg-muted',
@@ -47,11 +48,20 @@ interface FileRowProps<R> {
   /** Whether the field runs uploads itself (so failed ones can be retried and running ones cancelled). */
   canUpload: boolean;
   isDisabled: boolean;
+  /** Shows a thumbnail (the image, or the typed icon) at the start of each row. */
+  hasPreviews?: boolean;
   onRemove: (id: string) => void;
   onRetry: (id: string) => void;
 }
 
-function FileRow<R>({ item, canUpload, isDisabled, onRemove, onRetry }: FileRowProps<R>) {
+function FileRow<R>({
+  item,
+  canUpload,
+  isDisabled,
+  hasPreviews = false,
+  onRemove,
+  onRetry,
+}: FileRowProps<R>) {
   const messages = useMessages();
   const { locale } = useLocale();
   const nameId = useId();
@@ -67,7 +77,7 @@ function FileRow<R>({ item, canUpload, isDisabled, onRemove, onRetry }: FileRowP
       </>
     ) : status === 'error' ? (
       <CircleAlert aria-hidden="true" className="size-4 shrink-0 text-danger-fg" />
-    ) : (
+    ) : hasPreviews ? null : (
       <FileIcon aria-hidden="true" className="size-4 shrink-0 text-fg-muted" />
     );
 
@@ -80,6 +90,15 @@ function FileRow<R>({ item, canUpload, isDisabled, onRemove, onRetry }: FileRowP
       )}
     >
       <div className="flex min-w-0 items-center gap-2">
+        {hasPreviews && (
+          <FileThumbnail
+            file={item.file}
+            name={name}
+            type={item.type}
+            src={item.previewSrc}
+            className="-ms-1.5"
+          />
+        )}
         {statusIcon}
         <span id={nameId} className="min-w-0 flex-1 truncate font-medium text-fg">
           {name}

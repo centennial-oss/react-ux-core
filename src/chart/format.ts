@@ -37,3 +37,30 @@ export function formatTime(time: number, locale: string, timeZone: string): stri
     timeZone,
   }).format(time);
 }
+
+/** Formats a percentage given from 0 to 100 ("62%"), in the locale's style. */
+export function formatPercent(value: number, locale: string): string {
+  return new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }).format(
+    value / 100,
+  );
+}
+
+/** Formats a series' value: as a percentage for `format: 'percent'`, otherwise with the series' unit. */
+export function formatSeriesValue(
+  value: number,
+  locale: string,
+  series: { unit?: string; format?: 'number' | 'percent' } | undefined,
+): string {
+  return series?.format === 'percent'
+    ? formatPercent(value, locale)
+    : formatValue(value, locale, series?.unit);
+}
+
+/** Formats a change with its sign ("+1,200", "-300"; zero unsigned), with an optional unit. */
+export function formatSigned(value: number, locale: string, unit?: string): string {
+  const text = new Intl.NumberFormat(locale, {
+    maximumFractionDigits: 2,
+    signDisplay: 'exceptZero',
+  }).format(value);
+  return unit === undefined ? text : `${text} ${unit}`;
+}

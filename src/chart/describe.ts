@@ -1,10 +1,10 @@
 import type { ChartStrings } from './messages';
-import { extent, formatTime, formatValue, toTime } from './format';
+import { extent, formatSeriesValue, formatTime, toTime } from './format';
 import type { TimeSeries } from './TimeSeriesChart';
 
 /** A plain-language summary of time series for screen readers: the time span, and each series' range and latest value. */
 export function describeTimeSeries(
-  series: readonly TimeSeries[],
+  series: readonly Pick<TimeSeries, 'label' | 'unit' | 'format' | 'data'>[],
   messages: ChartStrings,
   locale: string,
   timeZone: string,
@@ -28,9 +28,9 @@ export function describeTimeSeries(
         : [
             messages.seriesRange({
               label: entry.label,
-              min: formatValue(range[0], locale, entry.unit),
-              max: formatValue(range[1], locale, entry.unit),
-              latest: formatValue(latest, locale, entry.unit),
+              min: formatSeriesValue(range[0], locale, entry),
+              max: formatSeriesValue(range[1], locale, entry),
+              latest: formatSeriesValue(latest, locale, entry),
             }),
           ];
     }),

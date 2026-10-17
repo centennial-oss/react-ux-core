@@ -30,6 +30,7 @@ export interface SliderProps extends AriaSliderBaseProps, SliderSharedProps {
  * A value on a scale from `minValue` to `maxValue` (0–100 by default). Set `step` for discrete values, `ticks` for
  * labelled marks and `formatOptions` (`Intl.NumberFormat`) for the value shown and announced. Arrow keys step,
  * PageUp/PageDown take bigger steps, Home/End jump to the ends; the track can be clicked, tapped or dragged.
+ * `orientation="vertical"` makes a fader.
  */
 export function Slider(props: SliderProps) {
   return <SliderBase<number> {...props} />;

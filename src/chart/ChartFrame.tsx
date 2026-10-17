@@ -21,6 +21,8 @@ export interface LegendEntry {
   label: string;
   color: string;
   isHidden: boolean;
+  /** A value shown after the label, such as the series' latest value. */
+  value?: string;
 }
 
 /** The chart's data as a table, for "View as table" and CSV. */
@@ -70,6 +72,14 @@ interface ChartFrameProps extends ChartFrameOptions {
   canvasRef?: Ref<HTMLCanvasElement>;
   /** Draws the plot itself instead of a canvas (Heatmap), named by the title and described by the summary. */
   plot?: (ids: { titleId: string; summaryId: string }) => ReactNode;
+  /** Controls laid over the canvas (event markers, a live chart's pause chip), positioned in its box. */
+  overlay?: ReactNode;
+  /** More toolbar controls, before the frame's own (a live chart's pause button). */
+  actions?: ReactNode;
+  /** Shown just above the plot (not in the table view), such as a candlestick chart's crosshair readout. */
+  plotHeader?: ReactNode;
+  /** Draws the table view instead of a data table from `table` (which CSV export still uses), such as a nested list. */
+  renderTable?: () => ReactNode;
 }
 
 /** The frame around a chart: heading, legend, toolbar, states, table view and full screen. */
@@ -99,6 +109,10 @@ export function ChartFrame({
   onResetZoom,
   canvasRef,
   plot,
+  overlay,
+  actions,
+  plotHeader,
+  renderTable,
 }: ChartFrameProps) {
   const messages = useChartMessages();
   const titleId = useId();
@@ -138,6 +152,8 @@ export function ChartFrame({
     body = <Skeleton shape="rect" className="w-full flex-1" />;
   } else if (isEmpty) {
     body = emptyState ?? <EmptyState title={messages.noData} />;
+  } else if (isTable && renderTable) {
+    body = renderTable();
   } else if (isTable) {
     const data = table();
     body = (
@@ -171,6 +187,7 @@ export function ChartFrame({
         </div>
         {showData && (
           <div className="ms-auto flex flex-wrap items-center gap-1">
+            {actions}
             {isZoomed && onResetZoom && (
               <Button variant="ghost" size="sm" icon={RotateCcw} onPress={onResetZoom}>
                 {messages.resetZoom}
@@ -225,6 +242,7 @@ export function ChartFrame({
       <p id={summaryId} className="sr-only">
         {summary}
       </p>
+      {plotHeader !== undefined && showData && !isTable && plotHeader}
       {plot !== undefined && showData && body === undefined && (
         <div className="w-full min-w-0">{plot({ titleId, summaryId })}</div>
       )}
@@ -241,6 +259,7 @@ export function ChartFrame({
         <canvas ref={canvasRef} role="img" aria-labelledby={titleId} aria-describedby={summaryId}>
           {summary}
         </canvas>
+        {overlay}
       </div>
       {body !== undefined && (
         <div
@@ -291,6 +310,9 @@ export function ChartFrame({
                   style={{ backgroundColor: entry.color }}
                 />
                 {entry.label}
+                {entry.value !== undefined && (
+                  <span className="font-normal text-fg-muted tabular-nums">{entry.value}</span>
+                )}
               </Button>
             </li>
           ))}

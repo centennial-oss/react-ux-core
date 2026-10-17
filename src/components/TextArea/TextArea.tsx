@@ -4,7 +4,6 @@ import {
   TextField as AriaTextField,
   type TextFieldProps as AriaTextFieldProps,
 } from 'react-aria-components';
-import { useMessages } from '../../provider/context';
 import { cn } from '../../utils/cn';
 import { mergeRefs } from '../../utils/mergeRefs';
 import { useControllableState } from '../../utils/useControllableState';
@@ -15,6 +14,11 @@ import {
   inputGroupClasses,
   type FieldBaseProps,
 } from '../Field/Field';
+import {
+  CharacterCount,
+  characterCountState,
+  RecommendedLengthAnnouncer,
+} from '../TextField/CharacterCount';
 import { useAutoGrow } from './useAutoGrow';
 
 export interface TextAreaProps
@@ -27,10 +31,15 @@ export interface TextAreaProps
   /** The most lines the area grows to; longer text scrolls inside it. Defaults to 8. */
   maxRows?: number;
   /**
-   * Shows a "count / maxLength" counter under the area (needs `maxLength`). Screen readers hear it with the field's
-   * description, not on every keystroke.
+   * Shows a counter under the area ("count / maxLength", or "count / recommendedLength recommended"); needs
+   * `maxLength` or `recommendedLength`. Screen readers hear it with the field's description, not on every keystroke.
    */
   hasCharacterCount?: boolean;
+  /**
+   * A soft limit, such as about 160 characters for a meta description. Past it the counter turns to the warning tone
+   * (shown even without `hasCharacterCount`) and the change is announced once; the field stays valid.
+   */
+  recommendedLength?: number;
   className?: string;
   /** The field's root element. */
   ref?: Ref<HTMLDivElement>;
@@ -49,6 +58,7 @@ export function TextArea({
   minRows = 3,
   maxRows = 8,
   hasCharacterCount = false,
+  recommendedLength,
   className,
   inputRef,
   value: valueProp,
@@ -57,15 +67,19 @@ export function TextArea({
   'aria-describedby': ariaDescribedBy,
   ...rest
 }: TextAreaProps) {
-  const messages = useMessages();
   const [value, setValue] = useControllableState(valueProp, defaultValue ?? '', onChange);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
   const countId = useId();
   useAutoGrow(textareaRef, frameRef, value, minRows, maxRows);
 
-  const isCountShown = hasCharacterCount && rest.maxLength !== undefined;
-  const describedBy = [ariaDescribedBy, isCountShown ? countId : undefined]
+  const count = characterCountState({
+    count: value.length,
+    maxLength: rest.maxLength,
+    recommendedLength,
+    hasCharacterCount,
+  });
+  const describedBy = [ariaDescribedBy, count.isShown ? countId : undefined]
     .filter(Boolean)
     .join(' ');
 
@@ -75,7 +89,7 @@ export function TextArea({
       aria-describedby={describedBy || undefined}
       value={value}
       onChange={setValue}
-      className={fieldRootClasses(className)}
+      className={fieldRootClasses(cn(recommendedLength !== undefined && 'relative', className))}
     >
       <FieldFrame
         label={label}
@@ -93,12 +107,17 @@ export function TextArea({
             className={cn(inputClasses, 'h-auto resize-none py-2')}
           />
         </div>
-        {isCountShown && (
-          <span id={countId} className="self-end text-xs text-fg-muted tabular-nums">
-            {messages.characterCount({ count: value.length, max: rest.maxLength ?? 0 })}
-          </span>
+        {count.isShown && (
+          <CharacterCount
+            id={countId}
+            count={value.length}
+            maxLength={rest.maxLength}
+            recommendedLength={recommendedLength}
+            isOver={count.isOver}
+          />
         )}
       </FieldFrame>
+      <RecommendedLengthAnnouncer recommendedLength={recommendedLength} isOver={count.isOver} />
     </AriaTextField>
   );
 }

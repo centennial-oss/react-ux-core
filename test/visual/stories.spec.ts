@@ -29,11 +29,25 @@ for (const story of stories) {
     test(`${story.id} (${theme})`, async ({ page }) => {
       await page.goto(`/iframe.html?id=${story.id}&viewMode=story&globals=theme:${theme}`);
       const root = page.locator('#storybook-root');
-      // React Aria collections can render a hidden <template> first; wait for real content.
-      await root.locator('> :not(template)').first().waitFor();
+      // React Aria collections can render a hidden <template> first; wait for real content. A story that only opens a
+      // modal leaves nothing visible in the root (just React Aria's hidden top-layer marker), so whole-page stories
+      // wait for content to mount and then for their overlay, below.
+      await root
+        .locator('> :not(template)')
+        .first()
+        .waitFor({ state: wholePage ? 'attached' : 'visible' });
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
       // Maps draw after their style loads.
       await expect(page.locator('[data-map-status="loading"]')).toHaveCount(0, { timeout: 15_000 });
+      await expect(page.locator('[data-dicom-status="loading"]')).toHaveCount(0, {
+        timeout: 15_000,
+      });
+      await expect(page.locator('[data-notation-status="loading"]')).toHaveCount(0, {
+        timeout: 15_000,
+      });
+      await expect(page.locator('[data-math-status="loading"]')).toHaveCount(0, {
+        timeout: 15_000,
+      });
       // Images (such as flags) load after the story renders.
       await page.waitForFunction(() => [...document.images].every((image) => image.complete));
 
@@ -63,9 +77,15 @@ for (const story of stories) {
             const memory = window as unknown as { ruxLastOverlays?: string };
             const isUnchanged = memory.ruxLastOverlays === state;
             memory.ruxLastOverlays = state;
-            // React Aria hides a popover it hasn't placed yet with inline clipping.
+            // React Aria hides a popover it hasn't placed yet, and a modal that isn't ready to enter, with inline
+            // clipping and a transparent mask on the overlay or its container.
             const isPlacing =
-              document.querySelector('[data-trigger][style*="clip-path: inset(50%)"]') !== null;
+              document.querySelector('[data-trigger][style*="clip-path: inset(50%)"]') !== null ||
+              [
+                ...document.querySelectorAll(
+                  '[role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"]',
+                ),
+              ].some((overlay) => overlay.closest('[style*="mask-image"]') !== null);
             return (
               isUnchanged &&
               !isPlacing &&

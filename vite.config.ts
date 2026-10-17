@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import type { BrowserCommand } from 'vitest/node';
+import type { Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 import pkg from './package.json' with { type: 'json' };
 
@@ -21,6 +22,45 @@ const entries = {
   'map/index': resolve(import.meta.dirname, 'src/map/index.ts'),
   'code/index': resolve(import.meta.dirname, 'src/code/index.ts'),
   'markdown/index': resolve(import.meta.dirname, 'src/markdown/index.ts'),
+  'logs/index': resolve(import.meta.dirname, 'src/logs/index.ts'),
+  'diff/index': resolve(import.meta.dirname, 'src/diff/index.ts'),
+  'media/index': resolve(import.meta.dirname, 'src/media/index.ts'),
+  'graph/index': resolve(import.meta.dirname, 'src/graph/index.ts'),
+  'canvas/index': resolve(import.meta.dirname, 'src/canvas/index.ts'),
+  'chat/index': resolve(import.meta.dirname, 'src/chat/index.ts'),
+  'finance/index': resolve(import.meta.dirname, 'src/finance/index.ts'),
+  'dicom/index': resolve(import.meta.dirname, 'src/dicom/index.ts'),
+  '3d/index': resolve(import.meta.dirname, 'src/3d/index.ts'),
+  'editor/index': resolve(import.meta.dirname, 'src/editor/index.ts'),
+  'terminal/index': resolve(import.meta.dirname, 'src/terminal/index.ts'),
+  'music/index': resolve(import.meta.dirname, 'src/music/index.ts'),
+  'math/index': resolve(import.meta.dirname, 'src/math/index.ts'),
+  'codes/index': resolve(import.meta.dirname, 'src/codes/index.ts'),
+};
+
+/**
+ * PdfViewer finds pdf.js's worker with `new URL('pdfjs-dist/…', import.meta.url)`. Left alone, the library build
+ * would inline the whole worker as a data URL; this keeps the expression as written in dist/, so the app's bundler
+ * resolves the worker from its own pdfjs-dist.
+ */
+const keepPdfWorkerUrl: Plugin = {
+  name: 'keep-pdf-worker-url',
+  apply: 'build',
+  enforce: 'pre',
+  transform(code, id) {
+    // Only a comment is inserted on the same line, so the existing source map stays right (`map: null`).
+    return id.endsWith('/src/media/player/pdfjs.ts')
+      ? {
+          code: code.replace("new URL('pdfjs-dist/", "new URL(/* @vite-ignore */ 'pdfjs-dist/"),
+          map: null,
+        }
+      : null;
+  },
+  renderChunk(code) {
+    return code.includes('@vite-ignore')
+      ? { code: code.replace(/\/\* @vite-ignore \*\/\s*/g, ''), map: null }
+      : null;
+  },
 };
 
 /** A real touch tap through Playwright, for interaction tests on the touch-enabled instances. */
@@ -62,7 +102,7 @@ const browserInstances = [
 ];
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), keepPdfWorkerUrl],
   // Pre-bundle these up front, so a fresh test run doesn't reload mid-test when Vite discovers them.
   optimizeDeps: {
     // MapLibre loads its worker from beside its own module file, so it's served from node_modules as it is.
@@ -80,6 +120,45 @@ export default defineConfig({
       'chartjs-plugin-zoom',
       'chartjs-adapter-luxon',
       'luxon',
+      'pdfjs-dist',
+      'hls.js',
+      'three',
+      'three/addons/controls/OrbitControls.js',
+      'three/addons/loaders/STLLoader.js',
+      'three/addons/loaders/OBJLoader.js',
+      'three/addons/loaders/GLTFLoader.js',
+      'lexical',
+      '@lexical/code',
+      '@lexical/html',
+      '@lexical/link',
+      '@lexical/list',
+      '@lexical/markdown',
+      '@lexical/rich-text',
+      '@lexical/selection',
+      '@lexical/table',
+      '@lexical/utils',
+      '@lexical/react/LexicalCheckListPlugin',
+      '@lexical/react/LexicalComposer',
+      '@lexical/react/LexicalComposerContext',
+      '@lexical/react/LexicalContentEditable',
+      '@lexical/react/LexicalErrorBoundary',
+      '@lexical/react/LexicalHistoryPlugin',
+      '@lexical/react/LexicalLinkPlugin',
+      '@lexical/react/LexicalListPlugin',
+      '@lexical/react/LexicalMarkdownShortcutPlugin',
+      '@lexical/react/LexicalRichTextPlugin',
+      '@lexical/react/LexicalTablePlugin',
+      '@lexical/react/LexicalTypeaheadMenuPlugin',
+      '@lexical/react/useLexicalNodeSelection',
+      '@xterm/xterm',
+      '@xterm/addon-fit',
+      '@xterm/addon-search',
+      'vexflow',
+      'vexflow/bravura',
+      'temml',
+      'mathlive',
+      'jsqr',
+      '@zxing/library',
     ],
   },
   build: {

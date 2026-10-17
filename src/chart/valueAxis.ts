@@ -45,3 +45,15 @@ export function valueAxisBounds(
 export function valueAxisTitle(title: string | undefined, color: string) {
   return title === undefined ? { display: false } : { display: true, text: title, color };
 }
+
+/**
+ * Whether a logarithmic axis labels a tick: 1, 2 and 5 times a power of ten, and the first and last ticks, as
+ * Chart.js's own log labels do, so the axis doesn't crowd with 3, 4, 6, 7, 8 and 9.
+ */
+export function isLogTickShown(value: number, index: number, count: number): boolean {
+  if (index === 0 || index === count - 1 || value <= 0) {
+    return true;
+  }
+  const mantissa = Math.round((value / 10 ** Math.floor(Math.log10(value))) * 1000) / 1000;
+  return mantissa === 1 || mantissa === 2 || mantissa === 5;
+}

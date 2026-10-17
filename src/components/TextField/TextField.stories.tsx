@@ -40,3 +40,25 @@ export const SideLabels: Story = {
     </div>
   ),
 };
+
+/** `hasCharacterCount` shows a counter; past `recommendedLength` it turns to the warning tone, but stays valid. */
+export const CharacterCount: Story = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-5">
+      <TextField label="Telescope code" maxLength={12} hasCharacterCount defaultValue="NR-1" />
+      <TextField
+        label="Page title"
+        description="Search engines show about 60 characters."
+        recommendedLength={60}
+        hasCharacterCount
+        defaultValue="Observing the moons of Jupiter"
+      />
+      <TextField
+        label="Page title (too long)"
+        recommendedLength={60}
+        hasCharacterCount
+        defaultValue="Observing the Galilean moons of Jupiter from a backyard telescope in autumn"
+      />
+    </div>
+  ),
+};

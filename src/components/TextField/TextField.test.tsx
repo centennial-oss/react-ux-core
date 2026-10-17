@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
+import { UIProvider } from '../../provider/UIProvider';
 import { expectNoAxeViolations } from '../../../test/axe';
 import { TextField } from './TextField';
 
@@ -145,9 +146,83 @@ describe('TextField', () => {
     expect(box?.height).toBeGreaterThanOrEqual(44);
   });
 
+  it('shows a character count under the field, linked to the input', async () => {
+    render(
+      <TextField
+        label="Title"
+        description="Shown in search results"
+        maxLength={10}
+        hasCharacterCount
+        defaultValue="Moon"
+      />,
+    );
+    const input = screen.getByRole('textbox', { name: 'Title' });
+    expect(screen.getByText('4 / 10')).toBeInTheDocument();
+    expect(input).toHaveAccessibleDescription('Shown in search results 4 / 10');
+    await userEvent.type(input, 's of Mars');
+    expect(input).toHaveValue('Moons of M');
+    expect(screen.getByText('10 / 10')).toBeInTheDocument();
+  });
+
+  it('warns past the recommended length without making the field invalid, and announces it once', async () => {
+    render(
+      <TextField
+        label="SEO title"
+        recommendedLength={10}
+        hasCharacterCount
+        defaultValue="Saturn"
+      />,
+    );
+    const input = screen.getByRole('textbox', { name: 'SEO title' });
+    const counter = screen.getByText('6 / 10 recommended');
+    expect(counter).not.toHaveAttribute('data-over-recommended');
+    await userEvent.type(input, ' rings');
+    const over = screen.getByText('12 / 10, longer than recommended');
+    expect(over).toHaveAttribute('data-over-recommended', 'true');
+    expect(over.className).toContain('text-warning-fg');
+    expect(input).not.toHaveAttribute('aria-invalid');
+    expect(input).toHaveAccessibleDescription('12 / 10, longer than recommended');
+    const live = document.querySelector('[aria-live="polite"]');
+    expect(live?.textContent).toBe('Longer than the recommended 10 characters');
+  });
+
+  it('shows the recommended-length warning even without hasCharacterCount, and with a maximum', () => {
+    render(
+      <>
+        <TextField label="Plain" recommendedLength={3} defaultValue="Ab" />
+        <TextField label="Over" recommendedLength={3} defaultValue="Abcd" />
+        <TextField label="Max" recommendedLength={3} maxLength={8} defaultValue="Abcde" />
+      </>,
+    );
+    expect(screen.getByRole('textbox', { name: 'Plain' })).not.toHaveAttribute('aria-describedby');
+    expect(screen.getByText('4 / 3, longer than recommended')).toBeInTheDocument();
+    expect(screen.getByText('5 / 8, longer than the recommended 3')).toBeInTheDocument();
+  });
+
+  it('takes the counter strings from the messages', () => {
+    render(
+      <UIProvider
+        messages={{
+          recommendedCharacterCount: ({
+            count,
+            recommended,
+          }: {
+            count: number;
+            recommended: number;
+          }) => `${count} von ${recommended}`,
+        }}
+      >
+        <TextField label="Title" recommendedLength={60} hasCharacterCount defaultValue="abc" />
+      </UIProvider>,
+    );
+    expect(screen.getByText('3 von 60')).toBeInTheDocument();
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(
       <>
+        <TextField label="Title" recommendedLength={5} hasCharacterCount defaultValue="Jupiter" />
+        <TextField label="Code" maxLength={8} hasCharacterCount defaultValue="M31" />
         <TextField label="Name" description="Help" isRequired />
         <TextField label="Email" type="email" isInvalid errorMessage="Required" />
         <TextField label="Password" type="password" />

@@ -1,9 +1,10 @@
 // English defaults of the shell entry point's strings (see `Messages` in provider/messages.ts).
 import { useEntryMessages } from '../provider/context';
 import type { CoreMessages, ShellMessages } from '../provider/messages';
+import { defaultNotificationMessages, type NotificationMessages } from './notificationMessages';
 import { defaultSettingsMessages } from './settingsMessages';
 
-export const defaultShellMessages: ShellMessages = {
+export const defaultShellMessages: ShellMessages & NotificationMessages = {
   skipToContent: 'Skip to content',
   mainNavigation: 'Main',
   quickNavigation: 'Quick navigation',
@@ -41,10 +42,11 @@ export const defaultShellMessages: ShellMessages = {
   build: ({ build }) => `Build ${build}`,
   pageSections: 'Page sections',
   brandHome: ({ name }) => `${name} home`,
+  ...defaultNotificationMessages,
 };
 
 /** The strings `/shell` components read: the core strings and `/shell`'s own. */
-export type ShellStrings = CoreMessages & ShellMessages;
+export type ShellStrings = CoreMessages & ShellMessages & NotificationMessages;
 
 /** `/shell`'s strings, with the app's overrides from `UIProvider`. */
 export function useShellMessages(): ShellStrings {

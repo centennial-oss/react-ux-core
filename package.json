@@ -58,6 +58,62 @@
       "types": "./dist/shell/index.d.ts",
       "import": "./dist/shell/index.js"
     },
+    "./logs": {
+      "types": "./dist/logs/index.d.ts",
+      "import": "./dist/logs/index.js"
+    },
+    "./diff": {
+      "types": "./dist/diff/index.d.ts",
+      "import": "./dist/diff/index.js"
+    },
+    "./media": {
+      "types": "./dist/media/index.d.ts",
+      "import": "./dist/media/index.js"
+    },
+    "./graph": {
+      "types": "./dist/graph/index.d.ts",
+      "import": "./dist/graph/index.js"
+    },
+    "./canvas": {
+      "types": "./dist/canvas/index.d.ts",
+      "import": "./dist/canvas/index.js"
+    },
+    "./chat": {
+      "types": "./dist/chat/index.d.ts",
+      "import": "./dist/chat/index.js"
+    },
+    "./finance": {
+      "types": "./dist/finance/index.d.ts",
+      "import": "./dist/finance/index.js"
+    },
+    "./dicom": {
+      "types": "./dist/dicom/index.d.ts",
+      "import": "./dist/dicom/index.js"
+    },
+    "./3d": {
+      "types": "./dist/3d/index.d.ts",
+      "import": "./dist/3d/index.js"
+    },
+    "./editor": {
+      "types": "./dist/editor/index.d.ts",
+      "import": "./dist/editor/index.js"
+    },
+    "./terminal": {
+      "types": "./dist/terminal/index.d.ts",
+      "import": "./dist/terminal/index.js"
+    },
+    "./music": {
+      "types": "./dist/music/index.d.ts",
+      "import": "./dist/music/index.js"
+    },
+    "./math": {
+      "types": "./dist/math/index.d.ts",
+      "import": "./dist/math/index.js"
+    },
+    "./codes": {
+      "types": "./dist/codes/index.d.ts",
+      "import": "./dist/codes/index.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },
@@ -82,22 +138,77 @@
   },
   "peerDependencies": {
     "@internationalized/date": "^3.12.0",
+    "@lexical/code": "^0.52.0",
+    "@lexical/history": "^0.52.0",
+    "@lexical/html": "^0.52.0",
+    "@lexical/link": "^0.52.0",
+    "@lexical/list": "^0.52.0",
+    "@lexical/markdown": "^0.52.0",
+    "@lexical/react": "^0.52.0",
+    "@lexical/rich-text": "^0.52.0",
+    "@lexical/selection": "^0.52.0",
+    "@lexical/table": "^0.52.0",
+    "@lexical/utils": "^0.52.0",
     "@tanstack/react-form": "^1.33.0",
     "@tanstack/react-table": "^9.2.0",
     "@tanstack/react-virtual": "^3.14.0",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/addon-search": "^0.16.0",
+    "@xterm/xterm": "^6.0.0",
     "chart.js": "^4.5.0",
     "chartjs-adapter-luxon": "^1.3.0",
     "chartjs-plugin-zoom": "^2.2.0",
+    "emojibase-data": "^18.0.0",
+    "hls.js": "^1.7.0",
+    "lexical": "^0.52.0",
     "lucide-react": "^1.0.0",
     "luxon": "^3.7.0",
     "maplibre-gl": "^6.11.0",
+    "mathlive": "^0.111.0",
+    "pdfjs-dist": "^6.4.0",
     "react": "^19.0.0",
     "react-aria-components": "^1.22.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
-    "remark-gfm": "^4.0.0"
+    "remark-gfm": "^4.0.0",
+    "temml": "^0.14.0",
+    "three": "^0.186.0",
+    "vexflow": "^5.0.0"
   },
   "peerDependenciesMeta": {
+    "@lexical/code": {
+      "optional": true
+    },
+    "@lexical/history": {
+      "optional": true
+    },
+    "@lexical/html": {
+      "optional": true
+    },
+    "@lexical/link": {
+      "optional": true
+    },
+    "@lexical/list": {
+      "optional": true
+    },
+    "@lexical/markdown": {
+      "optional": true
+    },
+    "@lexical/react": {
+      "optional": true
+    },
+    "@lexical/rich-text": {
+      "optional": true
+    },
+    "@lexical/selection": {
+      "optional": true
+    },
+    "@lexical/table": {
+      "optional": true
+    },
+    "@lexical/utils": {
+      "optional": true
+    },
     "@tanstack/react-form": {
       "optional": true
     },
@@ -105,6 +216,15 @@
       "optional": true
     },
     "@tanstack/react-virtual": {
+      "optional": true
+    },
+    "@xterm/addon-fit": {
+      "optional": true
+    },
+    "@xterm/addon-search": {
+      "optional": true
+    },
+    "@xterm/xterm": {
       "optional": true
     },
     "chart.js": {
@@ -116,16 +236,40 @@
     "chartjs-plugin-zoom": {
       "optional": true
     },
+    "emojibase-data": {
+      "optional": true
+    },
+    "hls.js": {
+      "optional": true
+    },
+    "lexical": {
+      "optional": true
+    },
     "luxon": {
       "optional": true
     },
     "maplibre-gl": {
       "optional": true
     },
+    "mathlive": {
+      "optional": true
+    },
+    "pdfjs-dist": {
+      "optional": true
+    },
     "react-markdown": {
       "optional": true
     },
     "remark-gfm": {
+      "optional": true
+    },
+    "temml": {
+      "optional": true
+    },
+    "three": {
+      "optional": true
+    },
+    "vexflow": {
       "optional": true
     }
   },
@@ -137,6 +281,17 @@
     "@changesets/cli": "^3.0.3",
     "@eslint/js": "^9.39.5",
     "@internationalized/date": "^3.12.4",
+    "@lexical/code": "^0.52.0",
+    "@lexical/history": "^0.52.0",
+    "@lexical/html": "^0.52.0",
+    "@lexical/link": "^0.52.0",
+    "@lexical/list": "^0.52.0",
+    "@lexical/markdown": "^0.52.0",
+    "@lexical/react": "^0.52.0",
+    "@lexical/rich-text": "^0.52.0",
+    "@lexical/selection": "^0.52.0",
+    "@lexical/table": "^0.52.0",
+    "@lexical/utils": "^0.52.0",
     "@playwright/test": "^1.64.1",
     "@size-limit/preset-small-lib": "^14.2.0",
     "@storybook/addon-a11y": "^10.6.2",
@@ -152,20 +307,31 @@
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^6.1.2",
     "@vitest/browser-playwright": "^5.0.4",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/addon-search": "^0.16.0",
+    "@xterm/xterm": "^6.0.0",
+    "@zxing/library": "^0.23.0",
     "axe-core": "^4.14.0",
     "chart.js": "^4.5.1",
     "chartjs-adapter-luxon": "^1.3.1",
     "chartjs-plugin-zoom": "^2.2.0",
+    "emojibase-data": "^18.0.0",
     "eslint": "^9.39.5",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-storybook": "^10.6.2",
     "globals": "^17.13.0",
+    "hls.js": "^1.7.3",
+    "jsqr": "^1.4.0",
+    "lexical": "^0.52.0",
     "lucide-react": "^1.57.0",
     "luxon": "^3.7.2",
     "maplibre-gl": "^6.11.2",
+    "mathlive": "^0.111.1",
+    "pdfjs-dist": "^6.4.299",
     "playwright": "^1.64.1",
     "prettier": "^3.9.10",
     "react": "^19.3.1",
@@ -176,8 +342,11 @@
     "size-limit": "^14.2.0",
     "storybook": "^10.6.2",
     "tailwindcss": "^4.3.3",
+    "temml": "^0.14.0",
+    "three": "^0.186.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.2",
+    "vexflow": "^5.0.0",
     "vite": "^8.3.4",
     "vitest": "^5.0.4",
     "zod": "^4.6.7"

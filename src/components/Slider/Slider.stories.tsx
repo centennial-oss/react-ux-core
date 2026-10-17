@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { faderTicks, Mixer } from '../../../test/mixer';
 import { Slider } from './Slider';
 
 const meta = {
@@ -114,4 +115,47 @@ export const Controlled: Story = {
       </div>
     );
   },
+};
+
+/** `orientation="vertical"` makes a fader: the minimum is at the bottom, and tick labels sit beside the track. */
+export const Vertical: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-start gap-6">
+      <Slider
+        label="Master"
+        orientation="vertical"
+        minValue={-60}
+        maxValue={6}
+        step={0.5}
+        defaultValue={-6}
+        ticks={faderTicks}
+        formatOptions={{ signDisplay: 'exceptZero', maximumFractionDigits: 1 }}
+      />
+      <Slider label="Short" orientation="vertical" trackLength="sm" defaultValue={40} />
+      <Slider
+        label="Tall"
+        orientation="vertical"
+        trackLength="lg"
+        defaultValue={75}
+        description="Long track"
+      />
+      <Slider
+        label="Invalid"
+        orientation="vertical"
+        defaultValue={95}
+        isInvalid
+        errorMessage="Too loud"
+      />
+      <Slider label="Disabled" orientation="vertical" defaultValue={30} isDisabled />
+    </div>
+  ),
+};
+
+/**
+ * A 16-channel mixer: a pan Knob over a vertical fader per channel. At phone widths the desk scrolls sideways inside
+ * its own region: swipe sideways on the channel names or the knobs (a knob turns only with a vertical drag).
+ */
+export const Mixer16: Story = {
+  name: 'Mixer',
+  render: () => <Mixer />,
 };

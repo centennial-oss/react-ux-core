@@ -60,6 +60,12 @@ export interface FileFieldProps<R = unknown>
   upload?: UploadFunction<R>;
   /** The drop zone's text. Defaults to "Drop files here" (`messages.dropFiles`). */
   dropLabel?: ReactNode;
+  /**
+   * Shows a thumbnail in each file's row: the image itself for images (an object URL, revoked when the file is
+   * removed), otherwise an icon for its kind. For full previews (PDF pages, players, text), render `/media`'s
+   * `FilePreview` for the items instead.
+   */
+  hasPreviews?: boolean;
   isDisabled?: boolean;
   /** Shows `errorMessage` and marks the field invalid. */
   isInvalid?: boolean;
@@ -90,6 +96,7 @@ export function FileField<R = unknown>({
   allowsMultiple = false,
   upload,
   dropLabel,
+  hasPreviews = false,
   isDisabled = false,
   isInvalid = false,
   isRequired = false,
@@ -192,6 +199,7 @@ export function FileField<R = unknown>({
               items={items}
               canUpload={upload !== undefined}
               isDisabled={isDisabled}
+              hasPreviews={hasPreviews}
               onRemove={(id) => {
                 remove(id);
                 // The removed row's button is gone; keep focus in the field.

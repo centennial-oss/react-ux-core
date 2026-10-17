@@ -12,8 +12,10 @@ import {
   Zap,
 } from 'lucide-react';
 import { useState } from 'react';
+import { demoLayers, demoLayerToggles } from '../../../test/layers';
 import { MenuItem } from '../Menu/Menu';
 import { OverflowMenu } from '../Menu/MenuButtons';
+import { moveTreeNodes } from './move';
 import { Tree } from './Tree';
 import type { TreeNode, TreeNodeLevel2 } from './types';
 
@@ -144,4 +146,43 @@ export const FiveLevels: Story = {
       <Tree aria-label="Sites" items={sites} defaultSelectedId="meter-1042" />
     </div>
   ),
+};
+
+/**
+ * A design tool's layers panel: drag a layer by its handle (or with the keyboard: focus a row, press the right arrow
+ * to reach the handle, then Enter, the arrow keys and Enter) to reorder it or move it into another frame. Each row
+ * has visibility and lock toggles; a hidden or locked layer always shows its toggle. Moves are announced.
+ */
+export const LayersPanel: Story = {
+  render: function Render() {
+    const [layers, setLayers] = useState(demoLayers);
+    const [selected, setSelected] = useState('title');
+    const [values, setValues] = useState<Record<string, Record<string, boolean>>>({
+      backdrop: { locked: true },
+      tagline: { visible: false },
+    });
+    return (
+      <div className="w-72 rounded-card border border-border bg-surface-1 p-2">
+        <Tree
+          aria-label="Layers"
+          items={layers}
+          selectedId={selected}
+          onSelectionChange={setSelected}
+          defaultExpandedIds={['page-1', 'page-2', 'header', 'hero']}
+          isReorderable
+          onMove={(move) => {
+            setLayers((current) => moveTreeNodes(current, move));
+          }}
+          rowToggles={demoLayerToggles}
+          toggleValues={values}
+          onToggleChange={(nodeId, toggleId, value) => {
+            setValues((current) => ({
+              ...current,
+              [nodeId]: { ...current[nodeId], [toggleId]: value },
+            }));
+          }}
+        />
+      </div>
+    );
+  },
 };

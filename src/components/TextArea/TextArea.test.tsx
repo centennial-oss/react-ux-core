@@ -160,6 +160,23 @@ describe('TextArea', () => {
     expect(screen.getByText('3 of 10')).toBeInTheDocument();
   });
 
+  it('warns past the recommended length without making the area invalid', async () => {
+    render(<TextArea label="Meta description" recommendedLength={12} defaultValue="Moons" />);
+    const area = textbox('Meta description');
+    expect(area).not.toHaveAttribute('aria-describedby');
+    await typeAtEnd(area, ' of Saturn');
+    expect(screen.getByText('15 / 12, longer than recommended')).toBeInTheDocument();
+    expect(area).not.toHaveAttribute('aria-invalid');
+    expect(area).toHaveAccessibleDescription('15 / 12, longer than recommended');
+  });
+
+  it('shows "count / recommended" with hasCharacterCount and no maxLength', () => {
+    render(
+      <TextArea label="Summary" recommendedLength={160} hasCharacterCount defaultValue="Hi" />,
+    );
+    expect(screen.getByText('2 / 160 recommended')).toBeInTheDocument();
+  });
+
   it('shows no count without maxLength or without hasCharacterCount', () => {
     render(
       <>

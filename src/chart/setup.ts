@@ -12,6 +12,7 @@ import {
   Interaction,
   LinearScale,
   LineController,
+  LogarithmicScale,
   LineElement,
   PointElement,
   ScatterController,
@@ -23,6 +24,7 @@ import {
 } from 'chart.js';
 import 'chartjs-adapter-luxon';
 import zoomPlugin from 'chartjs-plugin-zoom';
+import { bucketMode } from './histogram';
 
 /** A horizontal line across the plot at a value, such as a contract limit. */
 export interface ChartThreshold {
@@ -206,6 +208,7 @@ export function ensureChartsRegistered() {
     PointElement,
     ArcElement,
     LinearScale,
+    LogarithmicScale,
     CategoryScale,
     TimeScale,
     Filler,
@@ -215,4 +218,5 @@ export function ensureChartsRegistered() {
     crosshairPlugin,
   );
   Interaction.modes.timeAll = timeAll;
+  Interaction.modes.bucket = bucketMode;
 }

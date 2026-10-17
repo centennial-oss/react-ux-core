@@ -34,6 +34,16 @@ describe('ReorderableList', () => {
     expect(rows.map((row) => row.textContent.slice(0, 1))).toEqual(['1', '2', '3']);
   });
 
+  it('describes the list with its description, and drops it when the description goes', () => {
+    const { rerender } = render(
+      <ReorderableList label="Planets" description="Closest to the Sun first." items={items} />,
+    );
+    const grid = screen.getByRole('grid', { name: 'Planets' });
+    expect(grid).toHaveAccessibleDescription('Closest to the Sun first.');
+    rerender(<ReorderableList label="Planets" items={items} />);
+    expect(grid).not.toHaveAttribute('aria-describedby');
+  });
+
   it('moves with the buttons, disabled at the ends, with focus following and an announcement', async () => {
     render(<List />);
     expect(screen.getByRole('button', { name: 'Move Mercury up' })).toBeDisabled();

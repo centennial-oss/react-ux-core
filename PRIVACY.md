@@ -1,6 +1,6 @@
 # react-ux-core - Privacy Policy
 
-**Last updated:** October 14, 2026
+**Last updated:** October 17, 2026
 
 ## Summary
 
@@ -16,9 +16,13 @@ uses it. It does not:
 - Make network requests of its own
 - Communicate with any Centennial OSS servers
 
-The one exception is the optional map entry point (`@centennial-oss/react-ux-core/map`). When an application uses it,
-the map loads its style and tiles from a URL that the **application** configures. Those requests go to whichever map
-provider the application chooses, not to Centennial OSS.
+Some components load content from addresses that the **application** gives them, never from Centennial OSS:
+
+- The map entry point (`@centennial-oss/react-ux-core/map`) loads its style and tiles from a URL the application
+  configures, so those requests go to whichever map provider the application chooses.
+- The media, DICOM, 3D, PDF and chat components load the images, documents, audio, video, models and files the
+  application passes in, from wherever the application hosts them.
+- The maths input (`MathInput`) loads its fonts from a folder the application serves.
 
 Applications built with react-ux-core have their own privacy policies, which govern any data those applications
 collect.

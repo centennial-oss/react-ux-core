@@ -3,7 +3,7 @@ import { useId, useState, type ReactNode } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 import { useMessages } from '../../provider/context';
 import { cn } from '../../utils/cn';
-import { useDeadlineTimer } from '../../utils/timers';
+import { useCopyToClipboard } from '../CopyField/useCopyToClipboard';
 import { InfoTip } from '../InfoTip/InfoTip';
 
 export interface DescriptionItem {
@@ -36,20 +36,16 @@ function isMissing(value: ReactNode): boolean {
   return value === undefined || value === null || value === '';
 }
 
-function CopyButton({ text }: { text: string }) {
+// A compact copy button for a row's value; the copy logic is CopyButton's.
+function RowCopyButton({ text }: { text: string }) {
   const messages = useMessages();
-  const [isCopied, setCopied] = useState(false);
-  const timer = useDeadlineTimer(() => {
-    setCopied(false);
-  });
+  const { status, copy } = useCopyToClipboard();
+  const isCopied = status === 'copied';
   return (
     <AriaButton
       aria-label={isCopied ? messages.copied : messages.copy}
       onPress={() => {
-        void navigator.clipboard.writeText(text).then(() => {
-          setCopied(true);
-          timer.start(2000);
-        });
+        void copy(text);
       }}
       className={cn(
         'hit-area inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-control text-fg-muted',
@@ -85,7 +81,7 @@ function Row({ item }: { item: DescriptionItem }) {
           <span className="min-w-0 wrap-anywhere">{item.value}</span>
         )}
         {item.copyValue !== undefined && !isMissing(item.value) && (
-          <CopyButton text={item.copyValue} />
+          <RowCopyButton text={item.copyValue} />
         )}
       </dd>
     </div>

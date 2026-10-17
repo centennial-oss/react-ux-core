@@ -1,5 +1,5 @@
 import { Upload } from 'lucide-react';
-import type { ReactNode, Ref } from 'react';
+import { useState, type ReactNode, type Ref } from 'react';
 import {
   DropZone as AriaDropZone,
   isFileDropItem,
@@ -9,6 +9,7 @@ import {
 import { useMessages } from '../../provider/context';
 import { cn } from '../../utils/cn';
 import type { IconComponent } from '../../utils/icon';
+import { FileThumbnail } from './FileThumbnail';
 
 export interface DropZoneProps extends Omit<
   AriaDropZoneProps,
@@ -22,6 +23,13 @@ export interface DropZoneProps extends Omit<
   icon?: IconComponent;
   /** More content inside the zone, such as a button that opens the file chooser. */
   children?: ReactNode;
+  /**
+   * Shows thumbnails of the files most recently dropped or pasted (or of `files`): the image itself for images, an
+   * icon for other kinds, each with its name. For full previews, use `/media`'s `FilePreview`.
+   */
+  hasPreviews?: boolean;
+  /** With `hasPreviews`, the files to show instead of the last ones dropped, such as the app's chosen files. */
+  files?: readonly File[];
   isDisabled?: boolean;
   className?: string;
   ref?: Ref<HTMLDivElement>;
@@ -37,11 +45,15 @@ export function DropZone({
   label,
   icon: Icon = Upload,
   children,
+  hasPreviews = false,
+  files,
   isDisabled = false,
   className,
   ...rest
 }: DropZoneProps) {
   const messages = useMessages();
+  const [dropped, setDropped] = useState<readonly File[]>([]);
+  const previews = hasPreviews ? (files ?? dropped) : [];
 
   return (
     <AriaDropZone
@@ -50,10 +62,15 @@ export function DropZone({
       getDropOperation={() => (isDisabled ? 'cancel' : 'copy')}
       onDrop={(event) => {
         const fileItems = event.items.filter(isFileDropItem);
-        if (fileItems.length === 0 || !onDrop) {
+        if (fileItems.length === 0 || (!onDrop && !hasPreviews)) {
           return;
         }
-        void Promise.all(fileItems.map((item) => item.getFile())).then(onDrop);
+        void Promise.all(fileItems.map((item) => item.getFile())).then((droppedFiles) => {
+          if (hasPreviews) {
+            setDropped(droppedFiles);
+          }
+          onDrop?.(droppedFiles);
+        });
       }}
       className={cn(
         'flex flex-col items-center justify-center gap-2 rounded-card border-2 border-dashed border-border-strong bg-surface-1 p-4 text-center text-sm text-fg-muted',
@@ -66,6 +83,19 @@ export function DropZone({
       <Icon aria-hidden="true" className="size-6" />
       <Text slot="label">{label ?? messages.dropFiles}</Text>
       {children}
+      {previews.length > 0 && (
+        <ul className="flex max-w-full flex-wrap justify-center gap-2 pt-1">
+          {previews.map((file, index) => (
+            <li
+              key={`${file.name}-${String(index)}`}
+              className="flex w-20 flex-col items-center gap-1 text-xs text-fg"
+            >
+              <FileThumbnail file={file} size="md" />
+              <span className="w-full truncate">{file.name}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </AriaDropZone>
   );
 }

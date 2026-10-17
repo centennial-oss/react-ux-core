@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { starfieldImage } from '../../../test/mediaImages';
 import { FileField } from './FileField';
 import type { FileItem, UploadFunction } from './files';
 
@@ -13,6 +14,14 @@ type Story = StoryObj<typeof meta>;
 
 function makeFile(name: string, size: number, type = 'application/pdf') {
   return new File([new Uint8Array(size)], name, { type });
+}
+
+/** A PNG File drawn on a canvas (a star field with a planet). */
+function pngFile(name: string, seed: number) {
+  const url = starfieldImage({ width: 160, height: 120, seed });
+  const binary = atob(url.slice(url.indexOf(',') + 1));
+  const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  return new File([bytes], name, { type: 'image/png' });
 }
 
 /** A pretend upload: progress over about two seconds, failing for names that contain "fail". */
@@ -125,5 +134,40 @@ export const States: Story = {
         accept={['.csv']}
       />
     </div>
+  ),
+};
+
+/**
+ * `hasPreviews`: images show a thumbnail (an object URL, revoked when the file is removed), other files the icon for
+ * their kind. A stored file without `file` shows its `previewSrc`. Full previews come from `/media`'s FilePreview.
+ */
+export const WithPreviews: Story = {
+  render: () => (
+    <FileField
+      label="Observation photos"
+      description="Images, PDFs or archives"
+      allowsMultiple
+      hasPreviews
+      className="max-w-lg"
+      defaultValue={[
+        { id: '1', file: pngFile('ring-nebula.png', 3), status: 'pending' },
+        { id: '2', file: makeFile('seeing-log.pdf', 96_000), status: 'done' },
+        {
+          id: '3',
+          file: makeFile('raw-frames.zip', 18_400_000, 'application/zip'),
+          status: 'uploading',
+          progress: 0.6,
+        },
+        {
+          id: '4',
+          name: 'saturn.png',
+          size: 52_000,
+          type: 'image/png',
+          previewSrc: starfieldImage({ width: 160, height: 120, seed: 9 }),
+          status: 'done',
+        },
+        { id: '5', file: makeFile('readings.csv', 2_048, 'text/csv'), status: 'pending' },
+      ]}
+    />
   ),
 };

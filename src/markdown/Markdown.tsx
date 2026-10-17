@@ -1,25 +1,29 @@
 // Markdown: CommonMark plus GFM (tables, task lists, strikethrough, autolinks) rendered as React elements through
 // Prose. Raw HTML in the source is never rendered (there's no rehype-raw): it shows as text. Headings shift under the
 // page's own, links go through the app's LinkComponent (external ones get rel="noopener noreferrer"), and fenced code
-// renders through CodeBlock.
+// renders through CodeBlock. With `hasMath`, `$…$` and `$$…$$` render as formulas (see remarkMath.ts and
+// MarkdownMath.tsx: the maths converter loads on demand, so `/markdown` doesn't need Temml unless formulas appear).
 
 import {
   Children,
   isValidElement,
+  useMemo,
   type AnchorHTMLAttributes,
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
   type Ref,
 } from 'react';
-import ReactMarkdown, { type Components } from 'react-markdown';
+import ReactMarkdown, { type Components, type Options } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from '../code/CodeBlock';
 import type { CodeLanguage } from '../code/tokenize';
 import { Prose } from '../components/Prose/Prose';
 import { useLinkComponent } from '../provider/context';
 import type { HeadingLevel } from '../utils/types';
+import { MarkdownMath } from './MarkdownMath';
 import { useMarkdownMessages } from './messages';
+import { extractMath, remarkMath } from './remarkMath';
 
 const languageAliases: Record<string, CodeLanguage> = {
   json: 'json',
@@ -87,6 +91,12 @@ export interface MarkdownProps {
   size?: 'sm' | 'md';
   /** Lets lines run the full width instead of a readable length. */
   isFullWidth?: boolean;
+  /**
+   * Renders TeX between `$…$` (inline) and `$$…$$` (block) as formulas, through `/math`'s MathFormula, which loads
+   * on demand and needs the optional peer temml. `\ce{…}` works for chemistry. A `$` before a digit or a space
+   * (currency) stays text, and `\$` is a literal dollar sign. Defaults to false.
+   */
+  hasMath?: boolean;
   className?: string;
   ref?: Ref<HTMLDivElement>;
 }
@@ -99,11 +109,17 @@ export function Markdown({
   shouldOpenExternalLinksInNewTab = true,
   size = 'md',
   isFullWidth,
+  hasMath = false,
   className,
   ref,
 }: MarkdownProps) {
   const messages = useMarkdownMessages();
   const Link = useLinkComponent();
+  const math = useMemo(() => (hasMath ? extractMath(children) : null), [hasMath, children]);
+  const remarkPlugins: NonNullable<Options['remarkPlugins']> = useMemo(
+    () => (math ? [remarkGfm, [remarkMath, { formulas: math.formulas }]] : [remarkGfm]),
+    [math],
+  );
 
   const heading =
     (depth: number) =>
@@ -206,12 +222,29 @@ export function Markdown({
           className="-ms-6 size-4 accent-accent-solid"
         />
       ) : null,
+    // Formulas from remarkMath; other spans and divs (none come from Markdown itself) render as they are.
+    span: ({ node, children: content, className: spanClass }) => {
+      const tex = node?.properties.dataTex;
+      return node?.properties.dataMath === 'inline' && typeof tex === 'string' ? (
+        <MarkdownMath tex={tex} display="inline" />
+      ) : (
+        <span className={spanClass}>{content}</span>
+      );
+    },
+    div: ({ node, children: content, className: divClass }) => {
+      const tex = node?.properties.dataTex;
+      return node?.properties.dataMath === 'block' && typeof tex === 'string' ? (
+        <MarkdownMath tex={tex} display="block" />
+      ) : (
+        <div className={divClass}>{content}</div>
+      );
+    },
   };
 
   return (
     <Prose ref={ref} size={size} isFullWidth={isFullWidth} className={className}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-        {children}
+      <ReactMarkdown remarkPlugins={remarkPlugins} components={components}>
+        {math ? math.markdown : children}
       </ReactMarkdown>
     </Prose>
   );

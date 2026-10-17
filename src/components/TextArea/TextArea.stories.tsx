@@ -70,6 +70,21 @@ export const CharacterCount: Story = {
   ),
 };
 
+/** Past `recommendedLength` the counter turns to the warning tone, but the area stays valid. */
+export const RecommendedLength: Story = {
+  render: () => (
+    <div className="max-w-md">
+      <TextArea
+        label="Meta description"
+        description="Search engines show about 160 characters."
+        recommendedLength={160}
+        hasCharacterCount
+        defaultValue="A night at the Northern Ridge Observatory: how the team tracks the moons of Jupiter and Saturn, logs every reading, and shares the images with schools across the region each autumn."
+      />
+    </div>
+  ),
+};
+
 /** Side labels sit beside the area in wide containers and move on top in narrow ones. */
 export const SideLabel: Story = {
   render: () => (

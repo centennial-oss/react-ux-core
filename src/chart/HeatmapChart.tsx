@@ -4,7 +4,7 @@
 // screens the plot (not the page) scrolls sideways with the row labels pinned. It sits in the shared chart frame, so
 // it has a title, a generated summary, "View as table", PNG and CSV export and full screen.
 
-import { ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import {
   useLayoutEffect,
   useMemo,
@@ -18,8 +18,12 @@ import { useLocale } from 'react-aria-components';
 import { downloadCsv, toCsv } from '../table/csv';
 import type { DataTableColumn } from '../table/types';
 import { cn } from '../utils/cn';
+import { mergeRefs } from '../utils/mergeRefs';
+import { useElementWidth } from '../utils/useElementWidth';
+import { useMediaQuery } from '../utils/useMediaQuery';
 import { ChartFrame, type ChartFrameOptions, type ChartTable } from './ChartFrame';
 import { formatValue } from './format';
+import { downloadSvgAsPng } from './svgImage';
 import {
   heatColor,
   heatLegendStops,
@@ -30,11 +34,23 @@ import {
   type HeatScale,
   type ResolvedHeatScale,
 } from './heat';
+import {
+  heatCellSize,
+  rowLabelEvery,
+  rowLabelWidth,
+  visibleColumnLabels,
+  type HeatCellSize,
+} from './heatLayout';
 import { useChartMessages } from './messages';
 
 export interface HeatmapAxisItem {
   id: string;
   label: string;
+  /**
+   * A column's visible label in the compact layout (with `cellSize`), such as CalendarHeatmap's month names; `label`
+   * still names the column for screen readers. When any column has one, columns without one show no label.
+   */
+  mark?: string;
 }
 
 export interface HeatmapChartProps extends Omit<ChartFrameOptions, 'height'> {
@@ -56,6 +72,14 @@ export interface HeatmapChartProps extends Omit<ChartFrameOptions, 'height'> {
   cellLabel?: (row: HeatmapAxisItem, column: HeatmapAxisItem, value: string) => string;
   /** Text under the grid, such as CalendarHeatmap's "No activity yet". */
   notice?: ReactNode;
+  /**
+   * Square cells in a compact layout: `fit` shrinks them (down to 10 px, or 24 px on touch screens) so every column
+   * fits the width before scrolling; `sm`, `md` and `lg` are fixed sizes. Column labels thin out on small cells. By
+   * default cells stretch to fill the width, at least 28 px wide.
+   */
+  cellSize?: HeatCellSize;
+  /** Where a plot that scrolls sideways starts. Defaults to `start`. */
+  initialScroll?: 'start' | 'end';
 }
 
 interface Cell {
@@ -66,6 +90,12 @@ interface Cell {
 function isCell(values: HeatmapChartProps['values'], cell: Cell): boolean {
   return values[cell.row]?.[cell.column] !== undefined;
 }
+
+/** The grid's columns: the row labels, then one per data column (stretching, or the compact cell size). */
+const rowColumns = {
+  fill: 'grid-cols-[minmax(6rem,12rem)_repeat(var(--heat-columns),minmax(var(--heat-cell),1fr))]',
+  compact: 'grid-cols-[var(--heat-label)_repeat(var(--heat-columns),var(--heat-cell))]',
+};
 
 const hatched =
   'bg-[repeating-linear-gradient(45deg,var(--color-border-strong)_0,var(--color-border-strong)_1px,transparent_1px,transparent_5px)]';
@@ -119,26 +149,6 @@ function toSvg(props: {
   return { svg: parts.join(''), width, height };
 }
 
-function downloadSvgAsPng(svg: { svg: string; width: number; height: number }, fileName: string) {
-  const image = new Image();
-  image.onload = () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = svg.width * 2;
-    canvas.height = svg.height * 2;
-    const context = canvas.getContext('2d');
-    if (!context) {
-      return;
-    }
-    context.scale(2, 2);
-    context.drawImage(image, 0, 0);
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/png');
-    link.download = fileName.endsWith('.png') ? fileName : `${fileName}.png`;
-    link.click();
-  };
-  image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.svg)}`;
-}
-
 /** A grid of values coloured by a scale, navigable cell by cell, with a legend, summary and table view. */
 export function HeatmapChart({
   rows,
@@ -150,6 +160,8 @@ export function HeatmapChart({
   onCellPress,
   cellLabel,
   notice,
+  cellSize,
+  initialScroll = 'start',
   exportFileName,
   ...frame
 }: HeatmapChartProps) {
@@ -221,7 +233,28 @@ export function HeatmapChart({
   const [isFocusWithin, setFocusWithin] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isScrollable, setScrollable] = useState(false);
+  const [widthRef, plotWidth] = useElementWidth();
+  const isCoarse = useMediaQuery('(pointer: coarse)');
+  const [scroll, setScroll] = useState({ isScrollable: false, isAtStart: true, isAtEnd: false });
+
+  // The compact layout's geometry: the row labels' width, the cell size, and which labels show.
+  const isCompact = cellSize !== undefined;
+  const labelWidth = rowLabelWidth(rows.map((row) => row.label));
+  const cell = heatCellSize({
+    size: cellSize ?? 'lg',
+    width: plotWidth,
+    columns: columns.length,
+    labelWidth,
+    isCoarse,
+  });
+  const hasMarks = columns.some((column) => column.mark !== undefined);
+  const shownMarks = isCompact
+    ? visibleColumnLabels(
+        columns.map((column) => (hasMarks ? column.mark : column.label)),
+        cell,
+      )
+    : [];
+  const rowEvery = isCompact ? rowLabelEvery(cell) : 1;
 
   useLayoutEffect(() => {
     const area = scrollRef.current;
@@ -229,15 +262,36 @@ export function HeatmapChart({
       return;
     }
     const measure = () => {
-      setScrollable(area.scrollWidth > area.clientWidth + 1);
+      const overflow = area.scrollWidth - area.clientWidth;
+      // In right-to-left layouts scrollLeft runs from 0 to negative values.
+      const offset = Math.abs(area.scrollLeft);
+      const next = {
+        isScrollable: overflow > 1,
+        isAtStart: offset <= 1,
+        isAtEnd: offset >= overflow - 1,
+      };
+      setScroll((previous) =>
+        previous.isScrollable === next.isScrollable &&
+        previous.isAtStart === next.isAtStart &&
+        previous.isAtEnd === next.isAtEnd
+          ? previous
+          : next,
+      );
     };
+    if (initialScroll === 'end') {
+      // Open on the latest columns; the browser clamps the offset in either direction.
+      const isRtl = getComputedStyle(area).direction === 'rtl';
+      area.scrollLeft = isRtl ? -area.scrollWidth : area.scrollWidth;
+    }
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(area);
+    area.addEventListener('scroll', measure, { passive: true });
     return () => {
       observer.disconnect();
+      area.removeEventListener('scroll', measure);
     };
-  }, [isEmpty]);
+  }, [isEmpty, initialScroll, cell, columns.length]);
 
   const focusCell = (cell: Cell) => {
     setActive(cell);
@@ -345,7 +399,7 @@ export function HeatmapChart({
       }}
       plot={({ titleId, summaryId }) => (
         <div className="flex min-w-0 flex-col gap-2">
-          <div ref={scrollRef} className="min-w-0 overflow-x-auto pt-9 pb-1">
+          <div ref={mergeRefs(scrollRef, widthRef)} className="min-w-0 overflow-x-auto pt-9 pb-1">
             <div
               ref={gridRef}
               role="grid"
@@ -364,43 +418,86 @@ export function HeatmapChart({
                   setFocusWithin(false);
                 }
               }}
-              // Dynamic geometry: one column per data column; each at least the cell width, filling the space.
+              // Dynamic geometry: one column per data column; each at least the cell width, filling the space
+              // (or, compact, exactly the computed cell size after a row-label column sized to the labels).
               // eslint-disable-next-line no-restricted-syntax
-              style={{ '--heat-columns': String(columns.length) } as CSSProperties}
+              style={
+                {
+                  '--heat-columns': String(columns.length),
+                  ...(isCompact
+                    ? {
+                        '--heat-cell': `${String(cell)}px`,
+                        '--heat-label': `${String(labelWidth)}px`,
+                      }
+                    : {}),
+                } as CSSProperties
+              }
               // Positioned, so the visually hidden column labels stay inside the scroll area instead of widening the page.
-              className="relative flex w-max min-w-full flex-col gap-px [--heat-cell:1.75rem] pointer-coarse:[--heat-cell:var(--hit-size)]"
+              className={cn(
+                'relative flex w-max flex-col gap-px',
+                isCompact
+                  ? ''
+                  : 'min-w-full [--heat-cell:1.75rem] pointer-coarse:[--heat-cell:var(--hit-size)]',
+              )}
             >
               <div
                 role="row"
-                className="grid grid-cols-[minmax(6rem,12rem)_repeat(var(--heat-columns),minmax(var(--heat-cell),1fr))] gap-px"
+                className={cn('grid gap-px', rowColumns[isCompact ? 'compact' : 'fill'])}
               >
                 <div role="columnheader" className="sticky start-0 z-[1] bg-surface-1">
                   <span className="sr-only">{frame.title}</span>
                 </div>
-                {columns.map((column, index) => (
-                  <div
-                    key={column.id}
-                    role="columnheader"
-                    className="truncate px-0.5 text-center text-xs text-fg-muted"
-                  >
-                    <span className={index % labelEvery === 0 ? undefined : 'sr-only'}>
-                      {column.label}
-                    </span>
-                  </div>
-                ))}
+                {columns.map((column, index) =>
+                  isCompact ? (
+                    // Labels start at their column and run over the next ones (thinned so they never overlap).
+                    <div
+                      key={column.id}
+                      role="columnheader"
+                      className="relative h-4 text-xs text-fg-muted"
+                    >
+                      <span className="sr-only">{column.label}</span>
+                      {shownMarks[index] && (
+                        <span
+                          aria-hidden="true"
+                          className="absolute start-0 top-0 whitespace-nowrap"
+                        >
+                          {hasMarks ? column.mark : column.label}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div
+                      key={column.id}
+                      role="columnheader"
+                      className="truncate px-0.5 text-center text-xs text-fg-muted"
+                    >
+                      <span className={index % labelEvery === 0 ? undefined : 'sr-only'}>
+                        {column.label}
+                      </span>
+                    </div>
+                  ),
+                )}
               </div>
               {rows.map((row, rowIndex) => (
                 <div
                   key={row.id}
                   role="row"
-                  className="grid grid-cols-[minmax(6rem,12rem)_repeat(var(--heat-columns),minmax(var(--heat-cell),1fr))] gap-px"
+                  className={cn('grid gap-px', rowColumns[isCompact ? 'compact' : 'fill'])}
                 >
                   <div
                     role="rowheader"
                     title={row.label}
                     className="sticky start-0 z-[1] flex min-w-0 items-center bg-surface-1 pe-2 text-xs text-fg"
                   >
-                    <span className="truncate">{row.label}</span>
+                    <span
+                      className={
+                        rowIndex % rowEvery === rowEvery - 1
+                          ? cn('truncate', isCompact && 'leading-none')
+                          : 'sr-only'
+                      }
+                    >
+                      {row.label}
+                    </span>
                   </div>
                   {columns.map((column, columnIndex) => {
                     const value = values[rowIndex]?.[columnIndex];
@@ -437,7 +534,8 @@ export function HeatmapChart({
                           background === undefined ? undefined : { backgroundColor: background }
                         }
                         className={cn(
-                          'relative flex h-8 items-center justify-center rounded-[3px] text-[0.625rem] font-medium tabular-nums outline-none pointer-coarse:h-hit',
+                          'relative flex items-center justify-center rounded-[3px] text-[0.625rem] font-medium tabular-nums outline-none',
+                          isCompact ? 'size-(--heat-cell)' : 'h-8 pointer-coarse:h-hit',
                           'focus-visible:z-[2] focus-visible:focus-ring',
                           value === null && cn('border border-border', hatched),
                           onCellPress && 'cursor-pointer',
@@ -468,10 +566,16 @@ export function HeatmapChart({
             </div>
           </div>
           {notice !== undefined && <p className="text-sm text-fg-muted">{notice}</p>}
-          {isScrollable && (
+          {scroll.isScrollable && (
+            // The arrows point where there's more: back toward the start, on toward the end, or both.
             <p className="inline-flex items-center gap-1 text-xs text-fg-muted">
+              {!scroll.isAtStart && (
+                <ArrowLeft aria-hidden="true" className="size-3.5 rtl:-scale-x-100" />
+              )}
               {messages.heatmapScrollHint}
-              <ArrowRight aria-hidden="true" className="size-3.5 rtl:-scale-x-100" />
+              {!scroll.isAtEnd && (
+                <ArrowRight aria-hidden="true" className="size-3.5 rtl:-scale-x-100" />
+              )}
             </p>
           )}
           <div

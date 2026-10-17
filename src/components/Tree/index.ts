@@ -1,4 +1,6 @@
-export { Tree, type TreeProps } from './Tree';
+export { Tree, type TreeProps, type TreeRowToggle } from './Tree';
+export { defaultTreeMessages, type TreeMessages } from './messages';
+export { moveTreeNodes, type TreeMove } from './move';
 export {
   MAX_TREE_DEPTH,
   type AnyTreeNode,

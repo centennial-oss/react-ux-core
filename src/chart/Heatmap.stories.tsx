@@ -81,3 +81,39 @@ export const AllEqual: Story = {
     />
   ),
 };
+
+/** A whole year fits on a desktop: cells shrink (down to 10 px) to fit the width, and month names thin out. */
+export const YearAtAGlance: Story = {
+  render: () => (
+    <CalendarHeatmap
+      title="Observing nights"
+      start="2025-10-17"
+      end="2026-10-16"
+      values={studyDays('2025-10-17', 365)}
+      unit="hours"
+      scale={{ colors: 'success' }}
+    />
+  ),
+};
+
+/**
+ * Fixed cell sizes (at least 24 px on touch screens). A calendar that still scrolls (on a phone) opens on its latest
+ * weeks, and the scroll hint points back.
+ */
+export const FixedCellSizes: Story = {
+  render: () => (
+    <div className="flex flex-col gap-8">
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <CalendarHeatmap
+          key={size}
+          title={`Study sessions (${size})`}
+          start="2026-07-17"
+          end="2026-10-16"
+          values={studyDays('2026-07-17', 92)}
+          unit="sessions"
+          cellSize={size}
+        />
+      ))}
+    </div>
+  ),
+};
