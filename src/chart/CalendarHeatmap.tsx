@@ -1,5 +1,6 @@
 // CalendarHeatmap: one cell per day, a column per week and a row per weekday (a study calendar), on HeatmapChart.
-// Days in the range without a value count as 0; days outside it have no cell.
+// Days in the range without a value count as 0; days outside it have no cell. With no activity at all, the grid
+// stays (so the dates still read), every day in the lowest colour, with the empty-state text under it.
 
 import { useMemo } from 'react';
 import { useLocale } from 'react-aria-components';
@@ -51,6 +52,7 @@ export function CalendarHeatmap({
   scale,
   unit,
   onDayPress,
+  emptyState,
   ...frame
 }: CalendarHeatmapProps) {
   const messages = useChartMessages();
@@ -83,7 +85,10 @@ export function CalendarHeatmap({
         return time < first || time > last ? undefined : (values[isoDay(time)] ?? 0);
       }),
     );
-    return { rows, columns, grid, gridStart };
+    const isInactive = grid.every((row) =>
+      row.every((value) => value === undefined || value === 0),
+    );
+    return { rows, columns, grid, gridStart, isInactive };
   }, [start, end, values, locale]);
 
   const full = new Intl.DateTimeFormat(locale, { dateStyle: 'full', timeZone: 'UTC' });
@@ -98,6 +103,7 @@ export function CalendarHeatmap({
       values={calendar.grid}
       scale={{ min: 0, ...scale }}
       unit={unit}
+      notice={calendar.isInactive ? (emptyState ?? messages.calendarNoActivity) : undefined}
       cellLabel={(row, column, value) => {
         return messages.calendarDay({ date: full.format(new Date(dateOf(row, column))), value });
       }}

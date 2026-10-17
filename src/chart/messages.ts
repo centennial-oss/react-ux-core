@@ -25,6 +25,7 @@ export const defaultChartMessages: ChartMessages = {
   heatmapHighest: ({ cell }) => `Highest: ${cell}.`,
   heatmapScale: 'Scale',
   calendarDay: ({ date, value }) => `${date}, ${value}`,
+  calendarNoActivity: 'No activity yet',
   heatmapMidpoint: ({ value }) => `Midpoint: ${value}`,
   heatmapScrollHint: 'Scroll sideways for more',
   categoryHighLow: ({ label, high, highValue, low, lowValue }) =>

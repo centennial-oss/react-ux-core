@@ -12,6 +12,7 @@ import {
   useState,
   type CSSProperties,
   type KeyboardEvent,
+  type ReactNode,
 } from 'react';
 import { useLocale } from 'react-aria-components';
 import { downloadCsv, toCsv } from '../table/csv';
@@ -22,6 +23,7 @@ import { formatValue } from './format';
 import {
   heatColor,
   heatLegendStops,
+  isFlatScale,
   resolveHeatScale,
   useHeatLook,
   type HeatLook,
@@ -52,6 +54,8 @@ export interface HeatmapChartProps extends Omit<ChartFrameOptions, 'height'> {
   onCellPress?: (rowId: string, columnId: string) => void;
   /** Names a cell from its row, column and formatted value. Defaults to the `heatmapCell` message. */
   cellLabel?: (row: HeatmapAxisItem, column: HeatmapAxisItem, value: string) => string;
+  /** Text under the grid, such as CalendarHeatmap's "No activity yet". */
+  notice?: ReactNode;
 }
 
 interface Cell {
@@ -145,6 +149,7 @@ export function HeatmapChart({
   hasCellLabels = false,
   onCellPress,
   cellLabel,
+  notice,
   exportFileName,
   ...frame
 }: HeatmapChartProps) {
@@ -315,6 +320,7 @@ export function HeatmapChart({
   const labelEvery = Math.max(1, Math.ceil(columns.length / 16));
   const tooltipCell = isFocusWithin ? current : hovered;
   const stops = heatLegendStops(scale, look);
+  const isFlat = isFlatScale(scale);
 
   return (
     <ChartFrame
@@ -461,6 +467,7 @@ export function HeatmapChart({
               ))}
             </div>
           </div>
+          {notice !== undefined && <p className="text-sm text-fg-muted">{notice}</p>}
           {isScrollable && (
             <p className="inline-flex items-center gap-1 text-xs text-fg-muted">
               {messages.heatmapScrollHint}
@@ -472,25 +479,39 @@ export function HeatmapChart({
             aria-label={messages.heatmapScale}
             className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-fg-muted"
           >
-            <span className="inline-flex items-center gap-2">
-              <span className="tabular-nums">{formatValue(scale.min, locale, unit)}</span>
-              <span
-                aria-hidden="true"
-                className="flex h-3 w-32 overflow-hidden rounded-[3px] border border-border"
-              >
-                {stops.map((stop, index) => (
-                  <span
-                    key={index}
-                    className="h-full flex-1"
-                    // Dynamic data: the scale's colours.
-                    // eslint-disable-next-line no-restricted-syntax
-                    style={{ backgroundColor: stop }}
-                  />
-                ))}
+            {isFlat ? (
+              // Every value is equal: one swatch and one label, not a gradient from a value to itself.
+              <span className="inline-flex items-center gap-1.5">
+                <span
+                  aria-hidden="true"
+                  className="size-3 rounded-[3px] border border-border"
+                  // Dynamic data: the scale's colour.
+                  // eslint-disable-next-line no-restricted-syntax
+                  style={{ backgroundColor: stops[0] }}
+                />
+                <span className="tabular-nums">{formatValue(scale.min, locale, unit)}</span>
               </span>
-              <span className="tabular-nums">{formatValue(scale.max, locale, unit)}</span>
-            </span>
-            {scale.type === 'diverging' && (
+            ) : (
+              <span className="inline-flex items-center gap-2">
+                <span className="tabular-nums">{formatValue(scale.min, locale, unit)}</span>
+                <span
+                  aria-hidden="true"
+                  className="flex h-3 w-32 overflow-hidden rounded-[3px] border border-border"
+                >
+                  {stops.map((stop, index) => (
+                    <span
+                      key={index}
+                      className="h-full flex-1"
+                      // Dynamic data: the scale's colours.
+                      // eslint-disable-next-line no-restricted-syntax
+                      style={{ backgroundColor: stop }}
+                    />
+                  ))}
+                </span>
+                <span className="tabular-nums">{formatValue(scale.max, locale, unit)}</span>
+              </span>
+            )}
+            {scale.type === 'diverging' && !isFlat && (
               <span className="tabular-nums">
                 {messages.heatmapMidpoint({ value: formatValue(scale.midpoint, locale, unit) })}
               </span>

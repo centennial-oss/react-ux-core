@@ -191,7 +191,9 @@ export function ReorderableList({
         aria-label={label === undefined ? ariaLabel : undefined}
         aria-describedby={description !== undefined ? descriptionId : undefined}
         items={ordered}
-        dragAndDropHooks={isLocked ? undefined : dragAndDropHooks}
+        // Always passed: GridList calls its drag-and-drop hooks only when this is set, so switching it on and off while
+        // mounted would change its hook order. `isDisabled` on useDragAndDrop locks dragging instead.
+        dragAndDropHooks={dragAndDropHooks}
         disabledKeys={isDisabled ? ordered.map((item) => item.id) : undefined}
         // Rows render from the order and feedback, so re-render them when those change.
         dependencies={[ordered, feedback, isLocked, hasPositionNumbers]}

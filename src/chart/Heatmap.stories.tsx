@@ -53,3 +53,31 @@ export const StudyCalendar: Story = {
     />
   ),
 };
+
+/** A new user's calendar: no activity yet, so every day is the lowest colour, with a notice under the grid. */
+export const EmptyNewUser: Story = {
+  name: 'Empty (new user)',
+  render: () => (
+    <CalendarHeatmap
+      title="Study sessions"
+      start="2026-04-17"
+      end="2026-10-16"
+      values={{}}
+      unit="sessions"
+    />
+  ),
+};
+
+/** Every value equal: no range, so cells show no intensity and the legend has one entry. */
+export const AllEqual: Story = {
+  render: () => (
+    <HeatmapChart
+      title="Quiz scores by topic"
+      rows={topics.slice(0, 3)}
+      columns={weeks.slice(0, 4)}
+      values={topics.slice(0, 3).map(() => weeks.slice(0, 4).map(() => 75))}
+      unit="%"
+      hasCellLabels
+    />
+  ),
+};

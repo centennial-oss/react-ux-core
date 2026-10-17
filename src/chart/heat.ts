@@ -125,7 +125,15 @@ function along(ramp: Ramp, t: number, steps: number | undefined): string {
   return mix(ramp[index] ?? '#888888', ramp[index + 1] ?? '#888888', position - index);
 }
 
-/** The colour for `value` on the scale. */
+/** Whether the scale has no range (every value equal, or no data): its colours then show no intensity. */
+export function isFlatScale(scale: ResolvedHeatScale): boolean {
+  return scale.max <= scale.min;
+}
+
+/**
+ * The colour for `value` on the scale. A side of the scale with no range draws its lowest step (sequential) or the
+ * midpoint (diverging), so equal values or an empty dataset never look maximally intense.
+ */
 export function heatColor(value: number, scale: ResolvedHeatScale, look: HeatLook): string {
   if (scale.type === 'diverging') {
     const [low, high] =
@@ -135,14 +143,14 @@ export function heatColor(value: number, scale: ResolvedHeatScale, look: HeatLoo
     const sideSteps = scale.steps === undefined ? undefined : Math.ceil(scale.steps / 2);
     if (value < scale.midpoint) {
       const span = scale.midpoint - scale.min;
-      return along(low, span <= 0 ? 1 : (scale.midpoint - value) / span, sideSteps);
+      return along(low, span <= 0 ? 0 : (scale.midpoint - value) / span, sideSteps);
     }
     const span = scale.max - scale.midpoint;
     return along(high, span <= 0 ? 0 : (value - scale.midpoint) / span, sideSteps);
   }
   const ramp = look.ramps[scale.colors === 'danger-success' ? 'accent' : scale.colors];
   const span = scale.max - scale.min;
-  return along(ramp, span <= 0 ? 1 : (value - scale.min) / span, scale.steps);
+  return along(ramp, span <= 0 ? 0 : (value - scale.min) / span, scale.steps);
 }
 
 function luminance(hex: string): number {
@@ -165,9 +173,9 @@ export function textOn(background: string, look: HeatLook): string {
     : look.inverseText;
 }
 
-/** The colours a legend shows, from low to high. */
+/** The colours a legend shows, from low to high: one when the scale has no range. */
 export function heatLegendStops(scale: ResolvedHeatScale, look: HeatLook): string[] {
-  const count = scale.steps ?? 7;
+  const count = isFlatScale(scale) ? 1 : (scale.steps ?? 7);
   return Array.from({ length: count }, (_, index) => {
     const t = count === 1 ? 0 : index / (count - 1);
     return heatColor(scale.min + (scale.max - scale.min) * t, scale, look);

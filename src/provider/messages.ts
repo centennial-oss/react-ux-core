@@ -283,6 +283,8 @@ export interface ChartMessages {
   heatmapHighest: (params: { cell: string }) => string;
   /** Names the scale legend. */
   heatmapScale: string;
+  /** Under a calendar heatmap with no activity in its range. */
+  calendarNoActivity: string;
   /** A calendar heatmap day's name ("Wed, Oct 8, 2026, 3 sessions"). */
   calendarDay: (params: { date: string; value: string }) => string;
   /** A diverging scale's centre in the legend ("Midpoint: 70%"). */

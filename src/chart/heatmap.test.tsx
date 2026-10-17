@@ -105,7 +105,57 @@ describe('HeatmapChart', () => {
   });
 });
 
+/** A theme token as the rgb() string the browser reports for a background colour. */
+function tokenColor(name: string): string {
+  const probe = document.createElement('span');
+  probe.style.backgroundColor = `var(${name})`;
+  document.body.append(probe);
+  const color = getComputedStyle(probe).backgroundColor;
+  probe.remove();
+  return color;
+}
+
+function dayColors(): string[] {
+  return screen
+    .getAllByRole('gridcell')
+    .filter((cell) => cell.getAttribute('aria-hidden') !== 'true')
+    .map((cell) => getComputedStyle(cell).backgroundColor);
+}
+
 describe('CalendarHeatmap', () => {
+  it.each([
+    ['no values', {}],
+    ['all-zero values', { '2026-10-06': 0, '2026-10-07': 0 }],
+  ])('draws an empty calendar (%s) in the lowest colour, with a notice', (_, values) => {
+    render(<CalendarHeatmap title="Study" start="2026-10-05" end="2026-10-18" values={values} />);
+    const lowest = tokenColor('--color-heat-accent-1');
+    const colors = dayColors();
+    expect(colors).toHaveLength(14);
+    expect(new Set(colors)).toEqual(new Set([lowest]));
+    expect(screen.getByText('No activity yet')).toBeVisible();
+    // The legend has one entry, not a gradient from 0 to 0.
+    const legend = screen.getByRole('group', { name: 'Scale' });
+    expect(legend.textContent).toBe('0');
+  });
+
+  it('draws a single active day at the top of the ramp', () => {
+    render(
+      <CalendarHeatmap
+        title="Study"
+        start="2026-10-05"
+        end="2026-10-18"
+        values={{ '2026-10-07': 3 }}
+      />,
+    );
+    expect(screen.getByRole('gridcell', { name: /October 7, 2026, 3$/ })).toHaveStyle({
+      backgroundColor: tokenColor('--color-heat-accent-7'),
+    });
+    expect(screen.getByRole('gridcell', { name: /October 8, 2026, 0$/ })).toHaveStyle({
+      backgroundColor: tokenColor('--color-heat-accent-1'),
+    });
+    expect(screen.queryByText('No activity yet')).toBeNull();
+  });
+
   it('scrolls a long calendar inside the plot, never the page', () => {
     render(
       // A page's usual side padding (the toolbar's touch targets reach a little past its buttons).

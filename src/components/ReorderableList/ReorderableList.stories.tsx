@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { Button } from '../Button';
 import { Text } from '../Text';
 import { ReorderableList, type ReorderableItem } from './ReorderableList';
 
@@ -57,6 +58,53 @@ export const CheckedAnswer: Story = {
       />
     </div>
   ),
+};
+
+const answerKey = ['mercury', 'venus', 'earth', 'mars', 'jupiter'];
+
+/**
+ * The same mounted list locks after "Check answer": `isReadOnly` and `feedback` switch on, and "Try again" unlocks
+ * it. (Before checking it looks like the Procedure story, so it has no visual snapshot of its own.)
+ */
+export const CheckedAnswerLocksAfterCheck: Story = {
+  name: 'Checked answer (locks after Check)',
+  tags: ['!visual'],
+  render: () => {
+    const [order, setOrder] = useState(['venus', 'mercury', 'earth', 'jupiter', 'mars']);
+    const [isChecked, setChecked] = useState(false);
+    const feedback = Object.fromEntries(
+      order.map((id, index) => [
+        id,
+        id === answerKey[index]
+          ? { tone: 'success' as const, message: 'Correct position' }
+          : {
+              tone: 'danger' as const,
+              message: `Should be number ${String(answerKey.indexOf(id) + 1)}`,
+            },
+      ]),
+    );
+    return (
+      <div className="flex max-w-xl flex-col gap-3">
+        <ReorderableList
+          label="Put the planets in order from the Sun"
+          items={planets}
+          value={order}
+          onChange={setOrder}
+          isReadOnly={isChecked}
+          feedback={isChecked ? feedback : undefined}
+        />
+        <div>
+          <Button
+            onPress={() => {
+              setChecked(!isChecked);
+            }}
+          >
+            {isChecked ? 'Try again' : 'Check answer'}
+          </Button>
+        </div>
+      </div>
+    );
+  },
 };
 
 /** A disabled item can't move, and the small size. */
