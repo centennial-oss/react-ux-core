@@ -232,6 +232,106 @@ export const Gauges: Story = {
   ),
 };
 
+const DAY = 24 * HOUR;
+const practice: TimeSeries = {
+  id: 'practice',
+  label: 'Quiz score',
+  unit: '%',
+  data: [48, 51, 55, 53, 58, 62].map((v, index) => ({ t: START + index * DAY, v })),
+};
+const studyHours: TimeSeries = {
+  id: 'hours',
+  label: 'Study hours',
+  unit: 'h',
+  type: 'bar',
+  axis: 'right',
+  color: 'chart-3',
+  data: [1.5, 2, 0.5, 3, 2.5, 1].map((v, index) => ({ t: START + index * DAY, v })),
+};
+const gate = { value: 80, label: 'A grade', tone: 'success' as const };
+
+/**
+ * Value axes. A threshold above the data stretches its axis so it shows (the default); `shouldIncludeReferences:
+ * false` fits the data only; `min`/`max` pin a percent axis to 0–100; and dual axes take their own ranges.
+ */
+export const ValueAxisRanges: Story = {
+  render: () => (
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <TimeSeriesChart
+        title="Threshold above the data"
+        series={[practice]}
+        thresholds={[gate]}
+        timeZone="UTC"
+        height="14rem"
+      />
+      <TimeSeriesChart
+        title="References left out"
+        series={[practice]}
+        thresholds={[gate]}
+        axes={{ left: { shouldIncludeReferences: false } }}
+        timeZone="UTC"
+        height="14rem"
+      />
+      <TimeSeriesChart
+        title="Pinned to 0–100"
+        series={[practice]}
+        thresholds={[gate]}
+        axes={{ left: { min: 0, max: 100, title: 'Score' } }}
+        timeZone="UTC"
+        height="14rem"
+      />
+      <TimeSeriesChart
+        title="Two axes, two ranges"
+        series={[practice, studyHours]}
+        axes={{
+          left: { min: 0, max: 100, title: 'Score' },
+          right: { min: 0, max: 4, title: 'Hours' },
+        }}
+        timeZone="UTC"
+        height="14rem"
+      />
+      <CategoryChart
+        title="Score by topic"
+        type="horizontalBar"
+        categories={['Mechanics', 'Waves and sound', 'Light and optics', 'Astronomy']}
+        series={[{ id: 'score', label: 'Score', data: [71, 58, 64, 49] }]}
+        unit="%"
+        valueAxis={{ min: 0, max: 100 }}
+        height="14rem"
+      />
+    </div>
+  ),
+};
+
+/**
+ * A gauge's status in the app's own words (`statusLabels`), left out (`hasStatus={false}`), or replaced outright
+ * (`status`), here a neutral "Not started" for a lab with no checks run.
+ */
+export const GaugeStatuses: Story = {
+  render: () => (
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+      <MeterBar
+        label="Course progress"
+        value={64}
+        maxValue={100}
+        unit="%"
+        badWhen="low"
+        thresholds={{ warning: 70, danger: 50 }}
+        statusLabels={{ normal: 'On track', warning: 'Behind', danger: 'At risk' }}
+      />
+      <MeterBar label="Labs completed" value={4} maxValue={6} hasStatus={false} />
+      <MeterBar
+        label="Lab reports"
+        value={0}
+        maxValue={6}
+        badWhen="low"
+        thresholds={{ danger: 2 }}
+        status={{ tone: 'neutral', label: 'Not started' }}
+      />
+    </div>
+  ),
+};
+
 /** Area shades that fade toward the x-axis: `fade` 0 (no fade), 50, and 100 (transparent at the axis). */
 export const FadedAreas: Story = {
   render: () => (

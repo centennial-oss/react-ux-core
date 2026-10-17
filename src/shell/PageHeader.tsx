@@ -194,11 +194,7 @@ export function PageHeader({
               aria-label={tabsLabel ?? messages.pageSections}
               items={tabs}
               value={currentTab ?? null}
-              onChange={(key) => {
-                if (key !== null) {
-                  changeTab(String(key));
-                }
-              }}
+              onChange={changeTab}
               className="min-w-0 flex-1"
             >
               {(tab) => (

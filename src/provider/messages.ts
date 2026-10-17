@@ -72,6 +72,28 @@ export interface CoreMessages {
   /** Copy-to-clipboard button, and its confirmation. */
   copy: string;
   copied: string;
+  /** Names an option's feedback icon (Radio, Checkbox): the success, danger, warning, and info or neutral tones. */
+  feedbackCorrect: string;
+  feedbackIncorrect: string;
+  feedbackWarning: string;
+  feedbackNote: string;
+  /** Timer announcements, with a duration in words ("5 minutes"). */
+  timeLeft: (params: { time: string }) => string;
+  timeElapsed: (params: { time: string }) => string;
+  timeUp: string;
+  /** Shown beside a paused timer. */
+  timerPaused: string;
+  /** ReorderableList: a row's drag handle and move buttons, and the announcement after a move. */
+  dragItem: (params: { item: string }) => string;
+  moveUp: (params: { item: string }) => string;
+  moveDown: (params: { item: string }) => string;
+  itemMovedTo: (params: { item: string; position: number; total: number }) => string;
+  /** Names a TileGrid's legend of statuses. */
+  tileLegend: string;
+  /** A TileGrid's limit, in its description ("Choose up to 3."). */
+  tilesMax: (params: { max: number }) => string;
+  /** Announced as tiles are chosen against a limit ("2 of 3 chosen"). */
+  tilesChosen: (params: { count: number; max: number }) => string;
   /** Disclosure for secondary rows. */
   showMore: string;
   showLess: string;
@@ -251,6 +273,22 @@ export interface ChartMessages {
   seriesRange: (params: { label: string; min: string; max: string; latest: string }) => string;
   /** Generated summary of a category chart. */
   categorySummary: (params: { count: number }) => string;
+  /** A value axis's title in a generated summary ("Axis: Score."). */
+  valueAxisTitle: (params: { title: string }) => string;
+  /** A heatmap cell's name: "Newton’s laws, week of Oct 5, 71%". */
+  heatmapCell: (params: { row: string; column: string; value: string }) => string;
+  /** A heatmap's generated summary, and its lowest and highest cells. */
+  heatmapSummary: (params: { rows: number; columns: number }) => string;
+  heatmapLowest: (params: { cell: string }) => string;
+  heatmapHighest: (params: { cell: string }) => string;
+  /** Names the scale legend. */
+  heatmapScale: string;
+  /** A calendar heatmap day's name ("Wed, Oct 8, 2026, 3 sessions"). */
+  calendarDay: (params: { date: string; value: string }) => string;
+  /** A diverging scale's centre in the legend ("Midpoint: 70%"). */
+  heatmapMidpoint: (params: { value: string }) => string;
+  /** Shown when a heatmap scrolls sideways on a narrow screen. */
+  heatmapScrollHint: string;
   /** One series in a category chart's summary. */
   categoryHighLow: (params: {
     label: string;
@@ -329,6 +367,24 @@ export interface ShellMessages {
   pageSections: string;
   /** A Brand's link, read by screen readers, for example "Gridline home". */
   brandHome: (params: { name: string }) => string;
+}
+
+/** Strings for `/code`. */
+export interface CodeMessages {
+  /** The toggle that wraps long lines. */
+  wrapLines: string;
+  /** Announced when copying fails. */
+  codeCopyFailed: string;
+}
+
+/** Strings for `/markdown`. */
+export interface MarkdownMessages {
+  /** Read after a link that opens in a new tab. */
+  opensInNewTab: string;
+  /** Names a fenced code block by its language ("json code"), or "Code". */
+  codeBlockLabel: (params: { language: string }) => string;
+  /** Names a table's scrolling region. */
+  markdownTable: string;
 }
 
 /** Strings for `/map`. */
@@ -447,7 +503,9 @@ export type Messages = CoreMessages &
   TableMessages &
   ChartMessages &
   ShellMessages &
-  MapMessages;
+  MapMessages &
+  CodeMessages &
+  MarkdownMessages;
 
 /** The English defaults of the core strings (each entry point has its own for the rest). */
 export const defaultMessages: CoreMessages = {
@@ -488,6 +546,21 @@ export const defaultMessages: CoreMessages = {
   genericError: 'Something went wrong. Please try again.',
   copy: 'Copy',
   copied: 'Copied',
+  feedbackCorrect: 'Correct',
+  feedbackIncorrect: 'Incorrect',
+  feedbackWarning: 'Warning',
+  feedbackNote: 'Note',
+  timeLeft: ({ time }) => `${time} left`,
+  timeElapsed: ({ time }) => `${time} elapsed`,
+  timeUp: 'Time is up',
+  timerPaused: 'Paused',
+  dragItem: ({ item }) => `Drag ${item}`,
+  moveUp: ({ item }) => `Move ${item} up`,
+  moveDown: ({ item }) => `Move ${item} down`,
+  itemMovedTo: ({ item, position, total }) => `${item}, moved to position ${position} of ${total}`,
+  tileLegend: 'Legend',
+  tilesMax: ({ max }) => `Choose up to ${max}.`,
+  tilesChosen: ({ count, max }) => `${count} of ${max} chosen`,
   showMore: 'Show more',
   showLess: 'Show less',
   notSet: 'Not set',

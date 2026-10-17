@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
-import { TileGrid, type TileOption, type TileRow } from './TileGrid';
+import { TileGrid, tileText, type TileOption, type TileRow } from './TileGrid';
 import { TilePicker } from './TilePicker';
 
 type Fruit = TileOption<{ colour: string }>;
@@ -38,7 +38,7 @@ describe('TileGrid', () => {
         rows={rows}
         renderTile={renderTile}
         selectionMode="single"
-        onSelectionChange={onSelectionChange}
+        onChange={onSelectionChange}
       />,
     );
     const berries = screen.getByRole('group', { name: 'Berries' });
@@ -114,7 +114,9 @@ describe('TilePicker', () => {
         rows={rows}
         renderTile={renderTile}
         defaultValue="lemon"
-        renderValue={(option) => <span>{`${option.label} (${option.data?.colour ?? ''})`}</span>}
+        renderValue={(option) => (
+          <span>{`${tileText(option)} (${option.data?.colour ?? ''})`}</span>
+        )}
       />,
     );
     expect(screen.getByRole('button', { name: /Fruit/ })).toHaveTextContent('Lemon (yellow)');

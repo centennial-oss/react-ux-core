@@ -97,6 +97,37 @@ export function TableView<Row extends object>({
     ? virtualizer.getTotalSize() - (virtualItems.at(-1)?.end ?? 0)
     : 0;
 
+  // A flexible column takes the leftover width and clamps its text; the others keep their content's width (a
+  // percentage-width column would otherwise squeeze them until short values wrap). Without one, the table lays out
+  // as usual.
+  const flexibleId = columns.find((column) => column.isFlexible)?.id;
+  const widthClasses = (column: (typeof columns)[number]) =>
+    column.id === flexibleId ? 'w-full max-w-0' : undefined;
+  /** The cell's content, held between the column's minimum and maximum widths (cells ignore them themselves). */
+  const sized = (column: (typeof columns)[number], content: ReactNode, isHeader = false) => {
+    const isFlexible = column.id === flexibleId;
+    const minWidth = column.minWidth ?? (isFlexible ? '8rem' : undefined);
+    const maxWidth = column.maxWidth;
+    const keepsContentWidth = flexibleId !== undefined && !isFlexible && maxWidth === undefined;
+    if (minWidth === undefined && maxWidth === undefined && !keepsContentWidth) {
+      return content;
+    }
+    return (
+      <div
+        // eslint-disable-next-line no-restricted-syntax -- dynamic geometry: the column's configured bounds.
+        style={
+          minWidth === undefined && maxWidth === undefined ? undefined : { minWidth, maxWidth }
+        }
+        className={cn(
+          keepsContentWidth ? 'w-max' : 'min-w-0',
+          isHeader && isFlexible && 'truncate',
+        )}
+      >
+        {content}
+      </div>
+    );
+  };
+
   const stickyFirst = (index: number) =>
     hasStickyFirstColumn && index === 0 ? cn('sticky z-[1] bg-inherit', stickyStart[leading]) : '';
   const stickyLeading = (position: number) =>
@@ -142,27 +173,32 @@ export function TableView<Row extends object>({
             className={cn(
               'px-3 py-2 text-xs font-semibold whitespace-nowrap text-fg-muted',
               alignClasses[column.align ?? 'start'],
+              widthClasses(column),
               stickyFirst(index),
             )}
           >
-            {column.isSortable ? (
-              <AriaButton
-                onPress={() => {
-                  onSortPress(column.id);
-                }}
-                className={cn(
-                  '-mx-1 inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 outline-none data-focus-visible:focus-ring data-hovered:text-fg',
-                  column.align === 'end' && 'flex-row-reverse',
-                )}
-              >
-                {column.header}
-                <SortIcon
-                  aria-hidden="true"
-                  className={cn('size-3.5 shrink-0', !isSorted && 'opacity-40')}
-                />
-              </AriaButton>
-            ) : (
-              column.header
+            {sized(
+              column,
+              column.isSortable ? (
+                <AriaButton
+                  onPress={() => {
+                    onSortPress(column.id);
+                  }}
+                  className={cn(
+                    '-mx-1 inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 outline-none data-focus-visible:focus-ring data-hovered:text-fg',
+                    column.align === 'end' && 'flex-row-reverse',
+                  )}
+                >
+                  {column.header}
+                  <SortIcon
+                    aria-hidden="true"
+                    className={cn('size-3.5 shrink-0', !isSorted && 'opacity-40')}
+                  />
+                </AriaButton>
+              ) : (
+                column.header
+              ),
+              true,
             )}
           </th>
         );
@@ -265,15 +301,19 @@ export function TableView<Row extends object>({
                       'text-fg',
                       alignClasses[column.align ?? 'start'],
                       column.align === 'end' && 'tabular-nums',
+                      widthClasses(column),
                       stickyFirst(index),
                     );
                     return column.isRowHeader ? (
                       <th key={column.id} scope="row" className={cn(className, 'font-normal')}>
-                        {href === undefined ? content : <RowLink href={href}>{content}</RowLink>}
+                        {sized(
+                          column,
+                          href === undefined ? content : <RowLink href={href}>{content}</RowLink>,
+                        )}
                       </th>
                     ) : (
                       <td key={column.id} className={className}>
-                        {content}
+                        {sized(column, content)}
                       </td>
                     );
                   })}

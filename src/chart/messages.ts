@@ -18,6 +18,15 @@ export const defaultChartMessages: ChartMessages = {
   seriesRange: ({ label, min, max, latest }) =>
     `${label}: from ${min} to ${max}, latest ${latest}.`,
   categorySummary: ({ count }) => (count === 1 ? '1 category.' : `${count} categories.`),
+  valueAxisTitle: ({ title }) => `Axis: ${title}.`,
+  heatmapCell: ({ row, column, value }) => `${row}, ${column}, ${value}`,
+  heatmapSummary: ({ rows, columns }) => `${rows} rows by ${columns} columns.`,
+  heatmapLowest: ({ cell }) => `Lowest: ${cell}.`,
+  heatmapHighest: ({ cell }) => `Highest: ${cell}.`,
+  heatmapScale: 'Scale',
+  calendarDay: ({ date, value }) => `${date}, ${value}`,
+  heatmapMidpoint: ({ value }) => `Midpoint: ${value}`,
+  heatmapScrollHint: 'Scroll sideways for more',
   categoryHighLow: ({ label, high, highValue, low, lowValue }) =>
     `${label}: highest ${high} (${highValue}), lowest ${low} (${lowValue}).`,
   gaugeNormal: 'Normal',

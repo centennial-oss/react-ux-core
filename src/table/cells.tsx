@@ -6,29 +6,79 @@ import { useLocale } from 'react-aria-components';
 import { Badge } from '../components/Badge/Badge';
 import { RelativeTime } from '../components/RelativeTime/RelativeTime';
 import { StatusDot } from '../components/StatusDot/StatusDot';
-
+import { Tooltip } from '../components/Tooltip/Tooltip';
+import { cn } from '../utils/cn';
 import type { Tone } from '../utils/types';
+import { useIsClamped } from '../utils/useIsClamped';
 import { RowLink } from './shared';
 import { useTableMessages } from './messages';
 
-/** A title (optionally the row's link) over a muted subtitle. */
+const clampClasses = { 1: 'line-clamp-1', 2: 'line-clamp-2', 3: 'line-clamp-3' } as const;
+
+export interface TwoLineCellProps {
+  title: ReactNode;
+  subtitle?: ReactNode;
+  /**
+   * Makes the title the row's link (use it in the row header column, in place of the table's `getRowHref`): the
+   * link's name is the title alone, and the clamp tooltip opens when it takes focus.
+   */
+  href?: string;
+  /** Lines before the title is clamped with an ellipsis. Defaults to 1. */
+  titleLines?: 1 | 2 | 3;
+  /** Lines before the subtitle is clamped. Defaults to 1. */
+  subtitleLines?: 1 | 2 | 3;
+  /** Plain text for the tooltip shown while the title is clamped. Defaults to the title when it's a string. */
+  titleText?: string;
+}
+
+/**
+ * A title (optionally the row's link) over a muted subtitle, each clamped to a number of lines. The full text stays
+ * in the page (screen readers read it all, and it's the link's name); while the title is clamped, a tooltip shows it
+ * on hover and keyboard focus. Put it in the table's flexible column so it clamps instead of widening the table.
+ */
 export function TwoLineCell({
   title,
   subtitle,
   href,
-}: {
-  title: ReactNode;
-  subtitle?: ReactNode;
-  /** Makes the title the row's link (use it in the row header column). */
-  href?: string;
-}) {
+  titleLines = 1,
+  subtitleLines = 1,
+  titleText,
+}: TwoLineCellProps) {
+  const [titleRef, isClamped] = useIsClamped();
+  const fullText = titleText ?? (typeof title === 'string' ? title : undefined);
+  const hasTooltip = isClamped && fullText !== undefined;
+  const titleSpan = (
+    <span
+      ref={titleRef}
+      title={href === undefined && hasTooltip ? fullText : undefined}
+      className={cn('min-w-0 break-words', clampClasses[titleLines])}
+    >
+      {title}
+    </span>
+  );
+  const link =
+    href === undefined ? (
+      titleSpan
+    ) : (
+      <RowLink href={href} className="block min-w-0">
+        {titleSpan}
+      </RowLink>
+    );
   return (
     <span className="flex min-w-0 flex-col gap-0.5">
-      <span className="min-w-0 truncate">
-        {href === undefined ? title : <RowLink href={href}>{title}</RowLink>}
-      </span>
+      {href !== undefined && hasTooltip ? (
+        <Tooltip content={fullText} placement="top">
+          {link}
+        </Tooltip>
+      ) : (
+        link
+      )}
       {subtitle !== undefined && (
-        <span className="min-w-0 truncate text-xs text-fg-muted">{subtitle}</span>
+        <span
+          className={cn('min-w-0 break-words text-xs text-fg-muted', clampClasses[subtitleLines])}
+        >
+          {subtitle}
+        </span>
       )}
     </span>
   );

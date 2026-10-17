@@ -2,7 +2,7 @@
   {
     "name": "Main entry (all exports)",
     "path": "dist/index.js",
-    "limit": "47.5 kB"
+    "limit": "53 kB"
   },
   {
     "name": "Button",
@@ -71,7 +71,7 @@
   {
     "name": "Chart entry (all exports)",
     "path": "dist/chart/index.js",
-    "limit": "28.5 kB"
+    "limit": "32.5 kB"
   },
   {
     "name": "TimeSeriesChart",
@@ -118,7 +118,7 @@
     "name": "FlagPicker",
     "path": "dist/index.js",
     "import": "{ FlagPicker, FlagProvider }",
-    "limit": "15.75 kB"
+    "limit": "17.5 kB"
   },
   {
     "name": "Gauge",
@@ -127,8 +127,42 @@
     "limit": "11.5 kB"
   },
   {
+    "name": "ReorderableList",
+    "path": "dist/index.js",
+    "import": "{ ReorderableList }",
+    "limit": "13.5 kB"
+  },
+  {
+    "name": "TileGrid",
+    "path": "dist/index.js",
+    "import": "{ TileGrid }",
+    "limit": "12.75 kB"
+  },
+  {
+    "name": "HeatmapChart",
+    "path": "dist/chart/index.js",
+    "import": "{ HeatmapChart, CalendarHeatmap }",
+    "limit": "27 kB"
+  },
+  {
     "name": "Map entry (all exports)",
     "path": "dist/map/index.js",
     "limit": "16 kB"
+  },
+  {
+    "name": "Code entry (all exports)",
+    "path": "dist/code/index.js",
+    "limit": "14.5 kB"
+  },
+  {
+    "name": "Markdown entry (all exports)",
+    "path": "dist/markdown/index.js",
+    "limit": "16 kB"
+  },
+  {
+    "name": "Timer",
+    "path": "dist/index.js",
+    "import": "{ Timer }",
+    "limit": "12.5 kB"
   }
 ]

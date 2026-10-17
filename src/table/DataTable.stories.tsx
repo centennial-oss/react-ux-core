@@ -1,9 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { questions, type Question } from '../../test/questions';
 import { Archive, Plus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '../components/Button/Button';
 import { MenuItem } from '../components/Menu/Menu';
-import { MoneyCell, NumberCell, RelativeTimeCell, StatusCell, TagsCell } from './cells';
+import {
+  MoneyCell,
+  NumberCell,
+  RelativeTimeCell,
+  StatusCell,
+  TagsCell,
+  TwoLineCell,
+} from './cells';
 import { columnsFor } from './columns';
 import { toCsv } from './csv';
 import { DataTable } from './DataTable';
@@ -396,4 +404,39 @@ function CursorPagedSites() {
 export const CursorPagedWithUrlState: Story = {
   tags: ['!visual'],
   render: () => <CursorPagedSites />,
+};
+
+const questionColumn = columnsFor<Question>();
+
+/**
+ * Long titles clamp instead of widening the table: the question column is flexible (`isFlexible`), so it takes the
+ * leftover width while the others keep their content's width, and its TwoLineCell clamps to two lines, with the full text in a tooltip (hover or keyboard focus) and as the
+ * link's name. Domain is held to `maxWidth`. Phones show the same data as cards.
+ */
+export const LongTitles: Story = {
+  render: () => (
+    <DataTable<Question>
+      aria-label="Question bank"
+      rows={questions}
+      getRowId={(row) => row.id}
+      columns={[
+        questionColumn.field('question', {
+          header: 'Question',
+          isRowHeader: true,
+          isFlexible: true,
+          cell: ({ row }) => (
+            <TwoLineCell
+              title={row.question}
+              subtitle={row.domain}
+              titleLines={2}
+              href={`#${row.id}`}
+            />
+          ),
+        }),
+        questionColumn.field('domain', { header: 'Domain', maxWidth: '9rem', mobile: 'subtitle' }),
+        questionColumn.field('difficulty', { header: 'Difficulty', mobile: true }),
+        questionColumn.field('attempts', { header: 'Attempts', align: 'end', mobile: true }),
+      ]}
+    />
+  ),
 };

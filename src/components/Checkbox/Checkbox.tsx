@@ -7,6 +7,11 @@ import {
 } from 'react-aria-components';
 import { cn } from '../../utils/cn';
 import { FieldDescription, FieldErrorMessage, type FieldBaseProps } from '../Field/Field';
+import {
+  optionDescription,
+  optionFeedbackClasses,
+  type OptionFeedback,
+} from '../Field/OptionFeedback';
 
 export interface CheckboxProps extends Omit<
   AriaCheckboxFieldProps,
@@ -16,6 +21,11 @@ export interface CheckboxProps extends Omit<
   children?: ReactNode;
   /** Help text under the label. */
   description?: ReactNode;
+  /**
+   * Marks the option, for example after an answer is checked: a tone on its row, the tone's icon, and a message
+   * under the label. Independent of selection, `isReadOnly` and `isDisabled`.
+   */
+  feedback?: OptionFeedback;
   /**
    * Shown when a standalone checkbox is invalid (`isInvalid`, or failed validation). Inside a `CheckboxGroup`, the
    * group shows the error instead.
@@ -38,14 +48,20 @@ export interface CheckboxProps extends Omit<
 export function Checkbox({
   children,
   description,
+  feedback,
   errorMessage,
   className,
   ...rest
 }: CheckboxProps) {
+  const fullDescription = optionDescription(description, feedback);
   return (
     <CheckboxField
       {...rest}
-      className={cn('flex min-w-0 flex-col gap-0.5 text-sm text-fg', className)}
+      className={cn(
+        'flex min-w-0 flex-col gap-0.5 text-sm text-fg',
+        optionFeedbackClasses(feedback),
+        className,
+      )}
     >
       <CheckboxButton
         className={cn(
@@ -81,10 +97,10 @@ export function Checkbox({
           );
         }}
       </CheckboxButton>
-      {(description !== undefined || errorMessage !== undefined) && (
+      {(fullDescription !== undefined || errorMessage !== undefined) && (
         // Indented to line up with the label text (box width plus gap).
-        <div className="flex flex-col gap-0.5 ps-6">
-          {description !== undefined && <FieldDescription>{description}</FieldDescription>}
+        <div className={cn('flex flex-col gap-0.5 ps-6', feedback && 'pb-1.5')}>
+          {fullDescription !== undefined && <FieldDescription>{fullDescription}</FieldDescription>}
           <FieldErrorMessage>{errorMessage}</FieldErrorMessage>
         </div>
       )}

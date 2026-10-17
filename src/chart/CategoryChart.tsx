@@ -8,6 +8,7 @@ import { useMediaQuery } from '../utils/useMediaQuery';
 import { ChartFrame, type ChartFrameOptions, type ChartTable } from './ChartFrame';
 import { withAlpha, type ChartColor } from './colors';
 import { formatValue } from './format';
+import { valueAxisBounds, valueAxisTitle, type ValueAxisOptions } from './valueAxis';
 import { downloadPng, useChart, useChartLook } from './useChart';
 import { useChartMessages } from './messages';
 
@@ -28,6 +29,11 @@ export interface CategoryChartProps extends ChartFrameOptions {
   type: 'bar' | 'horizontalBar' | 'stackedBar' | 'donut';
   /** The values' unit ("kWh"). */
   unit?: string;
+  /**
+   * The value axis's range and title (the x-axis for horizontal bars, the y-axis otherwise), such as
+   * `{ min: 0, max: 100 }` for percentages. Donuts have no value axis and ignore it.
+   */
+  valueAxis?: ValueAxisOptions;
 }
 
 /**
@@ -40,6 +46,7 @@ export function CategoryChart({
   series,
   type,
   unit,
+  valueAxis: valueAxisOptions,
   exportFileName,
   ...frame
 }: CategoryChartProps) {
@@ -115,6 +122,8 @@ export function CategoryChart({
     const isStacked = type === 'stackedBar';
     const valueAxis = {
       stacked: isStacked,
+      ...valueAxisBounds(valueAxisOptions),
+      title: valueAxisTitle(valueAxisOptions?.title, palette.mutedText),
       grid: { color: palette.grid },
       border: { color: palette.grid },
       ticks: {
@@ -188,6 +197,7 @@ export function CategoryChart({
     isNarrow,
     locale,
     unit,
+    valueAxisOptions,
   ]);
 
   const { canvasRef, chart } = useChart(config);
@@ -220,8 +230,11 @@ export function CategoryChart({
         );
       }
     }
+    if (!isDonut && valueAxisOptions?.title !== undefined) {
+      parts.push(messages.valueAxisTitle({ title: valueAxisOptions.title }));
+    }
     return parts.join(' ');
-  }, [messages, categories, series, isDonut, locale, unit]);
+  }, [messages, categories, series, isDonut, locale, unit, valueAxisOptions]);
 
   const table = (): ChartTable => {
     const rows = categories.map((category, index) => {

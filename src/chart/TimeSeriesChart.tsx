@@ -12,6 +12,7 @@ import { describeTimeSeries } from './describe';
 import { formatTime, formatValue, toTime } from './format';
 import type { ChartBand, ChartThreshold } from './setup';
 import { timeAxis } from './timeAxis';
+import { valueAxisBounds, valueAxisTitle, type ValueAxisOptions } from './valueAxis';
 import { downloadPng, useChart, useChartLook } from './useChart';
 import { useChartMessages } from './messages';
 
@@ -68,6 +69,11 @@ export interface TimeSeriesChartProps extends ChartFrameOptions {
   onRangeSelect?: (start: Date, end: Date) => void;
   /** Allows zooming (pinch and pan on touch, Ctrl+wheel or drag with `onRangeSelect`). Defaults to true. */
   isZoomable?: boolean;
+  /**
+   * The value axes' ranges and titles. By default each axis fits its data and stretches to include its thresholds
+   * and bands; `min`/`max` pin it, such as 0–100 for percentages.
+   */
+  axes?: { left?: ValueAxisOptions; right?: ValueAxisOptions };
 }
 
 function inSegment(
@@ -96,6 +102,7 @@ export function TimeSeriesChart({
   bands = [],
   onRangeSelect,
   isZoomable = true,
+  axes,
   exportFileName,
   isLoading,
   error,
@@ -184,10 +191,19 @@ export function TimeSeriesChart({
       },
     );
 
+    // Threshold values and band edges on an axis, which stretch it so they show.
+    const references = (position: 'left' | 'right') => [
+      ...thresholds.filter((line) => (line.axis ?? 'left') === position).map((line) => line.value),
+      ...bands
+        .filter((band) => (band.axis ?? 'left') === position)
+        .flatMap((band) => [band.from, band.to]),
+    ];
     const axis = (position: 'left' | 'right', unit: string | undefined, isShown: boolean) => ({
       type: 'linear' as const,
       position,
       display: isShown,
+      ...valueAxisBounds(axes?.[position], references(position)),
+      title: valueAxisTitle(axes?.[position]?.title, palette.mutedText),
       stacked: series.some(
         (entry) => entry.stack !== undefined && (entry.axis ?? 'left') === position,
       ),
@@ -261,7 +277,12 @@ export function TimeSeriesChart({
             font: palette.font,
           },
           zoom: {
-            limits: { x: { minRange: 60_000 } },
+            // Zooming never goes past the axes' hard bounds; Reset zoom returns to the configured range.
+            limits: {
+              x: { minRange: 60_000 },
+              left: { min: axes?.left?.min ?? 'original', max: axes?.left?.max ?? 'original' },
+              right: { min: axes?.right?.min ?? 'original', max: axes?.right?.max ?? 'original' },
+            },
             pan: { enabled: isZoomable && isCoarse, mode: 'x' },
             zoom: {
               mode: 'x',
@@ -300,14 +321,21 @@ export function TimeSeriesChart({
     onRangeSelect,
     thresholds,
     bands,
+    axes,
   ]);
 
   const { canvasRef, chart } = useChart(config);
 
   // A plain-language summary for screen readers: the time span and each series' range and latest value.
   const summary = useMemo(
-    () => describeTimeSeries(series, messages, locale, timeZone),
-    [series, messages, locale, timeZone],
+    () =>
+      [
+        describeTimeSeries(series, messages, locale, timeZone),
+        ...[axes?.left?.title, hasRight ? axes?.right?.title : undefined].flatMap((title) =>
+          title === undefined ? [] : [messages.valueAxisTitle({ title })],
+        ),
+      ].join(' '),
+    [series, messages, locale, timeZone, axes, hasRight],
   );
 
   const table = (): ChartTable => {

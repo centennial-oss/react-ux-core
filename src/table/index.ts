@@ -11,6 +11,7 @@ export {
   StatusCell,
   TagsCell,
   TwoLineCell,
+  type TwoLineCellProps,
 } from './cells';
 export { downloadCsv, toCsv } from './csv';
 export { activeFilters, describeFilter, FilterPanel } from './filters';

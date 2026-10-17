@@ -66,7 +66,10 @@ interface ChartFrameProps extends ChartFrameOptions {
   onExportCsv: () => void;
   isZoomed?: boolean;
   onResetZoom?: () => void;
-  canvasRef: Ref<HTMLCanvasElement>;
+  /** The canvas a Chart.js chart draws on. */
+  canvasRef?: Ref<HTMLCanvasElement>;
+  /** Draws the plot itself instead of a canvas (Heatmap), named by the title and described by the summary. */
+  plot?: (ids: { titleId: string; summaryId: string }) => ReactNode;
 }
 
 /** The frame around a chart: heading, legend, toolbar, states, table view and full screen. */
@@ -95,6 +98,7 @@ export function ChartFrame({
   isZoomed = false,
   onResetZoom,
   canvasRef,
+  plot,
 }: ChartFrameProps) {
   const messages = useChartMessages();
   const titleId = useId();
@@ -221,11 +225,14 @@ export function ChartFrame({
       <p id={summaryId} className="sr-only">
         {summary}
       </p>
+      {plot !== undefined && showData && body === undefined && (
+        <div className="w-full min-w-0">{plot({ titleId, summaryId })}</div>
+      )}
       <div
         className={cn(
           'relative w-full min-w-0',
           isFullScreen ? 'min-h-0 flex-1' : 'max-sm:aspect-[4/3] sm:h-(--chart-height)',
-          (body !== undefined || !showData) && 'hidden',
+          (body !== undefined || !showData || plot !== undefined) && 'hidden',
         )}
         // The plot's height comes from the `height` prop (dynamic geometry).
         // eslint-disable-next-line no-restricted-syntax -- see above.

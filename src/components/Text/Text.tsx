@@ -3,6 +3,54 @@
 import type { ElementType, HTMLAttributes, ReactNode, Ref } from 'react';
 import { cn } from '../../utils/cn';
 
+export type TextVariant = 'body' | 'muted' | 'small' | 'lead';
+
+const variantClasses: Record<TextVariant, string> = {
+  body: 'text-sm text-fg',
+  muted: 'text-sm text-fg-muted',
+  small: 'text-xs text-fg-muted',
+  lead: 'text-base text-fg sm:text-lg',
+};
+
+const lineClasses = {
+  1: 'line-clamp-1',
+  2: 'line-clamp-2',
+  3: 'line-clamp-3',
+  4: 'line-clamp-4',
+} as const;
+
+export interface TextProps extends Omit<HTMLAttributes<HTMLElement>, 'className' | 'style'> {
+  /** `body` (the default), `muted` for secondary details, `small` for notes, `lead` for a page's intro. */
+  variant?: TextVariant;
+  /** `p` for paragraphs (the default), `span` inside other text, or `div`. */
+  as?: 'p' | 'span' | 'div';
+  /** Clamps to this many lines with an ellipsis. The full text stays in the page for screen readers. */
+  lines?: 1 | 2 | 3 | 4;
+  className?: string;
+  children: ReactNode;
+  ref?: Ref<HTMLElement>;
+}
+
+/** Body text in the app's type scale and token colours. */
+export function Text({
+  variant = 'body',
+  as = 'p',
+  lines,
+  className,
+  children,
+  ...rest
+}: TextProps) {
+  const Element = as as ElementType;
+  return (
+    <Element
+      {...rest}
+      className={cn(variantClasses[variant], lines && lineClasses[lines], className)}
+    >
+      {children}
+    </Element>
+  );
+}
+
 export type TextSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 export type TextTone = 'default' | 'muted' | 'accent' | 'success' | 'warning' | 'danger' | 'info';
 
@@ -24,64 +72,6 @@ const toneClasses: Record<TextTone, string> = {
   danger: 'text-danger-fg',
   info: 'text-info-fg',
 };
-
-const weightClasses = {
-  regular: 'font-normal',
-  medium: 'font-medium',
-  semibold: 'font-semibold',
-  bold: 'font-bold',
-} as const;
-
-export interface TextProps extends Omit<HTMLAttributes<HTMLElement>, 'className' | 'style'> {
-  /** `p` for paragraphs (the default), `span` inside other text. */
-  as?: 'p' | 'span' | 'div' | 'strong' | 'small';
-  /** Defaults to `sm`, the body size of the app. */
-  size?: TextSize;
-  /** Defaults to `default`. */
-  tone?: TextTone;
-  weight?: keyof typeof weightClasses;
-  /** Monospaced, for serials, keys and codes. */
-  isMono?: boolean;
-  /** Tabular figures, for numbers that line up. */
-  isNumeric?: boolean;
-  /** One line with an ellipsis. */
-  isTruncated?: boolean;
-  className?: string;
-  children?: ReactNode;
-  ref?: Ref<HTMLElement>;
-}
-
-/** Body text in the app's type scale and token colours. */
-export function Text({
-  as = 'p',
-  size = 'sm',
-  tone = 'default',
-  weight,
-  isMono,
-  isNumeric,
-  isTruncated,
-  className,
-  children,
-  ...rest
-}: TextProps) {
-  const Element = as as ElementType;
-  return (
-    <Element
-      className={cn(
-        sizeClasses[size],
-        toneClasses[tone],
-        weight && weightClasses[weight],
-        isMono && 'font-mono',
-        isNumeric && 'tabular-nums',
-        isTruncated && 'truncate',
-        className,
-      )}
-      {...rest}
-    >
-      {children}
-    </Element>
-  );
-}
 
 export interface HeadingProps extends Omit<
   HTMLAttributes<HTMLHeadingElement>,

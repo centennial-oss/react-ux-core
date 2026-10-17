@@ -13,6 +13,11 @@ import {
   fieldRootClasses,
   type FieldBaseProps,
 } from '../Field/Field';
+import {
+  optionDescription,
+  optionFeedbackClasses,
+  type OptionFeedback,
+} from '../Field/OptionFeedback';
 
 export interface RadioGroupProps<T extends string = string>
   extends
@@ -102,17 +107,27 @@ export interface RadioProps extends Omit<
   children?: ReactNode;
   /** Help text under the label. */
   description?: ReactNode;
+  /**
+   * Marks the option, for example after an answer is checked: a tone on its row, the tone's icon, and a message
+   * under the label. Independent of selection, `isReadOnly` and `isDisabled`.
+   */
+  feedback?: OptionFeedback;
   className?: string;
   /** The option's root element. */
   ref?: Ref<HTMLDivElement>;
 }
 
 /** One option in a `RadioGroup`. The whole label row is the touch target. */
-export function Radio({ children, description, className, ...rest }: RadioProps) {
+export function Radio({ children, description, feedback, className, ...rest }: RadioProps) {
+  const fullDescription = optionDescription(description, feedback);
   return (
     <RadioField
       {...rest}
-      className={cn('flex min-w-0 flex-col gap-0.5 text-sm text-fg', className)}
+      className={cn(
+        'flex min-w-0 flex-col gap-0.5 text-sm text-fg',
+        optionFeedbackClasses(feedback),
+        className,
+      )}
     >
       <RadioButton
         className={cn(
@@ -141,10 +156,10 @@ export function Radio({ children, description, className, ...rest }: RadioProps)
           </>
         )}
       </RadioButton>
-      {description !== undefined && (
+      {fullDescription !== undefined && (
         // Indented to line up with the label text (circle width plus gap).
-        <div className="ps-6">
-          <FieldDescription>{description}</FieldDescription>
+        <div className={cn('ps-6', feedback && 'pb-1.5')}>
+          <FieldDescription>{fullDescription}</FieldDescription>
         </div>
       )}
     </RadioField>

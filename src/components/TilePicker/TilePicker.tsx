@@ -25,7 +25,13 @@ import {
 } from '../Field/Field';
 import { popoverClasses } from '../Overlay/styles';
 import { SearchField } from '../SearchField/SearchField';
-import { TileGrid, type TileOption, type TileRenderState, type TileRow } from './TileGrid';
+import {
+  TileGrid,
+  tileText,
+  type TileOption,
+  type TileRenderState,
+  type TileRow,
+} from './TileGrid';
 
 export interface TilePickerProps<O extends TileOption>
   extends
@@ -88,10 +94,11 @@ export function TilePicker<O extends TileOption>({
     () => new Map(rows.flatMap((row) => row.items.map((option) => [option.id, option] as const))),
     [rows],
   );
-  const keywordsByLabel = useMemo(() => {
+  const keywordsByText = useMemo(() => {
     const map = new Map<string, string[]>();
     for (const option of options.values()) {
-      map.set(option.label, [...(map.get(option.label) ?? []), ...(option.keywords ?? [])]);
+      const text = tileText(option);
+      map.set(text, [...(map.get(text) ?? []), ...(option.keywords ?? [])]);
     }
     return map;
   }, [options]);
@@ -168,7 +175,7 @@ export function TilePicker<O extends TileOption>({
           ) : (
             <Autocomplete
               filter={(text, input) =>
-                [text, ...(keywordsByLabel.get(text) ?? [])].some((word) => contains(word, input))
+                [text, ...(keywordsByText.get(text) ?? [])].some((word) => contains(word, input))
               }
             >
               <SearchField aria-label={searchLabel} size="sm" />

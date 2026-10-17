@@ -5,14 +5,14 @@ import { IconButton } from '../components/IconButton/IconButton';
 import { Menu, MenuItem, MenuSection, MenuTrigger } from '../components/Menu/Menu';
 import { useTheme } from '../provider/context';
 import type { ThemePreference } from '../provider/theme';
-import { useShellMessages } from './messages';
+import { useSettingsMessages } from './settingsMessages';
 
 const THEMES: readonly ThemePreference[] = ['system', 'light', 'dark', 'high-contrast'];
 const themeIcons = { system: Monitor, light: Sun, dark: Moon, 'high-contrast': Contrast } as const;
 
 /** The theme choice (System, Light, Dark, High contrast) as a menu section, bound to `useTheme()`. */
 export function ThemeMenuSection() {
-  const messages = useShellMessages();
+  const messages = useSettingsMessages();
   const { preference, setPreference } = useTheme();
   const labels: Record<ThemePreference, string> = {
     system: messages.themeSystem,
@@ -80,7 +80,7 @@ export function SettingsMenu({
   className,
   ref,
 }: SettingsMenuProps) {
-  const messages = useShellMessages();
+  const messages = useSettingsMessages();
   const label = ariaLabel ?? messages.settings;
   return (
     <MenuTrigger>

@@ -3,6 +3,7 @@ import { Label, Meter, useLocale } from 'react-aria-components';
 import { StatusDot } from '../components/StatusDot/StatusDot';
 
 import { cn } from '../utils/cn';
+import type { Tone } from '../utils/types';
 import { useChartMessages } from './messages';
 
 /** Where a gauge turns to warning and danger. */
@@ -27,15 +28,32 @@ export interface GaugeProps {
   formatOptions?: Intl.NumberFormatOptions;
   /** The value's unit ("kW"). */
   unit?: string;
+  /** Words for each status on this gauge. Defaults to the `gaugeNormal`, `gaugeWarning` and `gaugeDanger` messages. */
+  statusLabels?: Partial<Record<GaugeStatus, string>>;
+  /** Shows the status dot and word. Defaults to true; without, the meter's text is just the value. */
+  hasStatus?: boolean;
+  /**
+   * Replaces the status worked out from the thresholds, fill colour included, for example
+   * `{ tone: 'neutral', label: 'Not started' }`.
+   */
+  status?: { tone: Tone; label: string };
   className?: string;
   ref?: Ref<HTMLDivElement>;
 }
 
-type Status = 'normal' | 'warning' | 'danger';
+/** A gauge's status by its thresholds. */
+export type GaugeStatus = 'normal' | 'warning' | 'danger';
+type Status = GaugeStatus;
 
-const statusTone = { normal: 'success', warning: 'warning', danger: 'danger' } as const;
-const fillClasses: Record<Status, string> = {
-  normal: 'stroke-success-solid bg-success-solid',
+const statusTone: Record<Status, Tone> = {
+  normal: 'success',
+  warning: 'warning',
+  danger: 'danger',
+};
+const fillClasses: Record<Tone, string> = {
+  neutral: 'stroke-neutral-solid bg-neutral-solid',
+  accent: 'stroke-accent-solid bg-accent-solid',
+  success: 'stroke-success-solid bg-success-solid',
   warning: 'stroke-warning-solid bg-warning-solid',
   danger: 'stroke-danger-solid bg-danger-solid',
 };
@@ -75,17 +93,24 @@ export function Gauge({
   variant = 'arc',
   formatOptions,
   unit,
+  statusLabels,
+  hasStatus = true,
+  status: statusOverride,
   className,
   ref,
 }: GaugeProps) {
   const messages = useChartMessages();
   const { locale } = useLocale();
   const status = statusOf(value, thresholds, badWhen);
-  const statusText = {
-    normal: messages.gaugeNormal,
-    warning: messages.gaugeWarning,
-    danger: messages.gaugeDanger,
-  }[status];
+  const tone = statusOverride?.tone ?? statusTone[status];
+  const statusText =
+    statusOverride?.label ??
+    statusLabels?.[status] ??
+    {
+      normal: messages.gaugeNormal,
+      warning: messages.gaugeWarning,
+      danger: messages.gaugeDanger,
+    }[status];
   const number = new Intl.NumberFormat(locale, formatOptions).format(value);
   const valueText = unit === undefined ? number : `${number} ${unit}`;
   const span = maxValue - minValue;
@@ -100,7 +125,9 @@ export function Gauge({
       value={value}
       minValue={minValue}
       maxValue={maxValue}
-      valueLabel={messages.gaugeValue({ value: valueText, status: statusText })}
+      valueLabel={
+        hasStatus ? messages.gaugeValue({ value: valueText, status: statusText }) : valueText
+      }
       className={cn(
         'flex min-w-0 flex-col gap-2 text-sm text-fg',
         variant === 'arc' && 'items-center',
@@ -123,7 +150,7 @@ export function Gauge({
                 {filled > 0 && (
                   <path
                     d={arcPath(0, filled)}
-                    className={cn('fill-none', fillClasses[status])}
+                    className={cn('fill-none', fillClasses[tone])}
                     strokeWidth={10}
                     strokeLinecap="round"
                   />
@@ -150,7 +177,7 @@ export function Gauge({
             ) : (
               <div aria-hidden="true" className="relative h-3 w-full rounded-full bg-surface-3">
                 <div
-                  className={cn('h-full rounded-full', fillClasses[status])}
+                  className={cn('h-full rounded-full', fillClasses[tone])}
                   // eslint-disable-next-line no-restricted-syntax -- dynamic geometry: the filled share.
                   style={{ width: `${String(percentage)}%` }}
                 />
@@ -171,7 +198,7 @@ export function Gauge({
               )}
             >
               <span className="text-lg font-semibold tabular-nums">{valueText}</span>
-              <StatusDot tone={statusTone[status]} label={statusText} size="sm" />
+              {hasStatus && <StatusDot tone={tone} label={statusText} size="sm" />}
             </div>
           </>
         );

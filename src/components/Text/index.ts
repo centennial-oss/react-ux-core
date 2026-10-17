@@ -5,4 +5,5 @@ export {
   type TextProps,
   type TextSize,
   type TextTone,
+  type TextVariant,
 } from './Text';

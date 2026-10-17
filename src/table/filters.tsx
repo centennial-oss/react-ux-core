@@ -142,7 +142,7 @@ export function FilterPanel({
                 label={filter.label}
                 value={typeof value === 'string' ? value : ANY}
                 onChange={(key) => {
-                  set(filter.id, key === ANY || key === null ? undefined : String(key));
+                  set(filter.id, key === ANY ? undefined : key);
                 }}
               >
                 <Option id={ANY}>{messages.any}</Option>

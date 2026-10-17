@@ -32,7 +32,7 @@ export interface MultiSelectItem {
   id: Key;
 }
 
-export interface MultiSelectProps<T extends MultiSelectItem> extends FieldBaseProps {
+interface BaseMultiSelectProps<T extends MultiSelectItem> extends FieldBaseProps {
   /** Static items, filtered as the user types. */
   items?: Iterable<T>;
   /** Loads items for the typed text instead of `items` (debounced; stale requests are aborted). */
@@ -44,8 +44,8 @@ export interface MultiSelectProps<T extends MultiSelectItem> extends FieldBasePr
   /** The chip label for an item. Defaults to its `label`, `name` or `title`, or its id. */
   getItemLabel?: (item: T) => string;
   /** The chosen items' ids. */
-  value?: Key[];
-  defaultValue?: Key[];
+  value?: readonly Key[];
+  defaultValue?: readonly Key[];
   onChange?: (value: Key[]) => void;
   placeholder?: string;
   isDisabled?: boolean;
@@ -68,6 +68,18 @@ function defaultLabel(item: MultiSelectItem): string {
   return String(item.id);
 }
 
+/** `T` is the item type; `K` the ids' type, inferred from `value` or `onChange` (ids must come from that union). */
+export interface MultiSelectProps<
+  T extends MultiSelectItem = MultiSelectItem,
+  K extends Key = Key,
+> extends Omit<BaseMultiSelectProps<T>, 'value' | 'defaultValue' | 'onChange'> {
+  /** The chosen items' ids, controlled. */
+  value?: readonly K[];
+  /** The initially chosen items' ids, uncontrolled. They don't widen the id type. */
+  defaultValue?: readonly NoInfer<K>[];
+  onChange?: (value: K[]) => void;
+}
+
 /**
  * Choose several options; the chosen values show as removable chips and drop out of the suggestions. Static
  * `items` are filtered as you type, or `loadItems` fetches results. Backspace in the empty input removes the last
@@ -75,7 +87,11 @@ function defaultLabel(item: MultiSelectItem): string {
  *
  * Built on React Aria's single-selection combo box: each pick adds a chip and clears the query.
  */
-export function MultiSelect<T extends MultiSelectItem>(props: MultiSelectProps<T>) {
+export function MultiSelect<T extends MultiSelectItem = MultiSelectItem, K extends Key = Key>(
+  typedProps: MultiSelectProps<T, K>,
+) {
+  // The ids React Aria reports are always the items' ids, which the caller typed as K.
+  const props = typedProps as unknown as BaseMultiSelectProps<T>;
   if (props.loadItems) {
     return <AsyncMultiSelect {...props} loadItems={props.loadItems} />;
   }
@@ -83,7 +99,7 @@ export function MultiSelect<T extends MultiSelectItem>(props: MultiSelectProps<T
 }
 
 function AsyncMultiSelect<T extends MultiSelectItem>(
-  props: MultiSelectProps<T> & { loadItems: NonNullable<MultiSelectProps<T>['loadItems']> },
+  props: BaseMultiSelectProps<T> & { loadItems: NonNullable<BaseMultiSelectProps<T>['loadItems']> },
 ) {
   const { loadItems, loadDelay = 300 } = props;
   const list = useAsyncList<T>({
@@ -106,7 +122,7 @@ function AsyncMultiSelect<T extends MultiSelectItem>(
   );
 }
 
-interface ShellProps<T extends MultiSelectItem> extends MultiSelectProps<T> {
+interface ShellProps<T extends MultiSelectItem> extends BaseMultiSelectProps<T> {
   staticItems?: Iterable<T>;
   asyncItems?: Iterable<T>;
   onSearch?: (text: string) => void;
@@ -140,7 +156,11 @@ function MultiSelectShell<T extends MultiSelectItem>({
   loadError,
 }: ShellProps<T>) {
   const messages = useMessages();
-  const [value, setValue] = useControllableState(valueProp, defaultValue ?? [], onChange);
+  const [value, setValue] = useControllableState<readonly Key[]>(
+    valueProp,
+    defaultValue ?? [],
+    onChange as ((next: readonly Key[]) => void) | undefined,
+  );
   const [inputValue, setInputValue] = useState('');
   // Remember chosen items, so their chips keep a label after the list filters them out (or async results change).
   const [known, setKnown] = useState<ReadonlyMap<Key, T>>(() => new Map());

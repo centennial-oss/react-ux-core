@@ -107,3 +107,31 @@ export const Controlled: Story = {
     );
   },
 };
+
+/**
+ * A checked multiple-response question: chosen and correct, chosen and wrong, and correct but missed, each marked in
+ * place with `feedback`.
+ */
+export const CheckedAnswers: Story = {
+  render: () => (
+    <CheckboxGroup
+      label="Which two planets are gas giants? (Choose two.)"
+      value={['jupiter', 'mars']}
+      isReadOnly
+    >
+      <Checkbox value="jupiter" feedback={{ tone: 'success', message: 'Your answer, correct' }}>
+        Jupiter
+      </Checkbox>
+      <Checkbox value="mars" feedback={{ tone: 'danger', message: 'Your answer' }}>
+        Mars
+      </Checkbox>
+      <Checkbox
+        value="saturn"
+        feedback={{ tone: 'warning', message: 'Correct answer, not chosen' }}
+      >
+        Saturn
+      </Checkbox>
+      <Checkbox value="venus">Venus</Checkbox>
+    </CheckboxGroup>
+  ),
+};

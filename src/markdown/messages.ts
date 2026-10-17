@@ -1,0 +1,15 @@
+// English defaults of the markdown entry point's strings (see `Messages` in provider/messages.ts).
+import { useEntryMessages } from '../provider/context';
+import type { CoreMessages, MarkdownMessages } from '../provider/messages';
+import { defaultCodeMessages } from '../code/messages';
+
+export const defaultMarkdownMessages: MarkdownMessages = {
+  opensInNewTab: '(opens in a new tab)',
+  codeBlockLabel: ({ language }) => (language ? `${language} code` : 'Code'),
+  markdownTable: 'Table',
+};
+
+/** `/markdown`'s strings (and `/code`'s, for its code blocks), with the app's overrides from `UIProvider`. */
+export function useMarkdownMessages(): CoreMessages & MarkdownMessages {
+  return useEntryMessages({ ...defaultCodeMessages, ...defaultMarkdownMessages });
+}

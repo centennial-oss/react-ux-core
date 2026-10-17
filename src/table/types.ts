@@ -34,6 +34,16 @@ export interface DataTableColumn<Row, Value = unknown> {
   align?: 'start' | 'center' | 'end';
   /** A CSS width, such as `12rem` or `160px`. */
   width?: string;
+  /** The narrowest the column gets, as a CSS length. */
+  minWidth?: string;
+  /** The widest the column gets, as a CSS length; longer content wraps or clamps within it. */
+  maxWidth?: string;
+  /**
+   * Takes the leftover width, so text in it (such as a clamped TwoLineCell) clamps instead of widening the table, and
+   * the other columns keep their content's width. One column per table. At least `8rem` wide unless `minWidth` says
+   * otherwise.
+   */
+  isFlexible?: boolean;
   /**
    * How essential the column is when space runs short: `1` always shows, `2` hides on tablets in narrow containers,
    * `3` hides on tablets. Phones show the card instead. Defaults to 2.

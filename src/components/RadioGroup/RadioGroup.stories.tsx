@@ -109,3 +109,27 @@ export const Controlled: Story = {
     );
   },
 };
+
+/**
+ * A checked quiz question: each option marked in place (`feedback`). The chosen wrong answer, and the correct answer
+ * that wasn't chosen. Read-only, so it stays fully readable.
+ */
+export const CheckedAnswer: Story = {
+  render: () => (
+    <RadioGroup
+      label="Which planet is closest to the Sun?"
+      value="venus"
+      isReadOnly
+      description="1 of 1 incorrect"
+    >
+      <Radio value="earth">Earth</Radio>
+      <Radio value="venus" feedback={{ tone: 'danger', message: 'Your answer' }}>
+        Venus
+      </Radio>
+      <Radio value="mercury" feedback={{ tone: 'success', message: 'Correct answer' }}>
+        Mercury
+      </Radio>
+      <Radio value="mars">Mars</Radio>
+    </RadioGroup>
+  ),
+};

@@ -1,6 +1,7 @@
 // English defaults of the shell entry point's strings (see `Messages` in provider/messages.ts).
 import { useEntryMessages } from '../provider/context';
 import type { CoreMessages, ShellMessages } from '../provider/messages';
+import { defaultSettingsMessages } from './settingsMessages';
 
 export const defaultShellMessages: ShellMessages = {
   skipToContent: 'Skip to content',
@@ -13,12 +14,7 @@ export const defaultShellMessages: ShellMessages = {
   expandSidebar: 'Expand sidebar',
   subPages: ({ label }) => `${label} pages`,
   accountMenu: ({ name }) => `Account: ${name}`,
-  settings: 'Settings',
-  theme: 'Theme',
-  themeSystem: 'System',
-  themeLight: 'Light',
-  themeDark: 'Dark',
-  themeHighContrast: 'High contrast',
+  ...defaultSettingsMessages,
   more: 'More',
   pathSeparator: ' / ',
   currentScope: ({ path }) => `Scope: ${path}`,

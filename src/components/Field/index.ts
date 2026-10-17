@@ -11,3 +11,4 @@ export {
   inputHeightClasses,
   type FieldBaseProps,
 } from './Field';
+export type { OptionFeedback } from './OptionFeedback';

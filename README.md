@@ -115,29 +115,35 @@ so on). Pass a stable object, for example one defined outside your component.
 | `@centennial-oss/react-ux-core/styles.css` | Tokens, themes, base layer, utilities                           | Available |
 | `@centennial-oss/react-ux-core/form`       | `ConfigForm` and its containers, field registry                 | Available |
 | `@centennial-oss/react-ux-core/table`      | `DataTable`, `TableToolbar`, filters, cell helpers              | Available |
-| `@centennial-oss/react-ux-core/chart`      | `TimeSeriesChart`, `CategoryChart`, `HourOfDayChart`, `Gauge`   | Available |
+| `@centennial-oss/react-ux-core/chart`      | `TimeSeriesChart`, `CategoryChart`, `HeatmapChart`, `Gauge`, …  | Available |
 | `@centennial-oss/react-ux-core/map`        | `Map`                                                           | Available |
 | `@centennial-oss/react-ux-core/shell`      | `AppShell`, `Sidebar`, `Header`, `HierarchyPicker`, and more    | Available |
+| `@centennial-oss/react-ux-core/code`       | `CodeBlock` with syntax colours, copy, wrap and line highlights | Available |
+| `@centennial-oss/react-ux-core/markdown`   | `Markdown` (needs `react-markdown` and `remark-gfm`)            | Available |
 
-The form, table, chart and map entry points have their own optional peer dependencies, so apps that don't use them
-don't install them.
+The form, table, chart, map and markdown entry points have their own optional peer dependencies, so apps that don't
+use them don't install them.
 
 The main entry point has these components so far:
 
 - **Actions:** `Button`, `IconButton`, `ButtonGroup`
 - **Menus and overlays:** `Menu`, `MenuButton`, `SplitButton`, `OverflowMenu`, `Popover`, `Tooltip`, `InfoTip`,
   `Dialog`, `Drawer`, `ConfirmDialog`, `StepDialog`
-- **Feedback:** toasts (`useToast`), `Banner`, `Spinner`, `Skeleton`, `ProgressBar`, `EmptyState`, `ErrorState`
-- **Layout and display:** `Stack`, `Inline`, `Grid`, `Spacer`, `Text`, `Heading`, `ScrollRegion`, `Card`,
-  `Disclosure`, `Accordion`, `CollapsibleCard`, `StatTile`, `DescriptionList`, `Tabs`, `Pillbox`, `Badge`, `Chip`,
-  `StatusDot`, `RelativeTime`, `Sparkline`, `Breadcrumbs`, `Tree`, `Separator`, `VisuallyHidden`, `Kbd`,
-  `Checklist` (steps with a status and progress), `SecretReveal` (credentials shown once), `Flag` (see below)
+- **Settings:** `SettingsMenu`, `SettingsMenuItems` and `ThemeMenuSection` (also exported from `/shell`)
+- **Feedback:** `Timer` and `useTimer` (countdown or count-up), toasts (`useToast`), `Banner`, `Spinner`,
+  `Skeleton`, `ProgressBar`, `EmptyState`, `ErrorState`
+- **Layout and display:** `Stack`, `Inline`, `Grid`, `Spacer`, `Text`, `Heading`, `Prose`, `Code`,
+  `ScrollRegion`, `Card`, `Disclosure`, `Accordion`, `CollapsibleCard`, `StatTile`, `DescriptionList`, `Tabs`,
+  `Pillbox`, `Badge`, `Chip`, `StatusDot`, `RelativeTime`, `Sparkline`, `Breadcrumbs`, `Tree`, `Separator`,
+  `VisuallyHidden`, `Kbd`, `Checklist` (steps with a status and progress), `SecretReveal` (credentials shown once),
+  `Flag` (see below)
 - **Inputs:** `TextField`, `NumberField`, `TextArea`, `SearchField`, `Select`, `ComboBox`, `MultiSelect`,
   `Checkbox`, `CheckboxGroup`, `RadioGroup`, `Switch`, `Slider`, `RangeSlider`, `DatePicker`, `DateRangePicker`,
   `DateTimePicker`, `TimeField`, `TimeRangePicker`, `FileField`, `DropZone`, `ScheduleEditor` (a daily schedule with a
-  24-hour preview), `TierEditor` (contiguous numeric tiers), `ColorField`, `IconPicker`, `FlagPicker`, `TilePicker` (the
-  searchable grid of tiles in titled rows that IconPicker and FlagPicker are built on, with `TileGrid` for inline
-  use), `JsonEditor` (checked as you type, with formatting), `TemplateEditor` (an SMS template with `{{keyword}}` suggestions and a live example)
+  24-hour preview), `TierEditor` (contiguous numeric tiers), `ColorField`, `IconPicker`, `FlagPicker`, `TilePicker`
+  (the searchable grid of tiles in titled rows that IconPicker and FlagPicker are built on), `TileGrid` (status tiles:
+  a question navigator, a voter card, a menu), `ReorderableList` (put items in order), `JsonEditor` (checked as you
+  type, with formatting), `TemplateEditor` (an SMS template with `{{keyword}}` suggestions and a live example)
 
 `Flag` and `FlagPicker` show countries your app registers. The library knows four (the United States, France, China
 and Brazil) as a reference; register the rest, with any fields of your own, through `FlagProvider`, and serve the flag
@@ -206,7 +212,9 @@ an app can keep it in the URL.
 
 The chart entry point has `TimeSeriesChart` and `CategoryChart` (bar, horizontal, stacked and donut), with
 accessible summaries, a table view, export and full screen; `HourOfDayChart` (24 hourly buckets, which can show a
-`ScheduleEditor` value directly); and `Gauge` / `MeterBar` (a value against warning and danger thresholds).
+`ScheduleEditor` value directly); `HeatmapChart` and `CalendarHeatmap` (values on a sequential or diverging scale,
+navigable cell by cell); and `Gauge` / `MeterBar` (a value against warning and danger thresholds). Value axes take
+ranges (`axes`, `valueAxis`) so thresholds stay in view.
 
 The map entry point has `Map`, on MapLibre GL: markers from data with clustering, a selected marker's card, zoom,
 "show all" and reset controls, a list of every place for keyboard and screen reader users, and a clear message when
@@ -217,8 +225,9 @@ worker from beside its own module file; if your bundler moves that file, point M
 The shell entry point frames an app: `AppShell` (landmarks, a skip link, and the sidebar's form for the screen size),
 `Sidebar` (sections, expandable items, an icon rail, a drawer on phones), `Header` (whose menu toggle can show panel
 icons with `panelMenuToggleIcon`), `Brand`, `UserMenu`, `SettingsMenu`, `HierarchyPicker` (a scope switcher over
-levels, with search and recent scopes), `Page`, `PageHeader`, `BottomTabBar`, `StatusBar` and `Footer`. Like everything else, they take data and callbacks: the current path, the collapsed state
-and the chosen scope come from the app, and links render through your `LinkComponent`.
+levels, with search and recent scopes), `Page`, `PageHeader`, `BottomTabBar`, `StatusBar` and `Footer`. Like
+everything else, they take data and callbacks: the current path, the collapsed state and the chosen scope come from
+the app, and links render through your `LinkComponent`.
 
 ## Documentation
 

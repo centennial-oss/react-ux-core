@@ -94,7 +94,7 @@ export const InlineGrid: Story = {
         rows={rows}
         renderTile={renderTile}
         selectionMode="single"
-        defaultSelectedKeys={['factory']}
+        defaultValue={['factory']}
       />
     </div>
   ),

@@ -14,7 +14,11 @@ export {
   type HourOfDayChartProps,
   type ScheduleSeries,
 } from './HourOfDayChart';
-export { Gauge, MeterBar, type GaugeProps, type GaugeThresholds } from './Gauge';
+export { Gauge, MeterBar, type GaugeProps, type GaugeStatus, type GaugeThresholds } from './Gauge';
 export type { ChartFrameOptions } from './ChartFrame';
 export type { ChartColor } from './colors';
 export type { ChartBand, ChartThreshold } from './setup';
+export type { ValueAxisOptions } from './valueAxis';
+export { HeatmapChart, type HeatmapAxisItem, type HeatmapChartProps } from './HeatmapChart';
+export { CalendarHeatmap, type CalendarHeatmapProps } from './CalendarHeatmap';
+export type { HeatPalette, HeatScale } from './heat';

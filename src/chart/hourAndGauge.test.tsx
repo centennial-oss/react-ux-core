@@ -66,6 +66,59 @@ describe('Gauge', () => {
     );
   });
 
+  it('takes its own words for each status', () => {
+    render(
+      <MeterBar
+        label="Course progress"
+        value={55}
+        maxValue={100}
+        unit="%"
+        badWhen="low"
+        thresholds={{ warning: 70, danger: 50 }}
+        statusLabels={{ normal: 'On track', warning: 'Behind', danger: 'At risk' }}
+      />,
+    );
+    expect(screen.getByRole('meter', { name: 'Course progress' })).toHaveAttribute(
+      'aria-valuetext',
+      '55 %, Behind',
+    );
+    expect(screen.getByText('Behind')).toBeInTheDocument();
+  });
+
+  it('can leave out the status, so the text is just the value', () => {
+    const { container } = render(
+      <MeterBar
+        label="Checks"
+        value={2}
+        maxValue={6}
+        hasStatus={false}
+        thresholds={{ danger: 1 }}
+      />,
+    );
+    expect(screen.getByRole('meter', { name: 'Checks' })).toHaveAttribute('aria-valuetext', '2');
+    expect(container.textContent).not.toContain('Normal');
+  });
+
+  it('takes a status that replaces the thresholds’, fill included', () => {
+    const { container } = render(
+      <MeterBar
+        label="Lab checks"
+        value={0}
+        maxValue={6}
+        badWhen="low"
+        thresholds={{ danger: 2 }}
+        status={{ tone: 'neutral', label: 'Not started' }}
+      />,
+    );
+    expect(screen.getByRole('meter', { name: 'Lab checks' })).toHaveAttribute(
+      'aria-valuetext',
+      '0, Not started',
+    );
+    expect(screen.getByText('Not started')).toBeInTheDocument();
+    expect(container.textContent).not.toContain('Critical');
+    expect(container.querySelector('.bg-neutral-solid')).not.toBeNull();
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(
       <Gauge label="Demand" value={100} maxValue={250} thresholds={{ warning: 180 }} />,

@@ -19,6 +19,8 @@ const entries = {
   'chart/index': resolve(import.meta.dirname, 'src/chart/index.ts'),
   'shell/index': resolve(import.meta.dirname, 'src/shell/index.ts'),
   'map/index': resolve(import.meta.dirname, 'src/map/index.ts'),
+  'code/index': resolve(import.meta.dirname, 'src/code/index.ts'),
+  'markdown/index': resolve(import.meta.dirname, 'src/markdown/index.ts'),
 };
 
 /** A real touch tap through Playwright, for interaction tests on the touch-enabled instances. */

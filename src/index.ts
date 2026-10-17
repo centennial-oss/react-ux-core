@@ -13,11 +13,13 @@ export {
   defaultMessages,
   type ChartMessages,
   type ChecklistMessages,
+  type CodeMessages,
   type CoreMessages,
   type FlagPickerMessages,
   type FormMessages,
   type JsonEditorMessages,
   type MapMessages,
+  type MarkdownMessages,
   type Messages,
   type SecretRevealMessages,
   type ShellMessages,
@@ -52,10 +54,13 @@ export * from './components/Skeleton';
 export * from './components/ProgressBar';
 export * from './components/EmptyState';
 export * from './components/ErrorState';
+export * from './components/Timer';
 
 // Layout and display
 export * from './components/Layout';
 export * from './components/Text';
+export * from './components/Prose';
+export * from './components/Code';
 export * from './components/ScrollRegion';
 export * from './components/Card';
 export * from './components/Disclosure';
@@ -73,6 +78,15 @@ export * from './components/Tree';
 export * from './components/Separator';
 export * from './components/VisuallyHidden';
 export * from './components/Kbd';
+
+// Settings (also exported from /shell)
+export {
+  SettingsMenu,
+  SettingsMenuItems,
+  ThemeMenuSection,
+  type SettingsMenuItemsProps,
+  type SettingsMenuProps,
+} from './shell/SettingsMenu';
 export * from './components/Checklist';
 export * from './components/SecretReveal';
 
@@ -83,6 +97,7 @@ export {
   type OptionProps,
   type OptionSectionProps,
 } from './components/ListBox';
+export type { OptionFeedback } from './components/Field/OptionFeedback';
 export * from './components/TextField';
 export * from './components/NumberField';
 export * from './components/TextArea';
@@ -107,3 +122,4 @@ export * from './components/ScheduleEditor';
 export * from './components/TierEditor';
 export * from './components/JsonEditor';
 export * from './components/TemplateEditor';
+export * from './components/ReorderableList';

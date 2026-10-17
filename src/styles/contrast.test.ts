@@ -68,8 +68,30 @@ function pairs(
   for (let series = 1; series <= 10; series++) {
     list.push([`chart-${series}`, 'surface-1', ui], [`chart-${series}`, 'surface-2', ui]);
   }
+  for (const token of ['fg', 'keyword', 'string', 'number', 'comment', 'punct', 'property']) {
+    list.push([`code-${token}`, 'code-bg', text], [`code-${token}`, 'code-highlight', text]);
+  }
+  list.push(['code-highlight-border', 'code-bg', ui]);
   return list;
 }
+
+describe.each(Object.entries(themes))('%s theme heat scales', (_, palette) => {
+  it.each(['accent', 'success', 'danger', 'neutral'])(
+    'has seven %s steps in order of lightness, each distinct from the next',
+    (scale) => {
+      const steps = [1, 2, 3, 4, 5, 6, 7].map((step) =>
+        luminance(palette[`heat-${scale}-${String(step)}`] ?? ''),
+      );
+      const isRising = (steps[1] ?? 0) > (steps[0] ?? 0);
+      for (let index = 1; index < steps.length; index++) {
+        const [previous, current] = [steps[index - 1] ?? 0, steps[index] ?? 0];
+        expect(isRising ? current > previous : current < previous).toBe(true);
+        const ratio = (Math.max(previous, current) + 0.05) / (Math.min(previous, current) + 0.05);
+        expect(ratio).toBeGreaterThanOrEqual(1.25);
+      }
+    },
+  );
+});
 
 describe.each(Object.entries(themes))('%s theme', (name, palette) => {
   const [text, ui] = name === 'high-contrast' ? [7, 4.5] : [4.5, 3];

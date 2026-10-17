@@ -17,6 +17,7 @@ import { Badge } from '../components/Badge/Badge';
 import { Button } from '../components/Button/Button';
 import { Card } from '../components/Card/Card';
 import { IconButton } from '../components/IconButton/IconButton';
+import { Grid } from '../components/Layout/Layout';
 import { MenuItem, MenuSection } from '../components/Menu/Menu';
 import { StatTile } from '../components/StatTile/StatTile';
 import { StatusDot } from '../components/StatusDot/StatusDot';
@@ -176,11 +177,11 @@ function SitesPage() {
       onTabChange={setTab}
     >
       <TabPanel id="overview" className="pt-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Grid columns={{ base: 1, sm: 3 }}>
           <StatTile label="Usage today" value="1,284 kWh" />
           <StatTile label="Peak demand" value="212 kW" />
           <StatTile label="Meters online" value="45 of 48" />
-        </div>
+        </Grid>
       </TabPanel>
       {['meters', 'tariff', 'contacts', 'history'].map((id) => (
         <TabPanel key={id} id={id} className="pt-4">

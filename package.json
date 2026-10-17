@@ -46,6 +46,14 @@
       "types": "./dist/map/index.d.ts",
       "import": "./dist/map/index.js"
     },
+    "./code": {
+      "types": "./dist/code/index.d.ts",
+      "import": "./dist/code/index.js"
+    },
+    "./markdown": {
+      "types": "./dist/markdown/index.d.ts",
+      "import": "./dist/markdown/index.js"
+    },
     "./shell": {
       "types": "./dist/shell/index.d.ts",
       "import": "./dist/shell/index.js"
@@ -85,7 +93,9 @@
     "maplibre-gl": "^6.11.0",
     "react": "^19.0.0",
     "react-aria-components": "^1.22.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.0"
   },
   "peerDependenciesMeta": {
     "@tanstack/react-form": {
@@ -110,6 +120,12 @@
       "optional": true
     },
     "maplibre-gl": {
+      "optional": true
+    },
+    "react-markdown": {
+      "optional": true
+    },
+    "remark-gfm": {
       "optional": true
     }
   },
@@ -155,6 +171,8 @@
     "react": "^19.3.1",
     "react-aria-components": "^1.22.1",
     "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "size-limit": "^14.2.0",
     "storybook": "^10.6.2",
     "tailwindcss": "^4.3.3",

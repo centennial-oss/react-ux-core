@@ -194,3 +194,45 @@ Consumer apps pin exact versions of this package. To try unreleased changes in a
 - Or install a prerelease from the `next` npm dist-tag.
 
 Never commit a local path dependency to a consumer app.
+
+### Linked checkouts: one copy of React
+
+A linked or `file:` install brings this checkout's own `node_modules` along, so the app ends up with two copies of
+React and React Aria. At run time that breaks hooks and context; in TypeScript the two `@types/react` copies clash
+(for example, the library's `Ref` isn't assignable to the app's, so a `LinkComponent` fails to type-check). Point both
+at the app's copies.
+
+In the app's `vite.config.ts`, have Vite resolve the shared peers once:
+
+```ts
+export default defineConfig({
+  resolve: {
+    dedupe: [
+      'react',
+      'react-dom',
+      'react-aria-components',
+      'react-aria',
+      'react-stately',
+      'lucide-react',
+    ],
+  },
+});
+```
+
+In the app's `tsconfig` (the one with `compilerOptions` for its source), map the React types to the app's copies:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "react": ["./node_modules/@types/react"],
+      "react/*": ["./node_modules/@types/react/*"],
+      "react-dom": ["./node_modules/@types/react-dom"],
+      "react-dom/*": ["./node_modules/@types/react-dom/*"]
+    }
+  }
+}
+```
+
+Add any optional peer the app uses from the library (`chart.js`, `@tanstack/react-table`, …) to `dedupe` too. Remove
+both once the app installs a published version.

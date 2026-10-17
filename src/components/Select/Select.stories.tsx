@@ -58,3 +58,16 @@ export const Open: Story = {
     </div>
   ),
 };
+
+/** `isClearable` adds a clear button while something is chosen; `onChange` may then receive null. */
+export const Clearable: Story = {
+  render: () => (
+    <div className="max-w-xs">
+      <Select label="Assignment status" defaultValue="submitted" isClearable>
+        <Option id="draft">Draft</Option>
+        <Option id="submitted">Submitted</Option>
+        <Option id="graded">Graded</Option>
+      </Select>
+    </div>
+  ),
+};

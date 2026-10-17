@@ -122,3 +122,47 @@ describe('Select', () => {
     await expectNoAxeViolations(await openList());
   });
 });
+
+describe('Select clear button', () => {
+  it('clears the choice from the keyboard and returns focus to the trigger', async () => {
+    const onChange = vi.fn();
+    function Clearable() {
+      const [value, setValue] = useState<string | null>('south');
+      return (
+        <Select
+          label="Region"
+          items={regions}
+          value={value}
+          isClearable
+          onChange={(next) => {
+            setValue(next);
+            onChange(next);
+          }}
+        >
+          {(region) => <Option id={region.id}>{region.name}</Option>}
+        </Select>
+      );
+    }
+    render(<Clearable />);
+    const trigger = screen.getByRole('button', { name: /Region/ });
+    expect(trigger).toHaveTextContent('South');
+    await userEvent.click(trigger);
+    await userEvent.keyboard('{Escape}');
+    await userEvent.keyboard('{Tab}');
+    const clear = screen.getByRole('button', { name: 'Clear' });
+    expect(clear).toHaveFocus();
+    await userEvent.keyboard('{Enter}');
+    expect(onChange).toHaveBeenLastCalledWith(null);
+    expect(screen.getByRole('button', { name: /Region/ })).toHaveFocus();
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull();
+  });
+
+  it('has no clear button until something is chosen', () => {
+    render(
+      <Select label="Region" items={regions} isClearable>
+        {(region) => <Option id={region.id}>{region.name}</Option>}
+      </Select>,
+    );
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull();
+  });
+});
