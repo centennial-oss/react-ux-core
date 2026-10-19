@@ -1,0 +1,4 @@
+/* Tailwind plus the library's styles, exactly as an app sets them up. */
+@import 'tailwindcss';
+@import '../src/styles/index.css';
+@source '../src';

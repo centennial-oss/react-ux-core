@@ -1,0 +1,1459 @@
+{
+  "reviewed": "2026-10-19",
+  "nearDuplicates": [],
+  "shared": {
+    "accept": {
+      "status": "consistent",
+      "summary": "Accepted file types as a list of MIME types, wildcards and extensions (`['image/*', '.pdf']`); the chooser offers only these and other files are rejected with a message.",
+      "variance": ""
+    },
+    "actions": {
+      "status": "meaning",
+      "summary": "Slot for action controls (buttons, links, menus) shown in the component's header or row.",
+      "variance": "`ReactNode` control slot on Banner, Card, CollapsibleCard, TabList, CopyField, Header. RuleBuilder, RuleList use `readonly RuleAction[]`: data definitions of the actions a rule can run, not rendered controls."
+    },
+    "allowsHost": {
+      "status": "consistent",
+      "summary": "Accepts a bare IP address and converts it to a /32 or /128 prefix. Defaults to true.",
+      "variance": ""
+    },
+    "aria-describedby": {
+      "status": "consistent",
+      "summary": "Id(s) of the element(s) that describe the component, passed to the accessible element.",
+      "variance": ""
+    },
+    "aria-label": {
+      "status": "consistent",
+      "summary": "Accessible name for the component (or its trigger/landmark) when there is no visible label; many default to a localized message.",
+      "variance": ""
+    },
+    "aria-labelledby": {
+      "status": "consistent",
+      "summary": "Id(s) of the element(s) that label the component.",
+      "variance": ""
+    },
+    "as": {
+      "status": "type",
+      "summary": "The HTML element the component renders as.",
+      "variance": "`LayoutElement` (default `div`) on Grid, Inline, Stack; `'p' or 'span' or 'div'` (default `p`) on Text."
+    },
+    "asks": {
+      "status": "consistent",
+      "summary": "Ask-side order book levels, in any order.",
+      "variance": ""
+    },
+    "background": {
+      "status": "consistent",
+      "summary": "Background colour of the rendered code image (light modules, spaces and quiet zone). Defaults to white.",
+      "variance": ""
+    },
+    "basePath": {
+      "status": "consistent",
+      "summary": "URL path flag SVGs are served from (`<basePath>/<code>.svg`); per-component values override FlagProvider's. Defaults to `/images/flags`.",
+      "variance": ""
+    },
+    "bids": {
+      "status": "consistent",
+      "summary": "Bid-side order book levels, in any order.",
+      "variance": ""
+    },
+    "body": {
+      "status": "consistent",
+      "summary": "Dialog body content; UnsavedChangesDialog defaults to its `unsavedChangesBody` message.",
+      "variance": ""
+    },
+    "categories": {
+      "status": "type",
+      "summary": "The categories the component displays.",
+      "variance": "`readonly string[]` axis labels on CategoryBarChart, CategoryChart, CategoryRadar, BoxPlotChart; `readonly StatusCategory[]` (id, label, icon, severity, alerts objects) on StatusBar."
+    },
+    "cellSize": {
+      "status": "consistent",
+      "summary": "Heatmap cell sizing: `fit` shrinks cells (min 10 px, 24 px on touch) to fit width; `sm`, `md`, `lg` are fixed sizes.",
+      "variance": ""
+    },
+    "children": {
+      "status": "type",
+      "summary": "The component's content (label, body, items or panes, as fitting the component).",
+      "variance": "Mostly `ReactNode`. Function-or-node: TabList, Select, ComboBox (`(item) => ...`); MultiSelect render function only; Dialog, Drawer `DialogContent` (function receives `close`); ContextMenuTrigger `[target, Menu]` tuple; Markdown `string` source."
+    },
+    "className": {
+      "status": "consistent",
+      "summary": "Extra CSS classes for the component's outer element; later classes override the component's own.",
+      "variance": ""
+    },
+    "classNames": {
+      "status": "type",
+      "summary": "Extra CSS classes keyed by inner part of the component.",
+      "variance": "Object keys differ per component: Dialog `{ body, footer }`; Card `{ header, body, footer }`; Disclosure `{ trigger, panel }`; AppShell `{ main }`."
+    },
+    "color": {
+      "status": "consistent",
+      "summary": "Palette colour (`chart-1` to `chart-10` or a tone) for the component's primary fill; charts default to `chart-1`.",
+      "variance": ""
+    },
+    "columns": {
+      "status": "meaning",
+      "summary": "Layout column count, fixed or responsive by container width.",
+      "variance": "Layout count (`Columns or GridColumns`, or `1 or 2 or 3`) on Grid, MultiView, DescriptionList; slides per view on Carousel (Grid's type). Data column definitions on DataTable, TableToolbar, EditableTable, Spreadsheet. Axis items on HeatmapChart. Column timestamps on Flowsheet."
+    },
+    "config": {
+      "status": "type",
+      "summary": "The configuration object that drives the form or field renderer.",
+      "variance": "`FormConfig<V, TCustom>` (whole form) on ConfigForm, DialogForm, CardForm, PageForm, WizardForm; generic `TConfig` (a single field's config) on FieldRenderer."
+    },
+    "createId": {
+      "status": "consistent",
+      "summary": "Generates ids for newly added items. Defaults to ids unique within the component or page.",
+      "variance": ""
+    },
+    "crossOrigin": {
+      "status": "consistent",
+      "summary": "CORS mode (`anonymous` or `use-credentials`) for the underlying media element.",
+      "variance": ""
+    },
+    "currency": {
+      "status": "consistent",
+      "summary": "ISO 4217 currency code used to format or label monetary values.",
+      "variance": ""
+    },
+    "currentPath": {
+      "status": "consistent",
+      "summary": "Current location from the app's router; the best-matching nav item is marked current.",
+      "variance": ""
+    },
+    "currentStep": {
+      "status": "consistent",
+      "summary": "Zero-based index of the active step (wizard and dialog progress, or a sequencer playhead).",
+      "variance": ""
+    },
+    "data": {
+      "status": "type",
+      "summary": "The data series or tree the visualization plots.",
+      "variance": "`readonly number[]` on Sparkline; `readonly Ohlc[]` on CandlestickChart; root `TreemapNode` on Treemap."
+    },
+    "defaultExpandedIds": {
+      "status": "type",
+      "summary": "Ids of items expanded initially, uncontrolled (any iterable of ids).",
+      "variance": "`Iterable<string>` on GanttChart, KanbanBoard, LogViewer, OrgChart, PlanReview, Tree; `ReadonlySet<string>` on DataTable (tree rows)."
+    },
+    "defaultOpen": {
+      "status": "consistent",
+      "summary": "Whether the component starts open, uncontrolled. Usually defaults to false; Banner defaults to true.",
+      "variance": ""
+    },
+    "defaultUnit": {
+      "status": "type",
+      "summary": "Unit selected while the unit field is empty.",
+      "variance": "Component-specific unit unions: `BitrateUnit` (default Mbps) on BitrateField; `ByteUnit` (default MiB) on ByteSizeField; `DurationUnit` (default smallest offered) on DurationField."
+    },
+    "defaultValue": {
+      "status": "type",
+      "summary": "Initial value, uncontrolled; each component uses its own value type.",
+      "variance": "Varies per component's value: e.g. `number or null` on NumberField and unit fields (base unit); `string` on text editors; `NoInfer<K>` ids on Select, MultiSelect; date types on calendars and pickers; `Rule` on RuleBuilder; `MediaAsset or null` on AssetPicker."
+    },
+    "defaultVelocity": {
+      "status": "consistent",
+      "summary": "MIDI velocity for newly added notes or steps. Defaults to 100.",
+      "variance": ""
+    },
+    "density": {
+      "status": "type",
+      "summary": "Visual density of rows or tiles.",
+      "variance": "`'compact' or 'regular'` (default `regular`) on DataTable, Spreadsheet, ListView, TransferList; `'compact' or 'card'` (default `card`) on TileGrid."
+    },
+    "depth": {
+      "status": "consistent",
+      "summary": "Number of price levels per side shown or used. OrderBook defaults to 10; DepthChart to all.",
+      "variance": ""
+    },
+    "description": {
+      "status": "consistent",
+      "summary": "Secondary or help text shown under the title, label or input.",
+      "variance": ""
+    },
+    "details": {
+      "status": "meaning",
+      "summary": "Technical details (error code, request id, server message) shown in a collapsed Details disclosure.",
+      "variance": "ErrorState: `ReactNode` technical details content. Flag: `readonly FlagDetail[]` selecting which facts (name, nativeName, code, languages) to show beside the flag."
+    },
+    "direction": {
+      "status": "meaning",
+      "summary": "Direction setting for the component.",
+      "variance": "Timer: `'down' or 'up'` counting direction (default down). Stack: `'column' or 'row'` layout axis (default column)."
+    },
+    "display": {
+      "status": "meaning",
+      "summary": "How the value is presented.",
+      "variance": "DurationField: `'compound' or 'single'` formatting of the committed value as one or several units. MathFormula: `'inline' or 'block'` layout placement in text vs centred block."
+    },
+    "duration": {
+      "status": "consistent",
+      "summary": "Media duration in seconds; `Infinity` or `NaN` when unknown on MediaTransport.",
+      "variance": ""
+    },
+    "editMode": {
+      "status": "consistent",
+      "summary": "`cell` edits one cell on Enter, F2 or double-click; `always` shows every editor. EditableTable defaults to `cell`, LineItemsEditor to `always`.",
+      "variance": ""
+    },
+    "elapsedMs": {
+      "status": "consistent",
+      "summary": "Elapsed time so far in milliseconds, supplied by the app; continues from it while running.",
+      "variance": ""
+    },
+    "emptyState": {
+      "status": "consistent",
+      "summary": "Content shown when there is no data or no items; each component has a default message.",
+      "variance": ""
+    },
+    "error": {
+      "status": "consistent",
+      "summary": "Loading failed: renders an error state, with Retry when `onRetry` is given.",
+      "variance": ""
+    },
+    "errorMessage": {
+      "status": "type",
+      "summary": "Error text shown while the control is invalid.",
+      "variance": "`ReactNode or ((validation) => ReactNode)` on most fields, Checkbox, Switch; `ReactNode` only on RangeSlider, Slider, calendars, Knob; `string` on Editor (the cell's error, already shown by the table)."
+    },
+    "events": {
+      "status": "consistent",
+      "summary": "Events (deploys, incidents, news) marked on the chart's time axis.",
+      "variance": ""
+    },
+    "exclusiveGroup": {
+      "status": "consistent",
+      "summary": "Players in the same group pause each other; `null` opts out. AudioPlayer defaults to one shared group, video players to `null`.",
+      "variance": ""
+    },
+    "feedback": {
+      "status": "type",
+      "summary": "Answer-check feedback marking an option with a tone, icon and message.",
+      "variance": "Single `OptionFeedback` on Checkbox, Radio; `Readonly<Record<string, OptionFeedback>>` keyed by item id on ReorderableList."
+    },
+    "fields": {
+      "status": "consistent",
+      "summary": "Rule fields that conditions can test.",
+      "variance": ""
+    },
+    "file": {
+      "status": "type",
+      "summary": "The file to preview.",
+      "variance": "`File` on FileThumbnail; `PreviewFile` (File or remote file) on FilePreview."
+    },
+    "files": {
+      "status": "type",
+      "summary": "Files to show as previews or list items.",
+      "variance": "`readonly File[]` on DropZone (overrides last dropped, with `hasPreviews`); `readonly PreviewFile[]` on FilePreviewList."
+    },
+    "filterValues": {
+      "status": "consistent",
+      "summary": "Current filter values keyed by column id.",
+      "variance": ""
+    },
+    "filters": {
+      "status": "type",
+      "summary": "The filters offered to the user.",
+      "variance": "`readonly NotificationFilter[]` (id and label tabs such as All, Mentions) on NotificationBell, NotificationCenter; `readonly FilterConfig[]` filter-control definitions on TableToolbar, FilterPanel."
+    },
+    "fit": {
+      "status": "consistent",
+      "summary": "How an image initially fits its frame (`ImageFit`). Defaults to `fit`.",
+      "variance": ""
+    },
+    "footer": {
+      "status": "type",
+      "summary": "Footer content: actions in dialogs, extra content in cards and shells.",
+      "variance": "`DialogContent` (function receives `close`) on Dialog, Drawer; `ReactNode` on Card, CollapsibleCard, StatTile, AppShell, Sidebar."
+    },
+    "foreground": {
+      "status": "consistent",
+      "summary": "Colour of bars or dark modules in a rendered code. Defaults to black.",
+      "variance": ""
+    },
+    "format": {
+      "status": "meaning",
+      "summary": "Display format for the component's value.",
+      "variance": "Timer: `'clock' or 'words'` display style. ModelViewer: source file format. Barcode: barcode symbology. RichTextEditor: document storage format (Markdown, HTML, Lexical JSON)."
+    },
+    "formatOptions": {
+      "status": "type",
+      "summary": "`Intl` formatting options for the displayed value.",
+      "variance": "`Intl.NumberFormatOptions` on most (PriceTicker, Sparkline, ScheduleEditor, TierEditor, Knob, SegmentedMeter, NumberCell, Gauge, MeterBar, BulletChart, ReferenceValue, Rating, RatingDisplay); `Intl.DateTimeFormatOptions` on RelativeTime."
+    },
+    "formatValue": {
+      "status": "type",
+      "summary": "Function that formats a value as display text.",
+      "variance": "`(value: number) => string` on ScheduleEditor, TierEditor; generic `(value: V) => string` on SchedulePreview."
+    },
+    "gap": {
+      "status": "consistent",
+      "summary": "Spacing between children (`Space` token). Grid and Stack default to `md`, Inline to `sm`.",
+      "variance": ""
+    },
+    "getRowId": {
+      "status": "consistent",
+      "summary": "Returns a stable id for each row so selection and state survive sorting and edits.",
+      "variance": ""
+    },
+    "getRowLabel": {
+      "status": "type",
+      "summary": "Returns a short row name for control labels and messages.",
+      "variance": "`(row) => string` (defaults to row header value) on DataTable; `(row, index) => string` (defaults to Row N) on EditableTable."
+    },
+    "granularity": {
+      "status": "type",
+      "summary": "The smallest unit of time shown. Defaults to `minute`.",
+      "variance": "`'hour' | 'minute' | 'second'` on DateTimePicker; `'minute' | 'second'` on WorldClock, where `second` also makes the clocks tick every second."
+    },
+    "grouping": {
+      "status": "consistent",
+      "summary": "Price grouping (tick aggregation) such as 0.01, controlled. Ungrouped when missing.",
+      "variance": ""
+    },
+    "handleRef": {
+      "status": "type",
+      "summary": "Ref that receives the component's imperative handle.",
+      "variance": "Handle type per component: `LiveTimeSeriesHandle` (append points), `CandlestickChartHandle` (update latest candle), `AudioMeterHandle` (push, resetClip), `TerminalHandle` (write, clear, focus)."
+    },
+    "hasCharacterCount": {
+      "status": "consistent",
+      "summary": "Shows a character counter under the field; needs `maxLength` (or `recommendedLength` where supported).",
+      "variance": ""
+    },
+    "hasControls": {
+      "status": "consistent",
+      "summary": "Shows the built-in zoom (and view) controls toolbar. Defaults to true.",
+      "variance": ""
+    },
+    "hasDownload": {
+      "status": "consistent",
+      "summary": "Shows a download button for the current item.",
+      "variance": ""
+    },
+    "hasFullScreen": {
+      "status": "consistent",
+      "summary": "Shows the full-screen button. Defaults to true.",
+      "variance": ""
+    },
+    "hasGrid": {
+      "status": "consistent",
+      "summary": "Draws a grid (floor or tick lines) behind the content.",
+      "variance": ""
+    },
+    "hasMore": {
+      "status": "consistent",
+      "summary": "Whether there are more items to load.",
+      "variance": ""
+    },
+    "hasPreviews": {
+      "status": "consistent",
+      "summary": "Shows thumbnails of files: the image for images, a kind icon otherwise.",
+      "variance": ""
+    },
+    "hasRangeInfo": {
+      "status": "consistent",
+      "summary": "Shows the CIDR range and address count. Defaults to true.",
+      "variance": ""
+    },
+    "hasSearch": {
+      "status": "consistent",
+      "summary": "Shows in-content text search. Defaults to true.",
+      "variance": ""
+    },
+    "hasSummary": {
+      "status": "consistent",
+      "summary": "Shows a plain-language rule summary. Defaults to true.",
+      "variance": ""
+    },
+    "hasSummaryStep": {
+      "status": "consistent",
+      "summary": "Adds a final review step summarizing all steps before confirming.",
+      "variance": ""
+    },
+    "hasTableToggle": {
+      "status": "consistent",
+      "summary": "Offers a View as table toggle. Defaults to true (CoordinatePlane only when there are functions).",
+      "variance": ""
+    },
+    "hasThumbnails": {
+      "status": "consistent",
+      "summary": "Shows a thumbnail strip or sidebar for navigating images or pages. Defaults to true.",
+      "variance": ""
+    },
+    "hasToolbar": {
+      "status": "consistent",
+      "summary": "Shows the component's toolbar. Defaults to true.",
+      "variance": ""
+    },
+    "header": {
+      "status": "consistent",
+      "summary": "Header content slot rendered above the main content.",
+      "variance": ""
+    },
+    "headerControls": {
+      "status": "consistent",
+      "summary": "Calendar header style: `cyclers` (default) month and year Cyclers, or `arrows` previous and next buttons.",
+      "variance": ""
+    },
+    "headingLevel": {
+      "status": "type",
+      "summary": "Heading level for the component's title or section headings; usually defaults to 3.",
+      "variance": "`HeadingLevel` everywhere except PlanReview, which uses `Exclude<HeadingLevel, 6>` (child headings go one level below)."
+    },
+    "height": {
+      "status": "meaning",
+      "summary": "Component height, usually a CSS length string; plots and viewers often switch to an aspect box on phones.",
+      "variance": "CSS `string` on most (charts, viewers, Canvas, Map, Terminal). `number` px on Sparkline. `number or string` on Skeleton, Barcode. CanvasItem: `number` in canvas world units."
+    },
+    "hiddenColumns": {
+      "status": "consistent",
+      "summary": "Set of column ids to hide; controlled, changed by the TableToolbar column menu.",
+      "variance": ""
+    },
+    "highlight": {
+      "status": "consistent",
+      "summary": "Custom CodeHighlighter replacing the built-in syntax highlighter.",
+      "variance": ""
+    },
+    "href": {
+      "status": "consistent",
+      "summary": "URL the component (or its title/brand) links to; on Button it switches to link rendering (`never` on the button branch of the union).",
+      "variance": ""
+    },
+    "icon": {
+      "status": "type",
+      "summary": "Icon component (such as lucide-react) shown in the component; some default to a built-in icon.",
+      "variance": "`IconComponent` everywhere except Banner, which takes `IconComponent or null` (`null` hides the tone's default icon)."
+    },
+    "id": {
+      "status": "meaning",
+      "summary": "Identifier for the component, either a logical key or the DOM id.",
+      "variance": "Logical key: Tab and TabPanel (`Key`, pairs a tab with its panel and drives `selectedKey`), CanvasItem (`string`, the item's key in the canvas selection). DOM element id: Knob and Rating (the input's id) and MathFormula (the root's id, for in-page links)."
+    },
+    "initialScroll": {
+      "status": "consistent",
+      "summary": "Where a sideways-scrolling plot starts, `start` or `end`; HeatmapChart defaults to `start`, CalendarHeatmap to `end`.",
+      "variance": ""
+    },
+    "inputRef": {
+      "status": "type",
+      "summary": "Ref to the component's underlying text entry element.",
+      "variance": "`Ref<HTMLInputElement>` on TextField, NumberField, SearchField, SlugField, CidrField and the unit/money fields; `Ref<HTMLTextAreaElement>` on TextArea, MarkdownEditor."
+    },
+    "isActive": {
+      "status": "type",
+      "summary": "Predicate deciding which nav item is current, overriding path matching.",
+      "variance": "`(item: BottomTabItem) => boolean` on BottomTabBar; `IsActive` = `(item: NavItem) => boolean` on Sidebar."
+    },
+    "isClearable": {
+      "status": "meaning",
+      "summary": "Lets the user clear the value back to none. Defaults to false.",
+      "variance": "A clear button shows while there is a value on Select and the other fields (Select's onChange may then receive null). Rating has no button: choosing the current value again, or Delete or Backspace, clears it."
+    },
+    "isCompact": {
+      "status": "consistent",
+      "summary": "Switches to a denser presentation: Pagination hides page numbers and size choice, PropertyInspector puts labels beside inputs, Brand shows only the mark.",
+      "variance": ""
+    },
+    "isDisabled": {
+      "status": "consistent",
+      "summary": "Disables the component's interaction (ContextMenuTrigger leaves the native menu; Chip disables only its remove button).",
+      "variance": ""
+    },
+    "isDismissable": {
+      "status": "consistent",
+      "summary": "Lets the user dismiss the overlay or banner: Dialog/Drawer via Escape, backdrop or swipe (default true); Banner via a dismiss button.",
+      "variance": ""
+    },
+    "isEditable": {
+      "status": "consistent",
+      "summary": "Turns on drag editing (moving, resizing, creating or connecting items) with keyboard alternatives. Defaults to false.",
+      "variance": ""
+    },
+    "isFullWidth": {
+      "status": "consistent",
+      "summary": "Lets text lines run the full width instead of a readable measure of about 70 characters.",
+      "variance": ""
+    },
+    "isIconOnly": {
+      "status": "consistent",
+      "summary": "Shows only the icon, keeping the label as the accessible name.",
+      "variance": ""
+    },
+    "isInvalid": {
+      "status": "consistent",
+      "summary": "Marks the field invalid and shows `errorMessage`; editors with their own checks show both.",
+      "variance": ""
+    },
+    "isLive": {
+      "status": "consistent",
+      "summary": "Treats the media as a live stream (DVR seek window, Go live); players detect it when possible.",
+      "variance": ""
+    },
+    "isLoading": {
+      "status": "consistent",
+      "summary": "Shows a loading placeholder or skeleton instead of content; Skeleton defaults to true.",
+      "variance": ""
+    },
+    "isLoadingMore": {
+      "status": "consistent",
+      "summary": "More items are being fetched: the Load more button shows a spinner and further requests are held off.",
+      "variance": ""
+    },
+    "isLoadingOlder": {
+      "status": "consistent",
+      "summary": "Older entries are loading at the top; shows it and holds off further `onLoadOlder` calls.",
+      "variance": ""
+    },
+    "isLooping": {
+      "status": "consistent",
+      "summary": "Whether reaching the end goes back to the start: playback loops (MusicTransport), and arrow navigation wraps from the last option to the first (Cycler, default true).",
+      "variance": ""
+    },
+    "isMuted": {
+      "status": "consistent",
+      "summary": "Controlled muted state of the media. Defaults to false.",
+      "variance": ""
+    },
+    "isOpen": {
+      "status": "consistent",
+      "summary": "Controlled open (shown) state of the overlay, menu, drawer or banner; pair with `onOpenChange`.",
+      "variance": ""
+    },
+    "isPaused": {
+      "status": "consistent",
+      "summary": "Controlled pause state (timer keeps elapsed time; live chart stops advancing).",
+      "variance": ""
+    },
+    "isPending": {
+      "status": "consistent",
+      "summary": "Shows a spinner, keeps the button width, sets aria-busy and blocks presses; `never` on link and icon button variants.",
+      "variance": ""
+    },
+    "isReadOnly": {
+      "status": "consistent",
+      "summary": "Shows the value but prevents changes; LineItemsEditor switches to a plain printable invoice table.",
+      "variance": ""
+    },
+    "isReorderable": {
+      "status": "consistent",
+      "summary": "Allows the user to reorder items (drag in Tree, ListView, TagField and TransferList's chosen list; move actions in EditableTable); the app applies the move.",
+      "variance": ""
+    },
+    "isTitleHidden": {
+      "status": "consistent",
+      "summary": "Keeps the title for screen readers only, when the surrounding card already shows it.",
+      "variance": ""
+    },
+    "isValueHidden": {
+      "status": "consistent",
+      "summary": "Hides the formatted value text shown next to the label or dial (still announced).",
+      "variance": ""
+    },
+    "isWrapping": {
+      "status": "consistent",
+      "summary": "Lets a row wrap onto more lines (default false).",
+      "variance": ""
+    },
+    "isZoomable": {
+      "status": "consistent",
+      "summary": "Allows zooming the chart (pinch/pan on touch, Ctrl+wheel, drag where supported). Defaults to true.",
+      "variance": ""
+    },
+    "items": {
+      "status": "type",
+      "summary": "The collection of items the component renders.",
+      "variance": "`Iterable<T>` on Select, ComboBox, MultiSelect; `readonly X[]` of a component-specific item type (DescriptionItem, BreadcrumbItem, TreeNode, NavItem, LineItem, etc.) on the others."
+    },
+    "kind": {
+      "status": "type",
+      "summary": "Selects which kind of thing the component represents.",
+      "variance": "`'exchange' or 'binary'` trade kind on TradeTicket; `FileKind` file category on FileKindIcon."
+    },
+    "label": {
+      "status": "meaning",
+      "summary": "Visible or accessible name of the component; required text for status indicators.",
+      "variance": "`ReactNode` on fields, MenuButton, StatTile etc.; `string` on Spinner, Stepper, meters, tickers, CopyButton. Divergent: MathFormula uses it for an equation number like (3); CandlestickChart names the price series, not the chart; TableToolbar gives the row noun for the summary; CopyButton names what is copied (Copy label)."
+    },
+    "language": {
+      "status": "consistent",
+      "summary": "CodeLanguage for syntax colouring. Defaults to `text` (no colours).",
+      "variance": ""
+    },
+    "layout": {
+      "status": "type",
+      "summary": "Chooses how the component arranges its parts; each component has its own layout union.",
+      "variance": "ButtonGroupLayout on ButtonGroup; `'list' or 'choice'` on MenuSection; DiffLayoutMode on DiffViewer; `'layered' or 'top-down' or 'manual'` on NodeGraph; MarkdownEditorLayout on MarkdownEditor; `'full' or 'compact'` on MediaTransport; `'grid' or 'carousel'` on ImageGallery."
+    },
+    "levels": {
+      "status": "meaning",
+      "summary": "Level values, with unrelated meanings per component.",
+      "variance": "LogViewer: `readonly LogLevel[]`, controlled filter of visible log levels. AudioMeter: `readonly number[]`, measured dBFS per channel (data). HierarchyPicker: `readonly HierarchyLevel[]`, names of hierarchy columns."
+    },
+    "links": {
+      "status": "meaning",
+      "summary": "Link data for the component.",
+      "variance": "SankeyChart: `readonly SankeyLink[]`, flow edges between nodes. Footer: `readonly FooterLink[]`, navigation hyperlinks."
+    },
+    "loadDelay": {
+      "status": "consistent",
+      "summary": "Debounce before `loadItems` runs, in milliseconds; defaults 300 (ComboBox, MultiSelect) or 200 (CommandPalette).",
+      "variance": ""
+    },
+    "loadEmojiData": {
+      "status": "consistent",
+      "summary": "EmojiDataLoader for the emoji data (the picker list and emoji names); defaults to emojibase English compact data.",
+      "variance": ""
+    },
+    "loadItems": {
+      "status": "type",
+      "summary": "Async loader for items matching the typed query; debounced, with an AbortSignal for stale queries.",
+      "variance": "Returns `Promise<Iterable<T>>` and replaces `items` on ComboBox, MultiSelect; returns `Promise<readonly CommandItem[]>` merged after the matching static items on CommandPalette."
+    },
+    "loadMentions": {
+      "status": "type",
+      "summary": "Async loader of mention suggestions after @ for a query, aborted when the query changes.",
+      "variance": "Composer resolves `readonly ChatMention[]`; RichTextEditor uses EditorMentionLoader resolving `readonly EditorMentionOption[]` (same shape, different named types)."
+    },
+    "loadSource": {
+      "status": "consistent",
+      "summary": "MediaSourceLoader that plays formats the library does not, such as DASH via dash.js.",
+      "variance": ""
+    },
+    "markers": {
+      "status": "type",
+      "summary": "Points marked on the component, each component with its own marker type.",
+      "variance": "SegmentedMeter: limit marks (turn the bar to warning). Map: `MapMarker` places. AudioPlayer: `AudioMarker` (ms). MediaTransport, Waveform: `MediaMarker` timeline points such as chapters."
+    },
+    "max": {
+      "status": "consistent",
+      "summary": "How many items show before a +N overflow; AvatarGroup defaults to 4, TagsCell to 3.",
+      "variance": ""
+    },
+    "maxHeight": {
+      "status": "consistent",
+      "summary": "Maximum height as a CSS length before content scrolls inside; defaults vary (often 24rem or 32rem).",
+      "variance": ""
+    },
+    "maxItems": {
+      "status": "consistent",
+      "summary": "Maximum number of entries: list and row editors (CidrList, LineItemsEditor, KeyValueEditor, EditableTable) turn their add control off at this count, and TagField refuses further tags with a message.",
+      "variance": ""
+    },
+    "maxRangeDays": {
+      "status": "consistent",
+      "summary": "Longest selectable range in days, counting both ends; farther days become unavailable.",
+      "variance": ""
+    },
+    "maxRows": {
+      "status": "consistent",
+      "summary": "Most visible text lines before the field scrolls; the field grows up to it (TextArea 8, JsonEditor 30, TemplateEditor 10, Composer 8, MarkdownEditor 20).",
+      "variance": ""
+    },
+    "maxValue": {
+      "status": "type",
+      "summary": "Largest allowed or displayed value (scale maximum); unit fields use the base unit.",
+      "variance": "`number` on most (ScheduleEditor, TierEditor, Gauge, MeterBar, unit fields, Knob default 100, SegmentedMeter capacity, BulletChart); `string` decimal on MoneyField."
+    },
+    "maxZoom": {
+      "status": "consistent",
+      "summary": "Largest zoom as a scale factor (image pixels for image components); defaults to 8 (800%).",
+      "variance": ""
+    },
+    "mediaRef": {
+      "status": "type",
+      "summary": "Ref to the underlying media element, for apps that need it.",
+      "variance": "`Ref<HTMLAudioElement>` on AudioPlayer; `Ref<HTMLVideoElement>` on StreamPreview, VideoPlayer."
+    },
+    "menuLabel": {
+      "status": "consistent",
+      "summary": "Accessible name for the menu; defaults to the trigger's label (or Menu aria-label, then moreActions message).",
+      "variance": ""
+    },
+    "messages": {
+      "status": "meaning",
+      "summary": "Either UI string overrides or chat message data.",
+      "variance": "UIProvider: `Partial<Messages>`, overrides for library UI strings. MessageList: `readonly ChatMessage[]`, the chat messages, oldest first."
+    },
+    "minHeight": {
+      "status": "consistent",
+      "summary": "Minimum height of the editing area as a CSS length; RichTextEditor defaults to 10rem.",
+      "variance": ""
+    },
+    "minItemWidth": {
+      "status": "consistent",
+      "summary": "Minimum item width for an auto-fit column grid; as many columns as fit.",
+      "variance": ""
+    },
+    "minRows": {
+      "status": "consistent",
+      "summary": "Visible text lines when the field is empty or short (TextArea 3, JsonEditor 8, TemplateEditor 3, Composer 1, MarkdownEditor 8).",
+      "variance": ""
+    },
+    "minTileWidth": {
+      "status": "consistent",
+      "summary": "Minimum tile width as a CSS length; as many columns as fit.",
+      "variance": ""
+    },
+    "minValue": {
+      "status": "type",
+      "summary": "Smallest allowed or displayed value (scale minimum); unit fields use the base unit; default 0 on meters.",
+      "variance": "`number` on most; `string` decimal on MoneyField."
+    },
+    "minZoom": {
+      "status": "consistent",
+      "summary": "Smallest zoom as a scale factor; Canvas defaults to 0.1 (10%), ImageViewer never exceeds the fitted zoom.",
+      "variance": ""
+    },
+    "minorUnits": {
+      "status": "consistent",
+      "summary": "Digits after the decimal point; defaults to the currency's standard (JPY 0, USD 2, BHD 3).",
+      "variance": ""
+    },
+    "mode": {
+      "status": "meaning",
+      "summary": "Selects an operating mode; the values and their role vary per component.",
+      "variance": "Pagination family: static `cursor`/`offset` union discriminator. OutcomeChart: render style `lines`/`stacked`. MathInput: entry restriction level. ConfigForm, CardForm, PageForm: `FormMode` controlled view/edit state with `defaultMode`, i.e. user-changeable state rather than config."
+    },
+    "name": {
+      "status": "meaning",
+      "summary": "Either the form field name for submission or a displayed name.",
+      "variance": "Form submission name: JsonEditor, TemplateEditor, unit fields, MoneyField, Knob, Rating, RichTextEditor. Displayed entity name: FileThumbnail (file name), Avatar (person name, initials, colour), Brand (product name), UserMenu (signed-in user)."
+    },
+    "newRow": {
+      "status": "type",
+      "summary": "Factory making a new row for add/insert; without it rows cannot be added.",
+      "variance": "`() => Row` on EditableTable; `() => SpreadsheetRow` on Spreadsheet."
+    },
+    "nodes": {
+      "status": "type",
+      "summary": "The graph's nodes.",
+      "variance": "`readonly SankeyNode[]` on SankeyChart; `readonly GraphNode[]` on NodeGraph."
+    },
+    "now": {
+      "status": "consistent",
+      "summary": "The current instant (Date or ms), instead of the shared clock or mount time, for tests, stories and replays.",
+      "variance": ""
+    },
+    "onAction": {
+      "status": "type",
+      "summary": "Called when an item is chosen or activated.",
+      "variance": "`(key: Key)` with the item id on SettingsMenu, MenuButton, OverflowMenu, SplitButton, UserMenu, Toolbar, ActionBar; `(id: string)` on TileGrid and ListView (a row's activation); `()` on CanvasItem (Enter or double-click)."
+    },
+    "onAudition": {
+      "status": "type",
+      "summary": "Asks the app to play a sound for a note or row being created, selected or pressed.",
+      "variance": "`(pitch, velocity)` on NoteTable, PianoRoll; `(rowId: string)` on StepSequencer."
+    },
+    "onCancel": {
+      "status": "consistent",
+      "summary": "Called when the user cancels; PageForm shows a Cancel button when set.",
+      "variance": ""
+    },
+    "onChange": {
+      "status": "type",
+      "summary": "Called with the component's new value after a user change.",
+      "variance": "Each component delivers its own value type: `boolean` on Checkbox, Switch; `number or null` on NumberField and unit fields; `string or null` on MoneyField; arrays on list editors; `(id, value)` on PropertyInspector; `(value, option)` on TilePicker, FlagPicker; a method on Editor."
+    },
+    "onChangeEnd": {
+      "status": "type",
+      "summary": "Called once when a drag, key press or other adjustment ends.",
+      "variance": "`(value: [number, number])` on RangeSlider; `(value: number)` on Slider, Knob."
+    },
+    "onConfirm": {
+      "status": "consistent",
+      "summary": "Called on confirm; a returned promise shows a pending state and a rejection shows its message inline.",
+      "variance": ""
+    },
+    "onCopyError": {
+      "status": "consistent",
+      "summary": "Called with the error when the clipboard refuses the copy.",
+      "variance": ""
+    },
+    "onDayPress": {
+      "status": "consistent",
+      "summary": "Called with the pressed day's ISO date string.",
+      "variance": ""
+    },
+    "onDelete": {
+      "status": "type",
+      "summary": "Called with the ids of items to delete.",
+      "variance": "`(ids) => void` on Canvas (Delete or Backspace key); `(ids) => Promise<void>` on AssetPicker, MediaLibrary (after confirmation, also enables multi-select)."
+    },
+    "onEventPress": {
+      "status": "consistent",
+      "summary": "Called with the ChartEvent whose marker (or clustered popover entry) is pressed.",
+      "variance": ""
+    },
+    "onExpandedChange": {
+      "status": "consistent",
+      "summary": "Called with the new set of expanded row or node ids.",
+      "variance": ""
+    },
+    "onIndexChange": {
+      "status": "consistent",
+      "summary": "Called with the index of the current item as it changes: Lightbox's image, Carousel's first slide in view.",
+      "variance": ""
+    },
+    "onLoadMore": {
+      "status": "consistent",
+      "summary": "Asks for more items, from a Load more button or when the list end scrolls into view.",
+      "variance": ""
+    },
+    "onLoadOlder": {
+      "status": "consistent",
+      "summary": "Called when scrolled to the top to load and prepend older entries, keeping the scroll position.",
+      "variance": ""
+    },
+    "onMove": {
+      "status": "type",
+      "summary": "Called when the user moves an item, with the move to apply.",
+      "variance": "`(move: TreeMove)` after a drop on Tree (new parent and position); `(move: ListMove)` after a drop or keyboard move on ListView (ids, target and position); `(position: CanvasPoint)` on CanvasItem, called continuously while dragging and at drag or nudge end."
+    },
+    "onMutedChange": {
+      "status": "consistent",
+      "summary": "Called with the new muted state from the mute toggle; MediaTransport shows the toggle only when set.",
+      "variance": ""
+    },
+    "onOpenChange": {
+      "status": "consistent",
+      "summary": "Called with the new open state when the overlay, menu or banner opens or closes.",
+      "variance": ""
+    },
+    "onPlayingChange": {
+      "status": "consistent",
+      "summary": "Called with the requested playing state from the play/pause button (and keys where supported).",
+      "variance": ""
+    },
+    "onPress": {
+      "status": "consistent",
+      "summary": "Called when the primary area is pressed (SplitButton's primary action; FilePreview instead of opening the viewer).",
+      "variance": ""
+    },
+    "onPrevious": {
+      "status": "consistent",
+      "summary": "Called by the Previous button; MediaTransport shows previous/next buttons only when set.",
+      "variance": ""
+    },
+    "onRangeSelect": {
+      "status": "consistent",
+      "summary": "Called with the start and end Dates of a range dragged across or zoomed to on a time chart.",
+      "variance": ""
+    },
+    "onRemove": {
+      "status": "type",
+      "summary": "Shows a remove button that calls this.",
+      "variance": "`() => void` on Chip; `(index: number) => void` per file on FilePreviewList."
+    },
+    "onRepeat": {
+      "status": "consistent",
+      "summary": "Press-and-hold repeat callback, fired at press start and repeatedly while held; `never` on IconButtonToggle.",
+      "variance": ""
+    },
+    "onRetry": {
+      "status": "type",
+      "summary": "Retries a failed operation; shows a Retry control where applicable.",
+      "variance": "`() => void` on ErrorState, charts and DataTable (retry loading); `(messageId: string) => void` on MessageList (resend a failed message)."
+    },
+    "onSeek": {
+      "status": "consistent",
+      "summary": "Called with the time in seconds the user seeks to.",
+      "variance": ""
+    },
+    "onSelect": {
+      "status": "type",
+      "summary": "Called with the item the user chooses (emoji, assets or scope path).",
+      "variance": "`(emoji: string)` on EmojiPicker, EmojiPickerButton; `(assets: MediaAsset[])` on MediaLibrary; `(path: HierarchyPath)` on HierarchyPicker."
+    },
+    "onSelectionChange": {
+      "status": "type",
+      "summary": "Called when the selection changes, with the selected id(s).",
+      "variance": "`(id, node)` on Tree; `(ids: string[])` on Canvas; `(id: string or null)` on NodeGraph, Map, ImageAnnotator; `(keys: Set<string>)` on DataTable, ListView."
+    },
+    "onSubmit": {
+      "status": "type",
+      "summary": "Submits the component's content; a returned promise shows pending state and a rejection shows an error.",
+      "variance": "Composer passes `(message: ChatSubmission)` and may return void; TradeTicket takes `()` and must return `Promise<void>`."
+    },
+    "onZoomChange": {
+      "status": "type",
+      "summary": "Called with the new zoom whenever it changes.",
+      "variance": "`number` (1 = 100%) on ImageViewer; `PdfZoom` (`'fit-width'` or `'fit-page'` or number) on PdfViewer."
+    },
+    "options": {
+      "status": "type",
+      "summary": "The choices, in order.",
+      "variance": "`readonly PillboxOption<T>[]` (optionally with icons) on Pillbox; `readonly CyclerOption<T>[]` on Cycler."
+    },
+    "orientation": {
+      "status": "type",
+      "summary": "Layout axis of the component; default varies by component.",
+      "variance": "`'horizontal' or 'vertical'` on most; CategoryChart, CategoryWaterfall add `'auto'` (default). Defaults differ: vertical on CheckboxGroup, RadioGroup, BoxPlotChart, AudioMeter; horizontal on Stepper, Slider, RangeSlider, SplitView, PianoKeyboard."
+    },
+    "overlay": {
+      "status": "consistent",
+      "summary": "ReactNode content drawn over the main surface, such as a legend or status chip.",
+      "variance": ""
+    },
+    "overlays": {
+      "status": "type",
+      "summary": "App-supplied content drawn over the main picture.",
+      "variance": "`readonly TimeSeries[]` (indicator lines over prices) on CandlestickChart; `DicomOverlays` (corner text lists) on DicomViewer."
+    },
+    "pitchRange": {
+      "status": "consistent",
+      "summary": "MIDI pitches shown, both ends included (PianoKeyboard defaults to C3-C5, PianoRoll to C2-C6).",
+      "variance": ""
+    },
+    "placeholder": {
+      "status": "consistent",
+      "summary": "Text shown while the field or trigger is empty or nothing is chosen.",
+      "variance": ""
+    },
+    "placement": {
+      "status": "type",
+      "summary": "Where the floating element appears.",
+      "variance": "`AriaTooltipProps['placement']` (default `top`) on Tooltip; `ToastPlacement` (default `bottom-end`, phones always bottom) on ToastRegion."
+    },
+    "playbackRates": {
+      "status": "consistent",
+      "summary": "Speeds offered in the speed menu, e.g. [0.75, 1, 1.25, 1.5, 2].",
+      "variance": ""
+    },
+    "playhead": {
+      "status": "meaning",
+      "summary": "The current playback position to highlight.",
+      "variance": "MusicNotation takes `{ measure, beat } or null` (both 1-based); PianoRoll takes a `number` of beats from the start."
+    },
+    "prefix": {
+      "status": "type",
+      "summary": "Content shown before the input, such as a currency code or URL base.",
+      "variance": "`ReactNode` on TextField, NumberField; `string` (ellipsized) on SlugField."
+    },
+    "presentation": {
+      "status": "type",
+      "summary": "How the file is presented: thumbnail card, inline viewer or dialog chip. Defaults to thumbnail.",
+      "variance": "`'thumbnail' or 'inline' or 'dialog'` on FilePreview; `'thumbnail' or 'dialog'` on FilePreviewList."
+    },
+    "presets": {
+      "status": "type",
+      "summary": "Ready-made choices listed for quick selection, with component defaults.",
+      "variance": "`readonly TimeRangePreset[]` on TimeRangePicker; `readonly DicomWindowPreset[]` (window/level in modality units) on DicomViewer."
+    },
+    "priceFormat": {
+      "status": "consistent",
+      "summary": "`price` for exchanges or `probability` to show 0-1 prices as percentages. Defaults to `price`.",
+      "variance": ""
+    },
+    "primaryAction": {
+      "status": "consistent",
+      "summary": "The page's main action node, usually a solid Button; stays visible or sticky on phones.",
+      "variance": ""
+    },
+    "quietZone": {
+      "status": "consistent",
+      "summary": "Light margin around the code, in modules; defaults to the symbology's minimum (QR: 4).",
+      "variance": ""
+    },
+    "recent": {
+      "status": "type",
+      "summary": "Recently used items, persisted by the app, shown first.",
+      "variance": "`readonly string[]` (emoji) on EmojiPicker, EmojiPickerButton, ReactionBar; `readonly HierarchyPath[]` on HierarchyPicker."
+    },
+    "recommendedLength": {
+      "status": "consistent",
+      "summary": "Soft character limit; past it the counter shows a warning tone but the field stays valid.",
+      "variance": ""
+    },
+    "ref": {
+      "status": "type",
+      "summary": "Ref to the component's root element.",
+      "variance": "DOM element type varies (HTMLDivElement, HTMLElement, HTMLButtonElement, HTMLAnchorElement, HTMLSpanElement, HTMLHeadingElement, HTMLUListElement). ConfigForm, DialogForm, CardForm, PageForm, WizardForm expose an imperative `ConfigFormHandle<V>` instead of a DOM node."
+    },
+    "renderAs": {
+      "status": "consistent",
+      "summary": "Draw with `svg` (default) or `canvas`.",
+      "variance": ""
+    },
+    "renderTile": {
+      "status": "consistent",
+      "summary": "Custom renderer for a tile's content, given the option and its render state.",
+      "variance": ""
+    },
+    "renderValue": {
+      "status": "meaning",
+      "summary": "TilePicker: draws the chosen option read-only in the trigger; defaults to its label.",
+      "variance": "TilePicker uses it to display the chosen option `(option) => ReactNode`. ScheduleEditor and TierEditor use it (custom value mode) to render the editable input field for a row value `(props: RowValueFieldProps<V>) => ReactNode`; it is `never` in numeric mode."
+    },
+    "repeatDelay": {
+      "status": "consistent",
+      "summary": "Milliseconds before press-and-hold repeating starts. Defaults to 400.",
+      "variance": ""
+    },
+    "repeatInterval": {
+      "status": "consistent",
+      "summary": "Milliseconds between press-and-hold repeats. Defaults to 60.",
+      "variance": ""
+    },
+    "rows": {
+      "status": "type",
+      "summary": "The row records the grid, table or picker displays.",
+      "variance": "`TileRow<O>[]` on TileGrid, TilePicker; `FlagRow[]` on FlagPicker; `HeatmapAxisItem[]` (row labels only) on HeatmapChart; `StepSequencerRow[]` on StepSequencer; `Row[]` on DataTable, EditableTable; `SpreadsheetRow[]` on Spreadsheet; `Schedule<V>` on SchedulePreview."
+    },
+    "scale": {
+      "status": "meaning",
+      "summary": "Value-to-position or value-to-colour mapping, e.g. linear or log.",
+      "variance": "`'linear' or 'log'` mapping on Knob, LatencyChart; `HeatScale` colour scale on HeatmapChart, CalendarHeatmap. AudioMeter.scale is a measurement unit (`'dbfs' or 'lufs'`); PianoRoll.scale is a musical scale (`MusicScale` root and mode) for row highlighting."
+    },
+    "search": {
+      "status": "consistent",
+      "summary": "Controlled search text; matching rows are filtered or highlighted.",
+      "variance": ""
+    },
+    "searchLabel": {
+      "status": "consistent",
+      "summary": "Accessible name of the search field.",
+      "variance": ""
+    },
+    "segments": {
+      "status": "meaning",
+      "summary": "SegmentedMeter: stacked value portions of the bar, in order; remainder of maxValue shows as free.",
+      "variance": "SegmentedMeter uses `MeterSegment[]` as stacked value parts of a bar; CoordinatePlane uses `PlaneSegment[]` as geometric line segments (from/to points, optional arrowhead)."
+    },
+    "selectedId": {
+      "status": "consistent",
+      "summary": "The selected item's id, controlled; null for none.",
+      "variance": ""
+    },
+    "selectionMode": {
+      "status": "type",
+      "summary": "Whether items can be selected singly, multiply or not at all.",
+      "variance": "`'single' or 'multiple'` on Calendar, Canvas; literal `'multiple'` on MultipleCalendar and `'single'` on SingleCalendar; adds `'none'` on TileGrid, MediaLibrary, DataTable, ListView. Defaults differ: single on Calendar, multiple on Canvas, none on MediaLibrary, DataTable, ListView."
+    },
+    "series": {
+      "status": "meaning",
+      "summary": "Chart data series to plot.",
+      "variance": "Chart series types vary: `TimeSeries[]`, `LatencySeries[]`, `CategorySeries[]`, `ScatterSeries[]`, `BoxPlotSeries[]`, `HourlySeries or ScheduleSeries[]`; LiveTimeSeries omits `data`. DicomViewer.series is DICOM image series (stacks of images shown as switchable thumbnails), not plotted data."
+    },
+    "shape": {
+      "status": "type",
+      "summary": "The visual shape of the element.",
+      "variance": "`'text' or 'rect' or 'circle'` (placeholder shape, default `text`) on Skeleton; `AvatarShape` (`'circle' or 'square'`, default `circle`) on Avatar."
+    },
+    "shortcut": {
+      "status": "meaning",
+      "summary": "Keyboard shortcut associated with the item or palette.",
+      "variance": "MenuItem: a literal display hint (\"⌘E\"), not bound. CommandPalette: a `mod+k`-style key spec that registers a global listener (`null` disables). CommandPaletteTrigger: the same spec rendered as Kbd keys. Format and behaviour differ."
+    },
+    "shouldFollowPlayhead": {
+      "status": "consistent",
+      "summary": "Keeps the playhead scrolled into view as it moves. Defaults to true.",
+      "variance": ""
+    },
+    "side": {
+      "status": "meaning",
+      "summary": "Drawer: the edge it slides from (`start` or `end`, default `end`).",
+      "variance": "Drawer uses `'start' or 'end'` for screen edge; TradeTicket uses `TradeSide` for the trade direction (buy or sell), controlled."
+    },
+    "size": {
+      "status": "meaning",
+      "summary": "Size token for the component, usually `sm`, `md` or `lg`; defaults mostly `md`.",
+      "variance": "Token unions vary (ButtonSize, Size, DialogSize, BadgeSize, CalendarSize, AvatarSize, `'sm' or 'md'`, `'sm' or 'md' or 'lg'`). QRCode takes a `number` of CSS pixels (default 192). Dialog sizes cap width; SegmentedMeter is bar thickness; ProbabilityBar `sm` changes layout."
+    },
+    "skinTone": {
+      "status": "consistent",
+      "summary": "Skin tone applied to emoji that support them.",
+      "variance": ""
+    },
+    "skipSeconds": {
+      "status": "consistent",
+      "summary": "Seconds the skip buttons move; defaults to 15 (audio) or 10 (video).",
+      "variance": ""
+    },
+    "source": {
+      "status": "type",
+      "summary": "The input the component reads its content from.",
+      "variance": "`string` (text the slug derives from) on SlugField; `MediaStream or AudioNode` on AudioMeter; `string or ArrayBuffer or Blob` (document URL or data) on PdfViewer."
+    },
+    "sparkline": {
+      "status": "consistent",
+      "summary": "Recent values drawn as a small faint trend behind or beside the value.",
+      "variance": ""
+    },
+    "src": {
+      "status": "consistent",
+      "summary": "URL of the media to show (image, model or stream).",
+      "variance": ""
+    },
+    "startedAt": {
+      "status": "consistent",
+      "summary": "When counting or the process started (a Date, epoch milliseconds or an ISO string); elapsed time is measured from it.",
+      "variance": ""
+    },
+    "status": {
+      "status": "type",
+      "summary": "The status to show for the item.",
+      "variance": "`RolloutStatus` (drives rollout state) on RolloutProgress; `{ tone, label }` override on Gauge, MeterBar; `StreamStatus` on StreamPreview, StreamStatusChip; `ReactNode` slot beside the title on Page, PageHeader."
+    },
+    "step": {
+      "status": "consistent",
+      "summary": "Increment that values snap to (Knob default 1, 0 for none; Rating 1 or 0.5).",
+      "variance": ""
+    },
+    "steps": {
+      "status": "consistent",
+      "summary": "Definitions of the steps the component shows, in order.",
+      "variance": ""
+    },
+    "suffix": {
+      "status": "consistent",
+      "summary": "ReactNode content after the input, such as a unit.",
+      "variance": ""
+    },
+    "thresholds": {
+      "status": "type",
+      "summary": "Values at which the tone or status changes.",
+      "variance": "`TimerThresholds` on Timer; `UptimeThresholds` (default warn below 99.9, danger below 99) on UptimeBar; `readonly ChartThreshold[]` on TimeSeriesChart, LiveTimeSeries; `GaugeThresholds` on Gauge, MeterBar."
+    },
+    "ticks": {
+      "status": "type",
+      "summary": "Marks drawn on the track or arc at these values.",
+      "variance": "`readonly SliderTick[]` (with optional labels) on Slider, RangeSlider; `readonly number[]` on Knob."
+    },
+    "timeSignature": {
+      "status": "consistent",
+      "summary": "Beats per bar and the beat's note value. Defaults to 4/4.",
+      "variance": ""
+    },
+    "timeZone": {
+      "status": "consistent",
+      "summary": "IANA time zone for displayed and entered times; defaults to UIProvider's timeZone or the browser's zone.",
+      "variance": ""
+    },
+    "title": {
+      "status": "type",
+      "summary": "The component's visible heading or accessible name.",
+      "variance": "`ReactNode` on most (Dialog, Drawer, Card, EmptyState, Page, CodeBlock, forms...); `string` on charts, DepthChart, ModelViewer, NodeGraph, CoordinatePlane, PdfViewer, StreamPreview, VideoPlayer, Terminal (often an accessible name only)."
+    },
+    "toNumber": {
+      "status": "consistent",
+      "summary": "Maps a custom row value to a number for shading and charts; without it shades are uniform.",
+      "variance": ""
+    },
+    "tone": {
+      "status": "type",
+      "summary": "Colour role of the component; default varies (usually `neutral`).",
+      "variance": "`Tone` on most; `ButtonTone` on Button; `'neutral' or 'danger'` on MenuItem, ConfirmDialog; `FeedbackTone` (default `info`) on Banner; `ProgressTone` (default `accent`) on ProgressBar; `TextTone` on Heading; Sparkline defaults to `accent`; Rating and RatingDisplay to `warning`; on ToggleButton it colours only the pressed state."
+    },
+    "tools": {
+      "status": "type",
+      "summary": "The tools offered in the toolbar, in order; defaults to all.",
+      "variance": "`readonly DicomTool[]` on DicomViewer; `readonly AnnotationKind[]` on ImageAnnotator."
+    },
+    "type": {
+      "status": "meaning",
+      "summary": "Which kind of rendering or input the component uses (chart kind, input type).",
+      "variance": "Rendering kind on Sparkline, CategoryBarChart, CategoryChart, CategoryWaterfall, CategoryFunnel, CategoryRadar; HTML input type on TextField. FileThumbnail.type is the file's MIME type (data); StreamPreview and VideoPlayer type is the stream protocol (`auto`, HLS, DASH, progressive)."
+    },
+    "typing": {
+      "status": "consistent",
+      "summary": "People currently typing, shown as a typing indicator.",
+      "variance": ""
+    },
+    "unit": {
+      "status": "type",
+      "summary": "The values' unit label, shown after numbers and included in announcements.",
+      "variance": "`string` on most; `ReactNode` on StatTile; `'ms' or 's' or 'µs'` (default `ms`, the unit the data is in) on LatencyChart; `ModelUnits` (`'mm' or 'cm' or 'm' or 'in'`, the physical length one model unit represents) on ModelViewer; `never` on ScheduleEditor, TierEditor in custom value mode."
+    },
+    "uploadImage": {
+      "status": "consistent",
+      "summary": "Uploads a pasted, dropped or chosen image file and resolves to its src (and alt); without it images are added by URL.",
+      "variance": ""
+    },
+    "validate": {
+      "status": "type",
+      "summary": "Custom validation returning an error (message or errors map), or nothing when valid.",
+      "variance": "`(value: number or null)` on NumberField; `(pair, all)` per row on KeyValueEditor; async `(slug, signal) => Promise` on SlugField; `(rows) => errors by row and column` on EditableTable, Spreadsheet."
+    },
+    "value": {
+      "status": "type",
+      "summary": "The component's current value, usually controlled.",
+      "variance": "Each control uses its own value type (number, string, ids, dates, ranges, rules, files...). Display-only on StatTile, PriceTicker, Gauge, cells, ReferenceValue; content to copy or encode on CopyButton, CopyField, Barcode, QRCode. Radio.value is the option's own value, not the current selection."
+    },
+    "valueAxis": {
+      "status": "type",
+      "summary": "The value axis's range and title, such as { min: 0, max: 100 }.",
+      "variance": "`ValueAxisOptions` on CategoryBarChart, CategoryWaterfall, BoxPlotChart; CategoryChart accepts a union; CategoryRadar uses it for the radial axis (title only read in summary, defaults to zero start)."
+    },
+    "values": {
+      "status": "type",
+      "summary": "The values the component displays or edits.",
+      "variance": "`PropertyValues` (selected objects) on PropertyInspector; `FilterValues` (controlled, with onChange) on FilterPanel; [row][column] matrix on HeatmapChart; ISO-date record on CalendarHeatmap; `ObservationValue[]` on Flowsheet, ObservationTrend."
+    },
+    "variant": {
+      "status": "type",
+      "summary": "Visual style or layout variant of the component; defaults vary.",
+      "variance": "Each component has its own union: ButtonVariant (default `solid`), IconButtonVariant (`ghost`), BadgeVariant (`soft`), TextVariant, StepperVariant, MenuButton, SplitButton fill styles, ToggleButtonVariant (`soft`, `outline`, `ghost`); layout variants on Timer, PriceTicker, Gauge, AudioPlayer."
+    },
+    "view": {
+      "status": "type",
+      "summary": "Which display mode the content is shown in.",
+      "variance": "`'month' or 'week'` (default month) on Calendar, MultipleCalendar, SingleCalendar; `'grid' or 'list'` (controlled) on AssetPicker, MediaLibrary."
+    },
+    "visibleMonths": {
+      "status": "consistent",
+      "summary": "Months shown side by side (1 to 12), wrapping when space is short. Defaults to 1.",
+      "variance": ""
+    },
+    "warnings": {
+      "status": "type",
+      "summary": "Warnings shown to the user above the content.",
+      "variance": "`readonly ReactNode[]` on PlanReview; `readonly string[]` on TradeTicket."
+    },
+    "width": {
+      "status": "meaning",
+      "summary": "Skeleton: width as a CSS length or pixels; defaults to full width.",
+      "variance": "Skeleton takes a CSS length or px `number or string`. CanvasItem takes a `number` in canvas world units (defaults to the child's size). Page takes a max-width preset `'narrow' or 'medium' or 'full'` capping content width."
+    },
+    "workerSrc": {
+      "status": "consistent",
+      "summary": "URL of the pdf.js worker script used for PDF rendering.",
+      "variance": ""
+    },
+    "workingDays": {
+      "status": "consistent",
+      "summary": "The working days of the week (0 = Sunday). Defaults to Monday to Friday.",
+      "variance": ""
+    },
+    "workingHours": {
+      "status": "consistent",
+      "summary": "The hours of a working day (`GanttWorkingHours`, `start` to `end`, 0–24). GanttChart shades outside them (default 9 to 17); WorldClock shows whether each clock is within them, only when they're given.",
+      "variance": ""
+    },
+    "yearRange": {
+      "status": "consistent",
+      "summary": "The years the year Cycler offers, both included; defaults from minValue and maxValue.",
+      "variance": ""
+    },
+    "zoom": {
+      "status": "type",
+      "summary": "Zoom or scale factor of the content.",
+      "variance": "`PdfZoom` (`'fit-width' or 'fit-page'` or number), controlled, on PdfViewer; `number` scale factor (default 1) on MusicNotation."
+    },
+    "defaultIndex": {
+      "status": "consistent",
+      "summary": "The index of the current item at first, uncontrolled: Lightbox's image, Carousel's first slide in view. Defaults to 0.",
+      "variance": ""
+    },
+    "index": {
+      "status": "consistent",
+      "summary": "The index of the current item, controlled: Lightbox's image, Carousel's first slide in view.",
+      "variance": ""
+    },
+    "defaultSelectedKeys": {
+      "status": "consistent",
+      "summary": "The chosen rows' ids at first, uncontrolled.",
+      "variance": ""
+    },
+    "selectedKeys": {
+      "status": "consistent",
+      "summary": "The chosen rows' ids, controlled.",
+      "variance": ""
+    },
+    "hasPicker": {
+      "status": "consistent",
+      "summary": "Shows a control that jumps straight to any value: Cycler's grid of values, Carousel's dots or thumbnails. Defaults to true.",
+      "variance": ""
+    },
+    "isPlaying": {
+      "status": "consistent",
+      "summary": "Whether playback is running, controlled: the media on MediaTransport and MusicTransport, autoplay on Carousel.",
+      "variance": ""
+    },
+    "shouldAutoPlay": {
+      "status": "consistent",
+      "summary": "Starts playing by itself, with a control to stop it: a video once it loads (VideoPlayer, StreamPreview), slides moving on every `autoPlayIntervalMs` (Carousel).",
+      "variance": ""
+    },
+    "isRequired": {
+      "status": "consistent",
+      "summary": "Marks the field as required: the label shows it, and validation fails while the field is empty.",
+      "variance": ""
+    },
+    "isSearchable": {
+      "status": "consistent",
+      "summary": "Shows a search field that filters the options (over each list on TransferList). Defaults to true.",
+      "variance": ""
+    },
+    "isVirtualized": {
+      "status": "consistent",
+      "summary": "Renders only the rows in view, for long lists (thousands of rows). DataTable scrolls inside `maxHeight`; ListView does too with `maxHeight`, and follows the page's scroll without it.",
+      "variance": ""
+    },
+    "onBlur": {
+      "status": "type",
+      "summary": "Called when the field loses focus.",
+      "variance": "`() => void` on JsonEditor, TemplateEditor; Rating passes its range input's `FocusEvent`."
+    },
+    "onRowAction": {
+      "status": "type",
+      "summary": "Called with a `rowActions` menu item's key and its row.",
+      "variance": "The row is DataTable's `Row` on DataTable and the `ListViewItem` on ListView."
+    },
+    "renderActions": {
+      "status": "type",
+      "summary": "Controls at the end of a row (for example an OverflowMenu), shown on hover, focus or selection, and always on touch.",
+      "variance": "Called with the `TreeNode` on Tree and the `ListViewItem` on ListView."
+    },
+    "rowActions": {
+      "status": "type",
+      "summary": "Menu items (`MenuItem`) for a row's actions menu, opened from a \"more\" button at the end of the row.",
+      "variance": "Called with DataTable's `Row` on DataTable and the `ListViewItem` on ListView."
+    },
+    "sections": {
+      "status": "type",
+      "summary": "Groups of items, each with an optional heading.",
+      "variance": "`NavSection[]` navigation groups on Sidebar; `ListViewSection[]` with sticky headings on ListView."
+    },
+    "confirmPhrase": {
+      "status": "consistent",
+      "summary": "Word or name the user must type before a destructive confirm is enabled.",
+      "variance": ""
+    },
+    "expandedIds": {
+      "status": "type",
+      "summary": "The ids of the expanded rows or nodes, controlled; see `defaultExpandedIds`.",
+      "variance": "`Iterable<string>` on GanttChart, KanbanBoard, OrgChart, Tree; `ReadonlySet<string>` on DataTable (tree rows)."
+    },
+    "updatedAt": {
+      "status": "type",
+      "summary": "When the value or statuses were last updated.",
+      "variance": "`Date | number | string` (Date, epoch ms or ISO string) on PriceTicker, StatusBar; `Date` on WidgetFrame."
+    },
+    "defaultSelectedTab": {
+      "status": "type",
+      "summary": "The tab selected at first (uncontrolled).",
+      "variance": "`string` tab id on Page, PageHeader; `'write' | 'preview'` on MarkdownEditor (tabs layout, default `write`)."
+    }
+  },
+  "descriptions": {
+    "after": "The new text; the right-hand side of the diff.",
+    "bands": "Shaded value ranges drawn behind the series, such as a normal operating band, each with optional label, axis and tone.",
+    "before": "The original text; the left-hand side of the diff.",
+    "breadcrumbs": "Trail of ancestor links shown above the page title.",
+    "captions": "Subtitle or caption tracks offered in the player's captions menu.",
+    "changes": "The planned changes to review, each with its kind and details.",
+    "code": "The source text to display and highlight.",
+    "criticalRange": "Optional low and high bounds beyond which the value is flagged critical.",
+    "currentStageId": "Id of the stage currently being rolled out; earlier stages show complete.",
+    "defaultFilterValues": "Filter values applied at first, keyed by column (uncontrolled).",
+    "defaultHiddenColumns": "Ids of columns hidden at first (uncontrolled).",
+    "defaultMode": "The form's initial mode (such as view or edit), uncontrolled.",
+    "defaultRecentIds": "Recently chosen item ids, newest first, shown at first (uncontrolled).",
+    "defaultSearch": "Search text applied at first (uncontrolled).",
+    "defaultSecondaryOpen": "Whether the secondary pane's drawer starts open on narrow containers (uncontrolled).",
+    "defaultSelected": "Not supported on action buttons; only toggle buttons take an initial selected state (typed never).",
+    "defaultSelectedId": "Id of the item selected at first (uncontrolled); null means none.",
+    "defaultSelectedKeys": "Keys of rows selected at first (uncontrolled).",
+    "defaultSelectedTab": "Id of the tab selected at first (uncontrolled).",
+    "defaultSelection": "Ids of the items selected at first (uncontrolled).",
+    "defaultSort": "The sort applied at first, column and direction (uncontrolled); null means unsorted.",
+    "defaultSorting": "Sort columns in priority order applied at first (uncontrolled).",
+    "delta": "Change versus a previous period, shown beside the value with its direction and tone.",
+    "edges": "The connections between nodes, each naming its source and target node ids.",
+    "falseLabel": "Text shown when the value is false.",
+    "field": "The form field's API: its value, state, and handlers for the custom renderer to use.",
+    "functions": "Mathematical functions to plot, each a function of x.",
+    "hasNext": "Whether a next page exists; enables the Next button.",
+    "hasPrevious": "Whether a previous page exists; enables the Previous button.",
+    "image": "The image to show, with its source, dimensions and alt text.",
+    "images": "The list of images to show, each with its source and alt text.",
+    "isLooping": "Whether loop playback is on.",
+    "isMinorUnits": "Treats the value as minor currency units (cents) and divides accordingly before formatting.",
+    "isPlaying": "Whether playback is running; shows the pause button when true, play otherwise.",
+    "isRequired": "Marks the field as required for the user and for form validation.",
+    "isSelected": "Not supported on action buttons; only toggle buttons take a selected state (typed never).",
+    "isTrue": "The boolean to display; null or undefined shows an empty cell.",
+    "justify": "Main-axis distribution of children: start, center, end or between.",
+    "lanes": "The rows (resources or people) that timeline items are placed in.",
+    "maxLength": "Maximum number of characters the message may contain.",
+    "notes": "The notes to show, each with pitch, start time and duration.",
+    "observation": "The measure being tracked (a vital sign, lab test or sensor), with its unit and ranges.",
+    "observations": "The measures to list as rows, such as vital signs or lab tests.",
+    "onAnnouncingErrorsChange": "Called with whether new error lines are announced to screen readers, when toggled.",
+    "onAudioStreamChange": "Called with the id of the stream whose audio plays, or null when muted.",
+    "onBlur": "Called when the editor loses focus.",
+    "onContextMenu": "Handler for the right-click event, which opens the context menu.",
+    "onCopy": "Called after the value is copied to the clipboard.",
+    "onEnded": "Called when the track finishes playing.",
+    "onFilterChange": "Called with the id of the filter the user selects.",
+    "onFilterValuesChange": "Called with the full set of filter values whenever a filter changes.",
+    "onFocusedStreamChange": "Called with the id of the focused stream, or null when focus is cleared.",
+    "onFollowingChange": "Called with whether the log is following (auto-scrolling to) new lines.",
+    "onHiddenColumnsChange": "Called with the set of hidden column ids when columns are shown or hidden.",
+    "onInputModeChange": "Called with the order-entry mode, amount or quantity, when it is switched.",
+    "onKeyDown": "Handler for key presses, which opens the context menu from the keyboard.",
+    "onLevelsChange": "Called with the visible log levels when the level filter changes.",
+    "onModeChange": "Called with the new form mode when it switches, such as view to edit.",
+    "onNavOpenChange": "Called with whether the navigation drawer is open when it opens or closes.",
+    "onNext": "Called when the Next control is activated.",
+    "onNoteOff": "Called with the MIDI pitch when a key is released.",
+    "onNoteOn": "Called with the MIDI pitch and velocity when a key is pressed.",
+    "onOrderTypeChange": "Called with the new order type when the user changes it.",
+    "onOverlayHiddenChange": "Called with whether the overlay text is hidden, when toggled.",
+    "onPageSizeChange": "Called with the chosen number of rows per page.",
+    "onPausedChange": "Called with whether the live chart is paused, when toggled.",
+    "onPlaybackRateChange": "Called with the chosen playback speed multiplier, such as 1.5.",
+    "onPointerCancel": "Pointer-cancel handler, used to cancel the long-press that opens the menu on touch.",
+    "onPointerDown": "Pointer-down handler, used to start the long-press that opens the menu on touch.",
+    "onPointerMove": "Pointer-move handler, used to cancel the long-press if the pointer moves away.",
+    "onPointerUp": "Pointer-up handler, used to cancel the long-press when the pointer is released.",
+    "onPointMove": "Called with the point's id and its new x and y plane coordinates while dragged.",
+    "onRangeChange": "Called with the new visible time range when the user navigates or zooms.",
+    "onReply": "Called with the id of the message the user chose to reply to.",
+    "onRowAction": "Called with the chosen menu item's key and the row it was chosen for.",
+    "onSearchChange": "Called with the new search text as it changes.",
+    "onSeriesChange": "Called with the id of the series the user switches to.",
+    "onSideChange": "Called with the new trade side, such as buy or sell, when it changes.",
+    "onSkinToneChange": "Called with the emoji skin tone the user picks.",
+    "onSliceChange": "Called with the 0-based slice index when the shown slice changes.",
+    "onSnapChange": "Called with the new note snap grid value, such as 1/16, when changed.",
+    "onSortChange": "Called with the new column sort, or null when sorting is cleared.",
+    "onSortingChange": "Called with the sort columns in priority order when sorting changes.",
+    "onStepChange": "Called with the 0-based step number when the user moves between steps.",
+    "onSuccess": "Called with the submitted values and result after a successful submit.",
+    "onTabChange": "Called with the id of the tab the user selects.",
+    "onToggleChange": "Called with the node id, toggle id and new on/off value when a node toggle is switched.",
+    "onToolChange": "Called with the pointer tool the user selects.",
+    "onViewChange": "Called with grid or list when the user switches the layout.",
+    "onViewportChange": "Called with the new viewport (pan offset and zoom) as it changes.",
+    "onVolumeChange": "Called with the new volume, from 0 to 1, when the slider moves.",
+    "onWrappedChange": "Called with whether long lines wrap, when the wrap toggle changes.",
+    "outcomes": "The outcomes to chart, each with a name and probability over time.",
+    "pageSize": "Number of items shown per page.",
+    "pagination": "Paging state for the table: current page, page size and total, or server paging callbacks.",
+    "playbackRate": "Current playback speed multiplier, where 1 is normal speed.",
+    "polygons": "Filled shapes to draw, each defined by a list of plane points.",
+    "poster": "URL of the image shown before playback starts.",
+    "properties": "The properties to list and edit, each with a key, label, type and value.",
+    "reactions": "The emoji reactions on the message, each with its emoji, count and whether the current user reacted.",
+    "referenceRange": "The normal low and high bounds; values outside are flagged out of range.",
+    "row": "The data of the row being edited.",
+    "secondaryActions": "Lower-emphasis page actions shown beside the primary action, each with a label and handler.",
+    "selectedKeys": "Keys of the selected rows, controlled.",
+    "selectedTab": "Id of the selected tab, controlled.",
+    "stages": "The ordered rollout stages, such as canary, 25% and 100%.",
+    "streams": "The video streams shown in the grid, each with an id, source and title.",
+    "subtitle": "Secondary text shown beneath the title.",
+    "tags": "The tags to show as chips in the cell.",
+    "targets": "The destinations being rolled out to, such as regions or clusters, each with its status.",
+    "taxRates": "The tax rates a line can select, each with an id, label and percent.",
+    "track": "The track to play, with its source, title and artist.",
+    "trueLabel": "Text shown when the value is true.",
+    "xRange": "Visible horizontal range as [min, max] in plane units.",
+    "y": "Vertical world position of the item's top-left corner.",
+    "yRange": "Visible vertical range as [min, max] in plane units."
+  }
+}

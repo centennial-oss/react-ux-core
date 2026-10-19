@@ -1,0 +1,23 @@
+name: Release
+
+# Publishes when a release tag is pushed (make tag-release). See Releasing in DEVELOPER.md.
+# npm's trusted publisher for this package must name this file, release.yml.
+
+on:
+  push:
+    tags:
+      # Semantic version tags: v1.0.0, v1.3.0-next.0, etc.
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    if: github.repository_owner == 'centennial-oss'
+    uses: ./.github/workflows/release-build.yml
+    secrets: inherit
+    with:
+      version: ${{ github.ref_name }}
+      publish: true

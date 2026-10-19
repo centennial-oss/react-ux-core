@@ -1,0 +1,234 @@
+/*
+ * Themes. UIProvider sets data-theme on <html> to the resolved theme: light, dark or high-contrast.
+ * The light theme is the default in tokens.css; these blocks override the colour tokens.
+ */
+
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-surface-1: #0f1115;
+  --color-surface-2: #171a20;
+  --color-surface-3: #20242c;
+  --color-surface-4: #2b303a;
+
+  --color-fg: #e8eaee;
+  --color-fg-muted: #a3aab6;
+  --color-fg-inverse: #0f1115;
+
+  --color-border: #2f3540;
+  --color-border-strong: #737c8c;
+
+  --color-neutral-fg: #e8eaee;
+  --color-neutral-bg: #20242c;
+  --color-neutral-border: #737c8c;
+  --color-neutral-solid: #d5d9e0;
+  --color-neutral-on-solid: #0f1115;
+
+  --color-accent-fg: #8fb0ff;
+  --color-accent-bg: #1a2540;
+  --color-accent-border: #4a6bb8;
+  --color-accent-solid: #3366e6;
+  --color-accent-on-solid: #ffffff;
+
+  --color-success-fg: #6fd093;
+  --color-success-bg: #13281b;
+  --color-success-border: #3a8a57;
+  --color-success-solid: #237a44;
+  --color-success-on-solid: #ffffff;
+
+  --color-warning-fg: #f3c65a;
+  --color-warning-bg: #2e2410;
+  --color-warning-border: #9a7420;
+  --color-warning-solid: #f0b429;
+  --color-warning-on-solid: #1a1d23;
+
+  --color-danger-fg: #ff8f8a;
+  --color-danger-bg: #351716;
+  --color-danger-border: #b04440;
+  --color-danger-solid: #c5332f;
+  --color-danger-on-solid: #ffffff;
+
+  --color-info-fg: #6cc9e8;
+  --color-info-bg: #0f2830;
+  --color-info-border: #2f7f99;
+  --color-info-solid: #0b7194;
+  --color-info-on-solid: #ffffff;
+
+  --color-focus: #8fb0ff;
+
+  --color-scrim: rgb(0 0 0 / 0.6);
+
+  --color-chart-1: #6f97f5;
+  --color-chart-2: #f08a4b;
+  --color-chart-3: #51c26d;
+  --color-chart-4: #cc7ee0;
+  --color-chart-5: #f06595;
+  --color-chart-6: #3bc9db;
+  --color-chart-7: #fcc419;
+  --color-chart-8: #9775fa;
+  --color-chart-9: #a9e34b;
+  --color-chart-10: #adb5bd;
+
+  /* Code: syntax colours on the code background (CodeBlock, Code), and a highlighted line. */
+  --color-code-bg: #13161b;
+  --color-code-fg: #e8eaee;
+  --color-code-keyword: #d2a8ff;
+  --color-code-string: #7ee09a;
+  --color-code-number: #f0b072;
+  --color-code-comment: #9aa3b0;
+  --color-code-punct: #b4bcc8;
+  --color-code-property: #8fb0ff;
+  --color-code-highlight: #2c2610;
+  --color-code-highlight-border: #c9a227;
+
+  /* Heatmap scales: seven steps per palette, light to dark (dark to light in the dark theme), distinct in each theme. */
+  --color-heat-accent-1: #1b2642;
+  --color-heat-accent-2: #2b4074;
+  --color-heat-accent-3: #3a5aa6;
+  --color-heat-accent-4: #4a74d8;
+  --color-heat-accent-5: #7495e5;
+  --color-heat-accent-6: #9fb7f2;
+  --color-heat-accent-7: #c9d8ff;
+  --color-heat-success-1: #13291c;
+  --color-heat-success-2: #204f32;
+  --color-heat-success-3: #2d7448;
+  --color-heat-success-4: #3a9a5e;
+  --color-heat-success-5: #66b784;
+  --color-heat-success-6: #91d5a9;
+  --color-heat-success-7: #bdf2cf;
+  --color-heat-danger-1: #2f1515;
+  --color-heat-danger-2: #622828;
+  --color-heat-danger-3: #963a3a;
+  --color-heat-danger-4: #c94d4d;
+  --color-heat-danger-5: #db7676;
+  --color-heat-danger-6: #eda0a0;
+  --color-heat-danger-7: #ffc9c9;
+  --color-heat-neutral-1: #21252d;
+  --color-heat-neutral-2: #3b4049;
+  --color-heat-neutral-3: #545a66;
+  --color-heat-neutral-4: #6e7582;
+  --color-heat-neutral-5: #959ba5;
+  --color-heat-neutral-6: #bbc0c9;
+  --color-heat-neutral-7: #e2e6ec;
+
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 3px rgb(0 0 0 / 0.5);
+  --shadow-overlay: 0 4px 6px -2px rgb(0 0 0 / 0.4), 0 12px 24px -4px rgb(0 0 0 / 0.6);
+}
+
+/* High contrast exceeds AA: text pairs reach at least 7:1 (WCAG AAA) and borders are dark. */
+[data-theme='high-contrast'] {
+  color-scheme: light;
+
+  --color-surface-1: #ffffff;
+  --color-surface-2: #ffffff;
+  --color-surface-3: #f0f0f0;
+  --color-surface-4: #e0e0e0;
+
+  --color-fg: #000000;
+  --color-fg-muted: #2e2e2e;
+  --color-fg-inverse: #ffffff;
+
+  --color-border: #4d4d4d;
+  --color-border-strong: #000000;
+
+  --color-neutral-fg: #000000;
+  --color-neutral-bg: #f0f0f0;
+  --color-neutral-border: #000000;
+  --color-neutral-solid: #000000;
+  --color-neutral-on-solid: #ffffff;
+
+  --color-accent-fg: #002c9e;
+  --color-accent-bg: #ebf0ff;
+  --color-accent-border: #002c9e;
+  --color-accent-solid: #002c9e;
+  --color-accent-on-solid: #ffffff;
+
+  --color-success-fg: #00521b;
+  --color-success-bg: #e8f5ec;
+  --color-success-border: #00521b;
+  --color-success-solid: #00521b;
+  --color-success-on-solid: #ffffff;
+
+  --color-warning-fg: #5c3b00;
+  --color-warning-bg: #fff4dc;
+  --color-warning-border: #5c3b00;
+  --color-warning-solid: #5c3b00;
+  --color-warning-on-solid: #ffffff;
+
+  --color-danger-fg: #8f0000;
+  --color-danger-bg: #ffecec;
+  --color-danger-border: #8f0000;
+  --color-danger-solid: #8f0000;
+  --color-danger-on-solid: #ffffff;
+
+  --color-info-fg: #004a5f;
+  --color-info-bg: #e6f5fa;
+  --color-info-border: #004a5f;
+  --color-info-solid: #004a5f;
+  --color-info-on-solid: #ffffff;
+
+  --color-focus: #000000;
+
+  --color-scrim: rgb(0 0 0 / 0.6);
+
+  --color-chart-1: #002c9e;
+  --color-chart-2: #9a3200;
+  --color-chart-3: #1b6b2e;
+  --color-chart-4: #7a1f94;
+  --color-chart-5: #a3003f;
+  --color-chart-6: #005866;
+  --color-chart-7: #6b4300;
+  --color-chart-8: #4523a8;
+  --color-chart-9: #3f5a00;
+  --color-chart-10: #3d434d;
+
+  /* Code: syntax colours on the code background (CodeBlock, Code), and a highlighted line. */
+  --color-code-bg: #ffffff;
+  --color-code-fg: #000000;
+  --color-code-keyword: #4d0a7a;
+  --color-code-string: #084d1f;
+  --color-code-number: #6b3300;
+  --color-code-comment: #33373e;
+  --color-code-punct: #24272c;
+  --color-code-property: #00337a;
+  --color-code-highlight: #fff0b8;
+  --color-code-highlight-border: #5c4300;
+
+  /* Heatmap scales: seven steps per palette, light to dark (dark to light in the dark theme), distinct in each theme. */
+  --color-heat-accent-1: #e3e9ff;
+  --color-heat-accent-2: #acbcec;
+  --color-heat-accent-3: #7490da;
+  --color-heat-accent-4: #3d63c7;
+  --color-heat-accent-5: #294ba7;
+  --color-heat-accent-6: #143286;
+  --color-heat-accent-7: #001a66;
+  --color-heat-success-1: #dcf3e3;
+  --color-heat-success-2: #a2d0b3;
+  --color-heat-success-3: #68ad82;
+  --color-heat-success-4: #2e8a52;
+  --color-heat-success-5: #1f6d3d;
+  --color-heat-success-6: #0f5029;
+  --color-heat-success-7: #003314;
+  --color-heat-danger-1: #fde2e2;
+  --color-heat-danger-2: #eaaaaa;
+  --color-heat-danger-3: #d77373;
+  --color-heat-danger-4: #c43b3b;
+  --color-heat-danger-5: #9f2727;
+  --color-heat-danger-6: #7b1414;
+  --color-heat-danger-7: #560000;
+  --color-heat-neutral-1: #ececec;
+  --color-heat-neutral-2: #c6c6c6;
+  --color-heat-neutral-3: #a0a0a0;
+  --color-heat-neutral-4: #7a7a7a;
+  --color-heat-neutral-5: #585858;
+  --color-heat-neutral-6: #363636;
+  --color-heat-neutral-7: #141414;
+
+  --shadow-raised: 0 0 0 1px #000000;
+  --shadow-overlay: 0 0 0 2px #000000;
+}

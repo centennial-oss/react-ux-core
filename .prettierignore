@@ -1,0 +1,10 @@
+dist
+coverage
+node_modules
+package-lock.json
+LICENSE
+NOTICE
+
+# Generated (make props-glossary, make catalog); make lint checks they match their generators byte for byte.
+docs/PROPS-GLOSSARY.md
+docs/COMPONENTS-CATALOG.md

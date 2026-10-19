@@ -1,0 +1,200 @@
+name: Release Build
+
+# Runs every gate on the release commit, then publishes the exact package tarball it verified: to npm, as a GitHub
+# release, and as a new version of the Storybook site. With publish off (release preflight), it does everything as a
+# dry run and uploads the package, Storybook and assembled site as workflow artifacts instead.
+# See Releasing in DEVELOPER.md.
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Version to release (a leading v, as in a tag name, is removed). Defaults to package.json's version.
+        required: false
+        type: string
+        default: ''
+      publish:
+        description: Publish to npm, create the GitHub release and deploy Storybook (otherwise a dry run)
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.64.1-noble
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      dist_tag: ${{ steps.version.outputs.dist_tag }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install make
+        run: apt-get update -qq && apt-get install -y -qq --no-install-recommends make > /dev/null
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Resolve version
+        id: version
+        run: .github/scripts/resolve-version.sh "${{ inputs.version }}" "${{ inputs.publish }}"
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Run checks
+        env:
+          STORYBOOK_RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: make check VISUAL_RUNNER=native
+
+      - name: Pack
+        run: make pack PACK_DIR=package
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          name: package
+          path: package/*.tgz
+          if-no-files-found: error
+
+      - name: Upload Storybook
+        uses: actions/upload-artifact@v7
+        with:
+          name: storybook
+          path: storybook-static/
+          if-no-files-found: error
+
+      - name: Upload visual diffs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      # Screenshots of failed unit and story tests, taken in the browser at the moment of failure.
+      - name: Upload test failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: vitest-failure-screenshots
+          path: .vitest/attachments/
+          include-hidden-files: true # .vitest is a hidden folder, which uploads skip by default
+          if-no-files-found: ignore
+          retention-days: 14
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # GitHub release and the gh-pages branch
+      id-token: write # npm trusted publishing (OIDC); provenance is generated automatically
+    env:
+      VERSION: ${{ needs.verify.outputs.version }}
+      DIST_TAG: ${{ needs.verify.outputs.dist_tag }}
+      IS_PRERELEASE: ${{ needs.verify.outputs.is_prerelease }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Stable releases must come from main; prereleases from main or next.
+      - name: Check the release commit is on an allowed branch
+        if: inputs.publish
+        run: |
+          branches="main"
+          if [ "$IS_PRERELEASE" = true ]; then branches="main next"; fi
+          for branch in $branches; do
+            if git merge-base --is-ancestor "$GITHUB_SHA" "origin/$branch" 2> /dev/null; then
+              echo "Release commit is on $branch."
+              exit 0
+            fi
+          done
+          echo "::error::The tagged commit isn't on $branches. Release with make tag-release from an up-to-date branch."
+          exit 1
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+
+      - name: Check npm supports trusted publishing
+        run: |
+          required=11.5.1
+          current="$(npm --version)"
+          if [ "$(printf '%s\n%s\n' "$required" "$current" | sort -V | head -1)" != "$required" ]; then
+            npm install -g "npm@^$required"
+          fi
+          npm --version
+
+      - name: Download package
+        uses: actions/download-artifact@v8
+        with:
+          name: package
+          path: package
+
+      - name: Download Storybook
+        uses: actions/download-artifact@v8
+        with:
+          name: storybook
+          path: storybook-static
+
+      - name: Publish to npm
+        run: |
+          if [ "${{ inputs.publish }}" = true ]; then
+            npm publish package/*.tgz --access public --tag "$DIST_TAG"
+          else
+            npm publish package/*.tgz --access public --tag "$DIST_TAG" --dry-run
+          fi
+
+      # A real release must have a CHANGELOG.md section (make tag-release writes it); a preflight may not yet.
+      - name: Write release notes
+        run: |
+          if ! node .github/scripts/changelog-section.mjs "$VERSION" > release-notes.md; then
+            if [ "${{ inputs.publish }}" = true ]; then exit 1; fi
+            echo "Preflight build of $VERSION (no CHANGELOG.md section yet)." > release-notes.md
+          fi
+          cat release-notes.md
+
+      - name: Create GitHub release
+        if: inputs.publish
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: v${{ env.VERSION }}
+          body_path: release-notes.md
+          prerelease: ${{ env.IS_PRERELEASE == 'true' }}
+          draft: false
+
+      - name: Deploy Storybook
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ inputs.publish }}" = true ]; then
+            .github/scripts/deploy-storybook.sh "$VERSION" storybook-static site --push
+          else
+            .github/scripts/deploy-storybook.sh "$VERSION" storybook-static site
+          fi
+
+      - name: Upload assembled site (preflight)
+        if: ${{ !inputs.publish }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-site
+          path: |
+            site/
+            !site/.git/
+          retention-days: 14

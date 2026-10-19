@@ -1,0 +1,60 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.repository_owner == 'centennial-oss'
+    runs-on: ubuntu-latest
+    # Playwright's image, so browser tests and visual snapshots run on the same Linux the baselines were made on.
+    # Keep the tag in step with @playwright/test (and PLAYWRIGHT_IMAGE in the Makefile).
+    container: mcr.microsoft.com/playwright:v1.64.1-noble
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install make
+        run: apt-get update -qq && apt-get install -y -qq --no-install-recommends make > /dev/null
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: make install
+
+      # Every gate: lint, format, typecheck, tests, build, size, licenses, package contents, Storybook, visual snapshots.
+      - name: Run checks
+        run: make check VISUAL_RUNNER=native
+
+      - name: Upload visual diffs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      # Screenshots of failed unit and story tests, taken in the browser at the moment of failure.
+      - name: Upload test failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: vitest-failure-screenshots
+          path: .vitest/attachments/
+          include-hidden-files: true # .vitest is a hidden folder, which uploads skip by default
+          if-no-files-found: ignore
+          retention-days: 14

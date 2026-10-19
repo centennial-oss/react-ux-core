@@ -1,0 +1,4 @@
+/* Tailwind plus the library's styles, so browser tests render components exactly as apps will. */
+@import 'tailwindcss';
+@import '../src/styles/index.css';
+@source '../src';

@@ -1,0 +1,77 @@
+name: Merge to Main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.repository_owner == 'centennial-oss'
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.64.1-noble
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install make
+        run: apt-get update -qq && apt-get install -y -qq --no-install-recommends make > /dev/null
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Run checks
+        run: make check VISUAL_RUNNER=native
+
+      # A preview of the docs site for main. It isn't deployed; the public site updates only on release.
+      - name: Upload Storybook preview
+        uses: actions/upload-artifact@v7
+        with:
+          name: storybook-main
+          path: storybook-static/
+          retention-days: 14
+
+      - name: Upload visual diffs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      # Screenshots of failed unit and story tests, taken in the browser at the moment of failure.
+      - name: Upload test failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: vitest-failure-screenshots
+          path: .vitest/attachments/
+          include-hidden-files: true # .vitest is a hidden folder, which uploads skip by default
+          if-no-files-found: ignore
+          retention-days: 14
+
+  version-tag:
+    if: github.repository_owner == 'centennial-oss'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Warn if this version isn't tagged
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "$version" != "0.0.0" ] && ! git rev-parse -q --verify "refs/tags/v$version" > /dev/null; then
+            echo "::warning::package.json is at $version but tag v$version doesn't exist, so it hasn't been released. Push the tag to release it (see Releasing in DEVELOPER.md)."
+          fi
