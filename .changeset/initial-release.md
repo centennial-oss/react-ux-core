@@ -23,7 +23,11 @@ themes. Each subpath's heavier dependencies are optional peers.
   public `ToggleButton` and `ToggleButtonGroup` (single or multiple, attached strips); the Markdown and rich-text
   editors, Canvas and ScheduleTimeline now use them. `ActionBar`, a floating bar of actions for the current selection,
   with its count announced and Escape to clear. DataTable's bulk actions now use it: a floating bar after the table with
-  Escape to clear, announced counts and focus kept on the table after a bulk delete.
+  Escape to clear, announced counts and focus kept on the table after a bulk delete. `AnchorNav`, an "on this page"
+  contents list, from given items or the page's headings, that marks the section being read and moves focus to the one
+  chosen, as a sticky sidebar, a jump-links bar or a menu on phones; and `Menubar`, a desktop-app menu bar (File, Edit,
+  View…) on the WAI-ARIA pattern, with one Tab stop, arrow keys and typeahead between its menus, which becomes one menu
+  button on phones.
 - **Core, display:** `Avatar` and `AvatarGroup` (UserMenu now uses Avatar); `ActivityTimeline` with day grouping and
   inline detail; `UptimeBar`; `SegmentedMeter` with limit markers and overflow; `PriceTicker` and `TickerTape`;
   `RolloutProgress` for staged rollouts with grouped targets and confirmed rollback; `ScheduleTimeline` for lanes over
@@ -37,7 +41,13 @@ themes. Each subpath's heavier dependencies are optional peers.
   motion; ImageGallery uses it for `layout="carousel"`, which follows the lightbox. `RatingDisplay`, a fractional star
   rating light enough for table cells. `WorldClock`, the time in several IANA zones, digital or analog, as a row, grid
   or compact list, with each zone's date, UTC offset, difference from the local zone, day or night and working hours,
-  ticking from one shared clock per page that pauses in hidden tabs.
+  ticking from one shared clock per page that pauses in hidden tabs. `EventCalendar`, with month, week, day and agenda
+  views, date navigation, and editing by drag or keyboard; `GanttChart`, a virtualised task tree beside its timeline,
+  whose bars move, resize and set progress by drag or keyboard, with dependencies drawn as arrows and broken ones
+  highlighted; `KanbanBoard`, columns of cards that move by drag (mouse, touch, keyboard and screen reader) or a "Move
+  to" menu, with work-in-progress limits, collapsible columns, swimlanes and multi-card moves; and `HoverCard`, a
+  preview of what a link leads to, on hover, focus or long press, that may hold links and buttons (a bottom sheet on
+  phones).
 - **Core, inputs:** `CopyField` and `CopyButton`; `KeyValueEditor` (paste a `.env` block, duplicate-key checks, secret
   values); TextField `hasCharacterCount` and a soft `recommendedLength` on TextField and TextArea; `SlugField` and
   `slugify`; `CidrField`, `CidrList` and CIDR helpers for IPv4 and IPv6; `DurationField`, `ByteSizeField` and
@@ -52,11 +62,15 @@ themes. Each subpath's heavier dependencies are optional peers.
   edits the last), with per-tag validation, duplicate and maximum checks, optional suggestions and drag reordering;
   `Rating`, a star slider with half steps, clearing, custom icons, sizes and tones; `OneTimeCodeField`, one input drawn
   as cells, with groups, digits, alphanumeric or a custom pattern, masking, paste and SMS autofill, and `onComplete`.
+  `MaskedField` for text in a fixed pattern (phone numbers, postal codes, card numbers, dates, IBANs), whose literals
+  appear as its slots fill, with the raw characters or the formatted text as its value; and `InlineEdit`, click-to-edit
+  text or a heading that saves with Enter and cancels with Escape, and stays open, pending, while an async save settles,
+  with its error if it fails.
 - **`/form`:** ConfigForm renders forms from config, validates with any Standard Schema, runs the submit lifecycle with
-  server errors and uploads, and comes in dialog, card, page and wizard containers. Field types `tags`, `rating` and
-  `oneTimeCode` use the new inputs. The inputs for `tags`, `rating`, `oneTimeCode`, `timeRange`, `file` and `files`
-  fields load the first time a form shows one, so forms that don't use them don't bundle them; meanwhile the field shows
-  its label, description and error around a placeholder the input's size.
+  server errors and uploads, and comes in dialog, card, page and wizard containers. Field types `tags`, `rating`,
+  `oneTimeCode` and `masked` use the new inputs. The inputs for `tags`, `rating`, `oneTimeCode`, `timeRange`, `file` and
+  `files` fields load the first time a form shows one, so forms that don't use them don't bundle them; meanwhile the
+  field shows its label, description and error around a placeholder the input's size.
 - **`/table`:** DataTable on TanStack Table, with sorting, paging, selection, filters, virtualisation, CSV export,
   and a flexible column whose text clamps instead of widening the table. DataTable shows tree data too
   (`getRowChildren`, or `loadRowChildren` to load children on first open, with loading and retry rows) as a
@@ -88,7 +102,8 @@ themes. Each subpath's heavier dependencies are optional peers.
 - **`/diff`:** `DiffViewer` (split or unified, word highlights, collapsed context, hunk navigation, structural JSON)
   with diff helpers, and `PlanReview` for infrastructure plans with a confirmed Apply.
 - **`/logs`:** `LogViewer`, virtualised, with follow mode, search, level filters, ANSI colours and download.
-- **`/graph` and `/canvas`:** `NodeGraph` with a dependency-free layered layout (`layoutGraph`), and `Canvas`,
+- **`/graph` and `/canvas`:** `NodeGraph` with a dependency-free layered layout (`layoutGraph`); `OrgChart`, an
+  organisation as a collapsible tree of person cards, top to bottom or left to right, with search; and `Canvas`,
   `CanvasItem`, `CanvasControls` and `useCanvas` for pan-and-zoom editors.
 - **`/chat`:** `MessageList` (virtualised, grouped, unread divider, load older, streaming replies, reactions,
   replies and status), `Composer` (mentions, commands, attachments, emoji, send states), `EmojiPicker` and
@@ -107,3 +122,12 @@ themes. Each subpath's heavier dependencies are optional peers.
 - **`/math`:** `MathFormula` and `texToMathML` on Temml, `MathInput` on MathLive, `CoordinatePlane`, and `hasMath`
   on Markdown for `$…$` formulas.
 - **`/codes`:** `QRCode` and `Barcode` (UPC-A, UPC-E, EAN-13, EAN-8, Code 128) with dependency-free encoders.
+- **`/dashboard`:** `Dashboard`, collections of dashboards and pages of widgets, with a time range, filters, refresh and
+  auto-refresh, full screen and, for users who may, edit sessions with undo, a widget picker, a configure dialog and
+  save; `DashboardGrid`, `WidgetFrame` and `DashboardWidget` (any widget on its own, fed by a data source or a `load`
+  function); dialogs to manage dashboards and page settings; `defineWidget`, `defineDataSource` and
+  `widgetFromComponent` for custom widget types and data sources; dashboards as plain, versioned documents
+  (`parseDashboard`, `migrateDashboard`) with page templates; and built-in stat group, legend, text and rotator widgets.
+  Data, saving and permissions come from the app. The widget types for charts (`/dashboard/chart`: time series, category
+  and gauge), tables (`/dashboard/table`), maps (`/dashboard/map`) and Markdown text (`/dashboard/markdown`) are entry
+  points of their own, so their peers stay optional.
