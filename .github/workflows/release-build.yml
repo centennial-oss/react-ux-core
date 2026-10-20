@@ -152,12 +152,14 @@ jobs:
           name: storybook
           path: storybook-static
 
+      # The leading ./ matters: npm reads a bare `package/<file>.tgz` as GitHub shorthand (user/repo) and tries to
+      # clone it over ssh.
       - name: Publish to npm
         run: |
           if [ "${{ inputs.publish }}" = true ]; then
-            npm publish package/*.tgz --access public --tag "$DIST_TAG"
+            npm publish ./package/*.tgz --access public --tag "$DIST_TAG"
           else
-            npm publish package/*.tgz --access public --tag "$DIST_TAG" --dry-run
+            npm publish ./package/*.tgz --access public --tag "$DIST_TAG" --dry-run
           fi
 
       # A real release must have a CHANGELOG.md section (make tag-release writes it); a preflight may not yet.
