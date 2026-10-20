@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";function t(e){return[1,3,5].map(t=>parseInt(e.slice(t,t+2),16))}function n([e,t,n]){let r=e=>{let t=e/255;return t<=.04045?t/12.92:((t+.055)/1.055)**2.4};return .2126*r(e)+.7152*r(t)+.0722*r(n)}function r(e,t){return(Math.max(e,t)+.05)/(Math.min(e,t)+.05)}function i(){return(i=e((()=>{})))()}export{n as i,t as n,i as r,r as t};

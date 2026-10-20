@@ -1,0 +1,11 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{t}from"./react-DlPsW1c0.js";import{t as n}from"./jsx-runtime-MKhVqBIO.js";import{n as r,t as i}from"./Waveform-Bs59EfLy.js";import{a,o,r as s}from"./media-CeW1V545.js";function c(e){let[t,n]=(0,l.useState)(e.currentTime);return(0,u.jsx)(i,{...e,currentTime:t,onSeek:n})}var l,u,d,f,p,m,h,g;function _(){return(_=e((()=>{l=t(),s(),r(),u=n(),d={title:`Media/Waveform`,component:i,parameters:{layout:`padded`},args:{peaks:o,currentTime:42,duration:130}},f={render:e=>(0,u.jsx)(c,{...e})},p={render:e=>(0,u.jsx)(c,{...e,markers:a})},m={render:e=>(0,u.jsxs)(`div`,{className:`flex flex-col gap-4`,children:[(0,u.jsx)(c,{...e,size:`sm`}),(0,u.jsx)(c,{...e,size:`md`}),(0,u.jsx)(c,{...e,size:`lg`})]})},h={},g=[`Default`,`WithMarkers`,`Sizes`,`ReadOnly`],f.parameters={...f.parameters,docs:{...f.parameters?.docs,source:{originalSource:`{
+  render: args => <Seekable {...args} />
+}`,...f.parameters?.docs?.source},description:{story:`A recording's peaks with the played part filled and a playhead.`,...f.parameters?.docs?.description}}},p.parameters={...p.parameters,docs:{...p.parameters?.docs,source:{originalSource:`{
+  render: args => <Seekable {...args} markers={sampleChapters} />
+}`,...p.parameters?.docs?.source},description:{story:`Chapters marked along the top.`,...p.parameters?.docs?.description}}},m.parameters={...m.parameters,docs:{...m.parameters?.docs,source:{originalSource:`{
+  render: args => <div className="flex flex-col gap-4">
+      <Seekable {...args} size="sm" />
+      <Seekable {...args} size="md" />
+      <Seekable {...args} size="lg" />
+    </div>
+}`,...m.parameters?.docs?.source},description:{story:"The three sizes: `sm` fits a message bubble.",...m.parameters?.docs?.description}}},h.parameters={...h.parameters,docs:{...h.parameters?.docs,source:{originalSource:`{}`,...h.parameters?.docs?.source},description:{story:"Without `onSeek` it only shows progress.",...h.parameters?.docs?.description}}}})))()}_();export{f as Default,h as ReadOnly,m as Sizes,p as WithMarkers,g as __namedExportsOrder,d as default};

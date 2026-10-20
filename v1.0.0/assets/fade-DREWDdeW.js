@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";function t(e,t){return e*(1-Math.min(100,Math.max(0,Number.isFinite(t)?t:0))/100)}function n(){return(n=e((()=>{})))()}export{n,t};

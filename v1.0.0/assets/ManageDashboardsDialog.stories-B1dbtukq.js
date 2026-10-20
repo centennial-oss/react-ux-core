@@ -1,0 +1,15 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{t}from"./react-DlPsW1c0.js";import{_ as n,g as r}from"./selection-CVIRF3H0.js";import{t as i}from"./jsx-runtime-MKhVqBIO.js";import{n as a,t as o}from"./Button-e4ZjaxXL.js";import{c as s,r as c}from"./dashboard-B_PWt9ZV.js";import{r as l,t as u}from"./ManageDashboardsDialog-C1xzEvfG.js";function d(){let[e]=s().collections;if(!e)throw Error(`The sample library has a personal collection.`);return e}function f({apply:e=()=>Promise.resolve(),editNotice:t}){let[n,r]=(0,p.useState)(d),[i,a]=(0,p.useState)(!0);return(0,m.jsxs)(`div`,{className:`p-4`,children:[(0,m.jsx)(o,{onPress:()=>{a(!0)},children:`Manage dashboards`}),(0,m.jsx)(u,{collection:n,isOpen:i,onOpenChange:a,onApplyCollectionChanges:e,onApplied:e=>{r(t=>({...t,dashboards:e}))},templates:g,editNotice:t})]})}var p,m,h,g,_,v,y,b;function x(){return(x=e((()=>{n(),p=t(),c(),a(),l(),m=i(),h={title:`Dashboard/ManageDashboardsDialog`},g=[{id:`service`,name:`Service health`,description:`Uptime, error rate and latency`,icon:r,widgets:[{id:`figures`,type:`ccux.statGroup`,title:`Figures`,layout:{w:12,h:3}}]},{id:`traffic`,name:`Traffic`,description:`Requests by region`,widgets:[{id:`requests`,type:`ccux.timeSeriesChart`,layout:{w:12,h:5}}]}],_={tags:[`visual-page`],render:()=>(0,m.jsx)(f,{})},v={tags:[`!visual`],render:()=>(0,m.jsx)(f,{editNotice:`This collection is shared with your team. Changes affect everyone.`})},y={tags:[`!visual`],render:()=>(0,m.jsx)(f,{apply:()=>Promise.resolve({failed:[{id:`ops`,error:Error(`You no longer own this.`)}]})})},b=[`Default`,`SharedNotice`,`PartialFailure`],_.parameters={..._.parameters,docs:{..._.parameters?.docs,source:{originalSource:`{
+  tags: ['visual-page'],
+  render: () => <Host />
+}`,..._.parameters?.docs?.source},description:{story:`Rename, reorder (drag or buttons), move pages between dashboards, copy, delete, then Apply once (§13).`,..._.parameters?.docs?.description}}},v.parameters={...v.parameters,docs:{...v.parameters?.docs,source:{originalSource:`{
+  tags: ['!visual'],
+  render: () => <Host editNotice="This collection is shared with your team. Changes affect everyone." />
+}`,...v.parameters?.docs?.source},description:{story:`A shared collection restates its notice (PERM-03).`,...v.parameters?.docs?.description}}},y.parameters={...y.parameters,docs:{...y.parameters?.docs,source:{originalSource:`{
+  tags: ['!visual'],
+  render: () => <Host apply={() => Promise.resolve({
+    failed: [{
+      id: 'ops',
+      error: new Error('You no longer own this.')
+    }]
+  })} />
+}`,...y.parameters?.docs?.source},description:{story:`The store refuses part of the change set: the dialog stays open and marks what wasn't applied (MGMT-06).`,...y.parameters?.docs?.description}}}})))()}x();export{_ as Default,y as PartialFailure,v as SharedNotice,b as __namedExportsOrder,h as default};

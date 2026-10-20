@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";function t(e,t,n){let r=globalThis.devicePixelRatio||1,i=Math.round(t*r),a=Math.round(n*r);return(e.width!==i||e.height!==a)&&(e.width=i,e.height=a),r}function n(){return(n=e((()=>{})))()}export{n,t};

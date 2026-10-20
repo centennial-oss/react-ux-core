@@ -1,0 +1,11 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{t}from"./jsx-runtime-MKhVqBIO.js";import{c as n,l as r,o as i,u as a}from"./charts-qaeH17uF.js";import{r as o,t as s}from"./TimeSeriesChart-Debm0rcZ.js";var c,l,u,d,f;function p(){return(p=e((()=>{n(),o(),c=t(),l={title:`Chart/Events`,parameters:{layout:`padded`}},u={render:()=>(0,c.jsx)(s,{title:`Observatory network latency`,description:`Last 7 days, hourly, UTC`,series:[r],events:i,timeZone:`UTC`,thresholds:[{value:80,label:`Objective`,tone:`warning`}],exportFileName:`observatory-latency`})},d={render:()=>(0,c.jsx)(s,{title:`Observatory network latency`,description:`Last 7 days, hourly, UTC`,series:[r],events:a,timeZone:`UTC`})},f=[`DeployMarkers`,`SpansAndLinks`],u.parameters={...u.parameters,docs:{...u.parameters?.docs,source:{originalSource:`{
+  render: () => <TimeSeriesChart title="Observatory network latency" description="Last 7 days, hourly, UTC" series={[latency]} events={deploys} timeZone="UTC" thresholds={[{
+    value: 80,
+    label: 'Objective',
+    tone: 'warning'
+  }]} exportFileName="observatory-latency" />
+}`,...u.parameters?.docs?.source},description:{story:`Five deploys on a 7-day latency chart: a dashed line and a marker chip on the time axis for each. The third and
+fourth, an hour apart, cluster into one chip ("2 events"). Every chip is a button (Tab to it); pressing one opens
+its detail. The events are also in the summary and in "View as table".`,...u.parameters?.docs?.description}}},d.parameters={...d.parameters,docs:{...d.parameters?.docs,source:{originalSource:`{
+  render: () => <TimeSeriesChart title="Observatory network latency" description="Last 7 days, hourly, UTC" series={[latency]} events={maintenance} timeZone="UTC" />
+}`,...d.parameters?.docs?.source},description:{story:`A maintenance window as a shaded span, and an incident whose label links to its report.`,...d.parameters?.docs?.description}}}})))()}p();export{u as DeployMarkers,d as SpansAndLinks,f as __namedExportsOrder,l as default};

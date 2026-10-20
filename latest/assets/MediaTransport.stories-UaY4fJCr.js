@@ -1,0 +1,25 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{t}from"./react-DlPsW1c0.js";import{n,t as r}from"./MediaTransport-CjGgFmDT.js";import{t as i}from"./jsx-runtime-MKhVqBIO.js";import{n as a,t as o}from"./Waveform-Bs59EfLy.js";import{a as s,o as c,r as l}from"./media-CeW1V545.js";function u({renderTimeline:e,...t}){let[n,i]=(0,d.useState)(!1),[a,o]=(0,d.useState)(t.currentTime??83),[s,c]=(0,d.useState)(1),[l,u]=(0,d.useState)(.8),[p,m]=(0,d.useState)(!1);return(0,f.jsx)(r,{isPlaying:n,onPlayingChange:i,duration:296,buffered:[{start:0,end:140}],playbackRate:s,onPlaybackRateChange:c,volume:l,onVolumeChange:u,isMuted:p,onMutedChange:m,"aria-label":`Planetary talk`,...t,currentTime:a,onSeek:o,timeline:e?.(a,o)})}var d,f,p,m,h,g,_,v,y,b,x,S;function C(){return(C=e((()=>{d=t(),l(),n(),a(),f=i(),p={title:`Media/MediaTransport`,component:r,parameters:{layout:`padded`}},m={render:()=>(0,f.jsx)(u,{})},h={render:()=>(0,f.jsx)(u,{layout:`compact`})},g={render:()=>(0,f.jsx)(u,{markers:s,duration:130,currentTime:40,onPrevious:()=>void 0,onNext:()=>void 0})},_={render:()=>(0,f.jsx)(u,{isLive:!0,duration:1/0,seekable:{start:0,end:600},currentTime:540,onPlaybackRateChange:void 0})},v={render:()=>(0,f.jsx)(u,{isLive:!0,duration:1/0,seekable:{start:590,end:600},currentTime:598,onPlaybackRateChange:void 0})},y={tags:[`!visual`],render:()=>(0,f.jsx)(u,{isPlaying:!0,isWaiting:!0,onPlayingChange:()=>void 0})},b={render:()=>(0,f.jsx)(u,{currentTime:42,renderTimeline:(e,t)=>(0,f.jsx)(o,{peaks:c,currentTime:e,duration:296,onSeek:t})})},x={render:()=>(0,f.jsx)(u,{isDisabled:!0})},S=[`Full`,`Compact`,`ChaptersAndPlaylist`,`LiveWithDvr`,`LiveAtEdge`,`Buffering`,`WithWaveform`,`Disabled`],m.parameters={...m.parameters,docs:{...m.parameters?.docs,source:{originalSource:`{
+  render: () => <Clocked />
+}`,...m.parameters?.docs?.source},description:{story:`The full layout: the seek slider with buffered ranges over play/pause, skip ±15 s, the time (press it for the
+time left), speed, volume and mute. Space plays and pauses; the arrows seek 5 s, 30 s with Shift.`,...m.parameters?.docs?.description}}},h.parameters={...h.parameters,docs:{...h.parameters?.docs,source:{originalSource:`{
+  render: () => <Clocked layout="compact" />
+}`,...h.parameters?.docs?.source},description:{story:`One row, for tight spaces.`,...h.parameters?.docs?.description}}},g.parameters={...g.parameters,docs:{...g.parameters?.docs,source:{originalSource:`{
+  render: () => <Clocked markers={sampleChapters} duration={130} currentTime={40} onPrevious={() => undefined} onNext={() => undefined} />
+}`,...g.parameters?.docs?.source},description:{story:`Chapters marked on the timeline and listed in a menu, with previous and next for a playlist.`,...g.parameters?.docs?.description}}},_.parameters={..._.parameters,docs:{..._.parameters?.docs,source:{originalSource:`{
+  render: () => <Clocked isLive duration={Number.POSITIVE_INFINITY} seekable={{
+    start: 0,
+    end: 600
+  }} currentTime={540} onPlaybackRateChange={undefined} />
+}`,..._.parameters?.docs?.source},description:{story:`A live stream with a 10-minute DVR window, a minute behind the edge: "Go live" jumps to it.`,..._.parameters?.docs?.description}}},v.parameters={...v.parameters,docs:{...v.parameters?.docs,source:{originalSource:`{
+  render: () => <Clocked isLive duration={Number.POSITIVE_INFINITY} seekable={{
+    start: 590,
+    end: 600
+  }} currentTime={598} onPlaybackRateChange={undefined} />
+}`,...v.parameters?.docs?.source},description:{story:`A live stream without a DVR window: no seek slider, just the live badge.`,...v.parameters?.docs?.description}}},y.parameters={...y.parameters,docs:{...y.parameters?.docs,source:{originalSource:`{
+  tags: ['!visual'],
+  render: () => <Clocked isPlaying isWaiting onPlayingChange={() => undefined} />
+}`,...y.parameters?.docs?.source},description:{story:`Buffering: a spinner by the time, and "Buffering" is announced.`,...y.parameters?.docs?.description}}},b.parameters={...b.parameters,docs:{...b.parameters?.docs,source:{originalSource:`{
+  render: () => <Clocked currentTime={42} renderTimeline={(time, seek) => <Waveform peaks={samplePeaks} currentTime={time} duration={296} onSeek={seek} />} />
+}`,...b.parameters?.docs?.source},description:{story:"A waveform replaces the seek slider (the `timeline` slot).",...b.parameters?.docs?.description}}},x.parameters={...x.parameters,docs:{...x.parameters?.docs,source:{originalSource:`{
+  render: () => <Clocked isDisabled />
+}`,...x.parameters?.docs?.source},description:{story:`Disabled, for example while a source loads.`,...x.parameters?.docs?.description}}}})))()}C();export{y as Buffering,g as ChaptersAndPlaylist,h as Compact,x as Disabled,m as Full,v as LiveAtEdge,_ as LiveWithDvr,b as WithWaveform,S as __namedExportsOrder,p as default};

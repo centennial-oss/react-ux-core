@@ -1,0 +1,9 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{t}from"./react-DlPsW1c0.js";import{t as n}from"./jsx-runtime-MKhVqBIO.js";import{n as r,t as i}from"./Button-e4ZjaxXL.js";import{c as a,r as o}from"./dashboard-B_PWt9ZV.js";import{a as s,r as c}from"./pageSettings-BVBfXqTE.js";import{r as l,t as u}from"./PageSettingsDialog-wkzC4Lfs.js";function d(){let e=a().collections[0]?.dashboards[0];if(!e)throw Error(`The sample library has an operations dashboard.`);return e}function f({policy:e}){let[t,n]=(0,p.useState)(d),[r,a]=(0,p.useState)(!0),o=t.pages[0];return o?(0,m.jsxs)(`div`,{className:`p-4`,children:[(0,m.jsx)(i,{onPress:()=>{a(!0)},children:`Page settings`}),(0,m.jsx)(u,{document:t,page:o,typeOf:g,policy:e,isOpen:r,onOpenChange:a,onApply:e=>{n(t=>s(t,o.id,e,void 0,g))}})]}):null}var p,m,h,g,_,v,y;function b(){return(b=e((()=>{p=t(),o(),r(),c(),l(),m=n(),h={title:`Dashboard/PageSettingsDialog`},g=()=>void 0,_={tags:[`visual-page`],render:()=>(0,m.jsx)(f,{})},v={tags:[`!visual`],render:()=>(0,m.jsx)(f,{policy:{lockedFields:[`columns`,`scope`]}})},y=[`Default`,`LockedFields`],_.parameters={..._.parameters,docs:{..._.parameters?.docs,source:{originalSource:`{
+  tags: ['visual-page'],
+  render: () => <Host />
+}`,..._.parameters?.docs?.source},description:{story:`Title, columns, row sizing, density and compaction, with a preview of the rescaled layout (EDIT-26, GRID-03).`,..._.parameters?.docs?.description}}},v.parameters={...v.parameters,docs:{...v.parameters?.docs,source:{originalSource:`{
+  tags: ['!visual'],
+  render: () => <Host policy={{
+    lockedFields: ['columns', 'scope']
+  }} />
+}`,...v.parameters?.docs?.source},description:{story:`The host locks the column count and where settings are stored.`,...v.parameters?.docs?.description}}}})))()}b();export{_ as Default,v as LockedFields,y as __namedExportsOrder,h as default};
