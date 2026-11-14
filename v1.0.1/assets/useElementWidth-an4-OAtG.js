@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{n as t,t as n}from"./useResizeMeasure-DZpHZU6s.js";function r(e,t){return t?t.contentRect.width:e.getBoundingClientRect().width}function i(){let[e,n]=t(r);return[e,n]}function a(){return(a=e((()=>{n()})))()}export{i as n,a as t};

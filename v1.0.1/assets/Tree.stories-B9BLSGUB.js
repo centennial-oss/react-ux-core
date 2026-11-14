@@ -1,0 +1,44 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{t}from"./react-DlPsW1c0.js";import{i as n,n as r,r as i,t as a}from"./move-CSxO7PRM.js";import{n as o,t as s}from"./createLucideIcon-BXqG86fR.js";import{n as c,t as l}from"./building-complex-Isfmz8_O.js";import{n as u,t as ee}from"./circle-2twf9FWr.js";import{i as te,n as ne}from"./MenuButtons-CAQTxMN9.js";import{n as re,t as ie}from"./eye-off-lKnYFYgx.js";import{n as ae,t as oe}from"./eye-BEF12WdH.js";import{n as se,t as d}from"./factory-CN3Z9RDG.js";import{n as f,t as p}from"./file-text-Cy00aP_W.js";import{n as ce,t as m}from"./file-DxEctJk9.js";import{n as le,t as h}from"./folder-yfByioMe.js";import{n as g,t as _}from"./gauge-IV5NkPH7.js";import{n as v,t as y}from"./layout-grid-D3yXiKTw.js";import{n as b,t as x}from"./lock-b-lR8s8R.js";import{n as S,t as ue}from"./map-pin-CPzpA45f.js";import{n as de,t as fe}from"./plus-DAwTrFAj.js";import{n as pe,t as me}from"./square-BVUtuqy1.js";import{n as he,t as C}from"./type-BCkcv9RD.js";import{n as ge,t as w}from"./zap-CC66tEy-.js";import{t as _e}from"./jsx-runtime-MKhVqBIO.js";import{n as T,s as E}from"./Menu-CvHUJ8Bq.js";var D,O;function k(){return(k=e((()=>{o(),D={name:`bookmark`,size:24,node:[[`path`,{d:`M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z`,key:`oz39mx`}]]},D.node,O=s(D)})))()}var A,j;function M(){return(M=e((()=>{o(),A={name:`frame`,size:24,node:[[`line`,{x1:`22`,x2:`2`,y1:`6`,y2:`6`,key:`15w7dq`}],[`line`,{x1:`22`,x2:`2`,y1:`18`,y2:`18`,key:`1ip48p`}],[`line`,{x1:`6`,x2:`6`,y1:`2`,y2:`22`,key:`a2lnyx`}],[`line`,{x1:`18`,x2:`18`,y1:`2`,y2:`22`,key:`8vb6jd`}]]},A.node,j=s(A)})))()}var N,P;function F(){return(F=e((()=>{o(),N={name:`group`,size:24,node:[[`path`,{d:`M3 7V5c0-1.1.9-2 2-2h2`,key:`adw53z`}],[`path`,{d:`M17 3h2c1.1 0 2 .9 2 2v2`,key:`an4l38`}],[`path`,{d:`M21 17v2c0 1.1-.9 2-2 2h-2`,key:`144t0e`}],[`path`,{d:`M7 21H5c-1.1 0-2-.9-2-2v-2`,key:`rtnfgi`}],[`rect`,{width:`7`,height:`5`,x:`7`,y:`7`,rx:`1`,key:`1eyiv7`}],[`rect`,{width:`7`,height:`5`,x:`10`,y:`12`,rx:`1`,key:`1qlmkx`}]]},N.node,P=s(N)})))()}var I,L;function R(){return(R=e((()=>{o(),I={name:`lock-open`,size:24,node:[[`rect`,{width:`18`,height:`11`,x:`3`,y:`11`,rx:`2`,ry:`2`,key:`1w4ew1`}],[`path`,{d:`M7 11V7a5 5 0 0 1 9.9-1`,key:`1mm8w8`}]],aliases:[`unlock`]},I.node,L=s(I)})))()}var z,B;function V(){return(V=e((()=>{u(),ae(),re(),ce(),M(),F(),b(),pe(),he(),R(),z=[{id:`page-1`,label:`Page 1`,icon:m,children:[{id:`header`,label:`Header`,icon:j,children:[{id:`logo`,label:`Logo`,icon:ee},{id:`title`,label:`Title`,icon:C}]},{id:`hero`,label:`Hero`,icon:P,children:[{id:`backdrop`,label:`Backdrop`,icon:me},{id:`tagline`,label:`Tagline`,icon:C}]}]},{id:`page-2`,label:`Page 2`,icon:m,children:[{id:`footer`,label:`Footer`,icon:j}]}],B=[{id:`visible`,label:`Visible`,icon:oe,offIcon:ie,defaultValue:!0},{id:`locked`,label:`Locked`,icon:x,offIcon:L}]})))()}function H(e,t,n=!1){let r=e.toLowerCase();return{id:r,label:e,icon:y,tone:`accent`,badge:n?K:void 0,children:[{id:`${r}-docs`,label:`Docs`,icon:p,tone:`warning`},...t.map(e=>({id:`${r}-${e.toLowerCase().replaceAll(` `,`-`)}`,label:e,icon:O,tone:`success`}))]}}var U,W,G,K,q,J,Y,X,Z,Q;function $(){return($=e((()=>{k(),c(),se(),f(),le(),g(),v(),S(),de(),ge(),U=t(),V(),E(),te(),a(),n(),W=_e(),G={title:`Display/Tree`,parameters:{layout:`padded`}},K=(0,W.jsx)(fe,{"aria-label":`New`,className:`size-4 text-accent-fg`}),q=[{id:`inputs`,label:`Inputs`,children:[H(`Checkbox`,[`States`]),H(`DatePicker`,[`Playground`,`States`,`Side Labels`,`Open With Limits`]),H(`TextField`,[`Playground`,`States`,`Side Labels`]),H(`ColorField`,[`States`],!0),H(`ScheduleEditor`,[`Limits`,`With Problems`],!0)]},{id:`display`,label:`Display`,children:[H(`Badge`,[`Tones`]),H(`Pillbox`,[`Sizes`,`With Icons`])]}],J={render:function(){let[e,t]=(0,U.useState)(`datepicker-docs`);return(0,W.jsxs)(`div`,{className:`w-72`,children:[(0,W.jsx)(i,{"aria-label":`Components`,items:q,hasCategories:!0,selectableNodes:`leaves`,selectedId:e,onSelectionChange:t,renderActions:e=>(0,W.jsxs)(ne,{size:`sm`,"aria-label":`More for ${e.label}`,children:[(0,W.jsx)(T,{id:`copy-link`,children:`Copy link`}),(0,W.jsx)(T,{id:`open`,children:`Open in a new tab`})]})}),(0,W.jsx)(`p`,{className:`mt-4 text-xs text-fg-muted`,children:`Selected: ${e}`})]})}},Y=[{id:`acme`,label:`Acme Energy`,icon:l,children:[{id:`north`,label:`North region`,icon:h,children:[{id:`plant-12`,label:`Plant 12`,icon:d,tone:`warning`,badge:(0,W.jsx)(`span`,{className:`text-xs text-fg-muted tabular-nums`,children:`48`}),children:[{id:`feeder-a`,label:`Feeder A`,icon:w,children:[{id:`meter-1042`,label:`Meter M-1042`,icon:_,tone:`danger`},{id:`meter-1043`,label:`Meter M-1043`,icon:_,tone:`success`}]},{id:`feeder-b`,label:`Feeder B`,icon:w}]},{id:`plant-14`,label:`Plant 14`,icon:d,tone:`success`}]},{id:`south`,label:`South region`,icon:h,children:[{id:`depot-3`,label:`Depot 3`,icon:ue,isDisabled:!0}]}]}],X={render:()=>(0,W.jsx)(`div`,{className:`w-72`,children:(0,W.jsx)(i,{"aria-label":`Sites`,items:Y,defaultSelectedId:`meter-1042`})})},Z={render:function(){let[e,t]=(0,U.useState)(z),[n,a]=(0,U.useState)(`title`),[o,s]=(0,U.useState)({backdrop:{locked:!0},tagline:{visible:!1}});return(0,W.jsx)(`div`,{className:`w-72 rounded-card border border-border bg-surface-1 p-2`,children:(0,W.jsx)(i,{"aria-label":`Layers`,items:e,selectedId:n,onSelectionChange:a,defaultExpandedIds:[`page-1`,`page-2`,`header`,`hero`],isReorderable:!0,onMove:e=>{t(t=>r(t,e))},rowToggles:B,toggleValues:o,onToggleChange:(e,t,n)=>{s(r=>({...r,[e]:{...r[e],[t]:n}}))}})})}},Q=[`Sidebar`,`FiveLevels`,`LayersPanel`],J.parameters={...J.parameters,docs:{...J.parameters?.docs,source:{originalSource:`{
+  render: function Render() {
+    const [selected, setSelected] = useState('datepicker-docs');
+    return <div className="w-72">
+        <Tree aria-label="Components" items={library} hasCategories selectableNodes="leaves" selectedId={selected} onSelectionChange={setSelected} renderActions={node => <OverflowMenu size="sm" aria-label={\`More for \${node.label}\`}>
+              <MenuItem id="copy-link">Copy link</MenuItem>
+              <MenuItem id="open">Open in a new tab</MenuItem>
+            </OverflowMenu>} />
+        <p className="mt-4 text-xs text-fg-muted">{\`Selected: \${selected}\`}</p>
+      </div>;
+  }
+}`,...J.parameters?.docs?.source},description:{story:'A Storybook-style sidebar: category headings, components with coloured icons and "new" badges, and their pages.\nOnly pages are selectable (`selectableNodes="leaves"`): pressing a component opens it. Each row has a menu.',...J.parameters?.docs?.description}}},X.parameters={...X.parameters,docs:{...X.parameters?.docs,source:{originalSource:`{
+  render: () => <div className="w-72">
+      <Tree aria-label="Sites" items={sites} defaultSelectedId="meter-1042" />
+    </div>
+}`,...X.parameters?.docs?.source},description:{story:`Five levels deep (the most a tree shows), with tones for status, a count badge and a disabled node.`,...X.parameters?.docs?.description}}},Z.parameters={...Z.parameters,docs:{...Z.parameters?.docs,source:{originalSource:`{
+  render: function Render() {
+    const [layers, setLayers] = useState(demoLayers);
+    const [selected, setSelected] = useState('title');
+    const [values, setValues] = useState<Record<string, Record<string, boolean>>>({
+      backdrop: {
+        locked: true
+      },
+      tagline: {
+        visible: false
+      }
+    });
+    return <div className="w-72 rounded-card border border-border bg-surface-1 p-2">
+        <Tree aria-label="Layers" items={layers} selectedId={selected} onSelectionChange={setSelected} defaultExpandedIds={['page-1', 'page-2', 'header', 'hero']} isReorderable onMove={move => {
+        setLayers(current => moveTreeNodes(current, move));
+      }} rowToggles={demoLayerToggles} toggleValues={values} onToggleChange={(nodeId, toggleId, value) => {
+        setValues(current => ({
+          ...current,
+          [nodeId]: {
+            ...current[nodeId],
+            [toggleId]: value
+          }
+        }));
+      }} />
+      </div>;
+  }
+}`,...Z.parameters?.docs?.source},description:{story:`A design tool's layers panel: drag a layer by its handle (or with the keyboard: focus a row, press the right arrow
+to reach the handle, then Enter, the arrow keys and Enter) to reorder it or move it into another frame. Each row
+has visibility and lock toggles; a hidden or locked layer always shows its toggle. Moves are announced.`,...Z.parameters?.docs?.description}}}})))()}$();export{X as FiveLevels,Z as LayersPanel,J as Sidebar,Q as __namedExportsOrder,G as default};
