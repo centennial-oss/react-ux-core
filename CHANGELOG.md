@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+### Patch Changes
+
+- DataTable: Shift+click a row checkbox to select or clear every row between it and the last one you toggled, and a new isStriped prop alternates row backgrounds. DataTable and EditableTable rows are now white under a gray header in light mode.
+
 ## 1.0.0
 
 ### Major Changes
