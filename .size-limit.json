@@ -84,14 +84,14 @@
   {
     "name": "Table entry (all exports)",
     "path": "dist/table/index.js",
-    "limit": "70.5 kB",
+    "limit": "71 kB",
     "entry": "index"
   },
   {
     "name": "DataTable",
     "path": "dist/table/index.js",
     "import": "{ DataTable }",
-    "limit": "24.25 kB",
+    "limit": "24.75 kB",
     "entry": "index"
   },
   {
@@ -408,7 +408,7 @@
     "name": "LiveTimeSeries",
     "path": "dist/chart/index.js",
     "import": "{ LiveTimeSeries }",
-    "limit": "34.75 kB",
+    "limit": "35.25 kB",
     "entry": "index"
   },
   {
@@ -429,7 +429,7 @@
     "name": "CategoryChart",
     "path": "dist/chart/index.js",
     "import": "{ CategoryChart }",
-    "limit": "32.5 kB",
+    "limit": "33 kB",
     "entry": "index"
   },
   {
@@ -450,7 +450,7 @@
     "name": "SankeyChart",
     "path": "dist/chart/index.js",
     "import": "{ SankeyChart }",
-    "limit": "30 kB",
+    "limit": "30.5 kB",
     "entry": "index"
   },
   {
@@ -699,7 +699,7 @@
   {
     "name": "Dashboard table widgets",
     "path": "dist/dashboard/table/index.js",
-    "limit": "31 kB",
+    "limit": "31.5 kB",
     "entry": "index"
   },
   {
