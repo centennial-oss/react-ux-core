@@ -14,7 +14,7 @@ import { isRightToLeft } from '../utils/direction';
 import { columnLabel } from './columns';
 import type { TreeRows } from './DataTable';
 import type { TableModel } from './model';
-import { activateRowLink, alignClasses, renderCell, RowLink } from './shared';
+import { activateRowLink, alignClasses, renderCell, RowLink, useRangeSelection } from './shared';
 import type { DataTableColumn, TableSort } from './types';
 import { useTableMessages } from './messages';
 
@@ -41,6 +41,8 @@ export interface TableViewProps<Row extends object> {
   maxHeight?: string;
   hasStickyFirstColumn: boolean;
   isVirtualized: boolean;
+  /** Alternates the rows' background. */
+  isStriped: boolean;
   /** Rows of skeleton cells while the first page loads. */
   loadingRows: number;
   isBusy: boolean;
@@ -53,6 +55,12 @@ const cellPadding = {
 
 /** Sticky offsets for the first data column, after the selection and detail-toggle columns (2.75rem each). */
 const stickyStart = ['start-0', 'start-11', 'start-22'] as const;
+
+/**
+ * Every other data row (`data-stripe`) gets a fill. It counts data rows only, so detail, loading and spacer rows
+ * don't shift it, and `:where` keeps it below hover and selection.
+ */
+const stripeClasses = '[&:where(:nth-child(even_of_[data-stripe]))]:bg-surface-1';
 
 /** How far each tree level indents, in rem (the toggle adds its own width). */
 const TREE_INDENT = 1.5;
@@ -138,10 +146,12 @@ export function TableView<Row extends object>({
   maxHeight,
   hasStickyFirstColumn,
   isVirtualized,
+  isStriped,
   loadingRows,
   isBusy,
 }: TableViewProps<Row>) {
   const messages = useTableMessages();
+  const rangeSelection = useRangeSelection(model, selectionMode);
   const detailIdPrefix = useId();
   const scrollRef = useRef<HTMLDivElement>(null);
   const rows = model.getRowModel().rows;
@@ -187,6 +197,9 @@ export function TableView<Row extends object>({
       })
     : rows;
   const paddingTop = isVirtualized ? (virtualItems[0]?.start ?? 0) : 0;
+  // Stripes count rendered rows, so a window that starts on an odd row needs one hidden row ahead to keep each row's
+  // colour as it scrolls.
+  const hasStripeSpacer = isStriped && ((virtualItems[0]?.index ?? 0) & 1) === 1;
   const paddingBottom = isVirtualized
     ? virtualizer.getTotalSize() - (virtualItems.at(-1)?.end ?? 0)
     : 0;
@@ -228,7 +241,7 @@ export function TableView<Row extends object>({
     hasStickyFirstColumn ? cn('sticky z-[1] bg-inherit', stickyStart[position]) : '';
 
   const header = (
-    <tr className="bg-surface-2">
+    <tr className="bg-surface-3">
       {hasSelection && (
         <th scope="col" className={cn('w-11 px-3 py-2', stickyLeading(0))}>
           {selectionMode === 'multiple' && (
@@ -335,8 +348,8 @@ export function TableView<Row extends object>({
         aria-busy={isBusy || undefined}
         className="w-full border-collapse text-sm"
       >
-        <thead className="sticky top-0 z-[2] bg-surface-2">{header}</thead>
-        <tbody>
+        <thead className="sticky top-0 z-[2] bg-surface-3">{header}</thead>
+        <tbody {...(selectionMode === 'multiple' ? rangeSelection.captureProps : undefined)}>
           {loadingRows > 0 && skeletonRows}
           {paddingTop > 0 && (
             <tr aria-hidden="true">
@@ -344,6 +357,7 @@ export function TableView<Row extends object>({
               <td colSpan={totalColumns} style={{ height: paddingTop }} />
             </tr>
           )}
+          {hasStripeSpacer && <tr data-stripe="" hidden />}
           {visibleRows.map((row) => {
             const original = row.original;
             const href = getRowHref?.(original);
@@ -386,6 +400,7 @@ export function TableView<Row extends object>({
               <Fragment key={row.id}>
                 <tr
                   data-selected={isSelected || undefined}
+                  data-stripe={isStriped ? '' : undefined}
                   data-row-id={tree ? row.id : undefined}
                   aria-level={tree ? row.depth + 1 : undefined}
                   aria-setsize={tree ? setSizes.get(row.parentId ?? '') : undefined}
@@ -413,8 +428,9 @@ export function TableView<Row extends object>({
                   }
                   onClick={href === undefined ? undefined : activateRowLink}
                   className={cn(
-                    'group/row border-t border-border bg-surface-1',
-                    'data-selected:bg-accent-bg hover:bg-surface-2',
+                    'group/row border-t border-border bg-surface-2',
+                    isStriped && stripeClasses,
+                    'data-selected:bg-accent-bg hover:bg-surface-3',
                     href !== undefined && 'cursor-pointer',
                     tree && 'outline-none focus-visible:focus-ring focus-visible:-outline-offset-2',
                   )}
@@ -426,7 +442,7 @@ export function TableView<Row extends object>({
                         isSelected={isSelected}
                         isIndeterminate={isIndeterminate}
                         onChange={(value) => {
-                          row.toggleSelected(value);
+                          rangeSelection.toggle(row, value);
                         }}
                       />
                     </td>
@@ -486,7 +502,7 @@ export function TableView<Row extends object>({
                   )}
                 </tr>
                 {childStatus !== undefined && childStatus !== 'ready' && (
-                  <tr aria-level={row.depth + 2} className="border-t border-border bg-surface-1">
+                  <tr aria-level={row.depth + 2} className="border-t border-border bg-surface-2">
                     {/* Empty cells up to the tree column, so the status lines up with the children. */}
                     {Array.from({ length: leading + treeColumnIndex }, (_, cell) => (
                       <td key={cell} />
@@ -524,7 +540,7 @@ export function TableView<Row extends object>({
                   </tr>
                 )}
                 {hasDetail && isExpanded && (
-                  <tr id={detailId} className="bg-surface-2">
+                  <tr id={detailId} className="bg-surface-1">
                     <td colSpan={totalColumns} className="px-4 py-3">
                       {renderRowDetail(original)}
                     </td>

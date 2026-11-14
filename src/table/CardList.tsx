@@ -12,7 +12,7 @@ import { cn } from '../utils/cn';
 import { columnLabel } from './columns';
 import type { TreeRows } from './DataTable';
 import type { TableModel } from './model';
-import { activateRowLink, renderCell, RowLink } from './shared';
+import { activateRowLink, renderCell, RowLink, useRangeSelection } from './shared';
 import type { DataTableColumn } from './types';
 import { useTableMessages } from './messages';
 
@@ -75,6 +75,7 @@ export function CardList<Row extends object>({
   const detailPrefix = useId();
   const childrenPrefix = useId();
   const [isSelecting, setSelecting] = useState(false);
+  const rangeSelection = useRangeSelection(model, selectionMode);
   const rows = model.getRowModel().rows;
   const showSelection =
     selectionMode !== 'none' && (isSelecting || Object.keys(model.state.rowSelection).length > 0);
@@ -120,7 +121,7 @@ export function CardList<Row extends object>({
               isSelected={isSelected}
               isIndeterminate={isIndeterminate}
               onChange={(value) => {
-                row.toggleSelected(value);
+                rangeSelection.toggle(row, value);
               }}
             />
           )}
@@ -276,6 +277,7 @@ export function CardList<Row extends object>({
         aria-labelledby={ariaLabelledBy}
         aria-busy={isBusy || undefined}
         className="flex flex-col gap-2"
+        {...(selectionMode === 'multiple' ? rangeSelection.captureProps : undefined)}
       >
         {Array.from({ length: loadingRows }, (_, index) => (
           <li

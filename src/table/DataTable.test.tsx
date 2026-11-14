@@ -196,6 +196,55 @@ describe('DataTable', () => {
     await expect.poll(bulkBar).toBeNull();
   });
 
+  it('selects a range with Shift+click, in the order shown, and clears one the same way', async () => {
+    const onSelectionChange = vi.fn();
+    render(
+      <Wide>
+        <Table selectionMode="multiple" onSelectionChange={onSelectionChange} />
+      </Wide>,
+    );
+    const box = (name: string) =>
+      screen.getByRole('checkbox', { name: `Select ${name}` }).closest('label') ?? document.body;
+    const shiftClick = async (name: string) => {
+      await userEvent.keyboard('{Shift>}');
+      await userEvent.click(box(name));
+      await userEvent.keyboard('{/Shift}');
+    };
+    await userEvent.click(box('Acme'));
+    expect(onSelectionChange).toHaveBeenLastCalledWith(new Set(['c1']));
+    await shiftClick('Initech');
+    expect(onSelectionChange).toHaveBeenLastCalledWith(new Set(['c1', 'c2', 'c3']));
+    // Unchecking with Shift clears from the last toggled row (Initech) to this one.
+    await shiftClick('Globex');
+    expect(onSelectionChange).toHaveBeenLastCalledWith(new Set(['c1']));
+    // Ranges follow the sort: by city, Initech (Boulder) and Acme (Denver) are neighbours.
+    await userEvent.click(screen.getByRole('button', { name: 'City' }));
+    await userEvent.click(box('Acme'));
+    await userEvent.click(box('Initech'));
+    expect(onSelectionChange).toHaveBeenLastCalledWith(new Set(['c3']));
+    await shiftClick('Acme');
+    expect(onSelectionChange).toHaveBeenLastCalledWith(new Set(['c3', 'c1']));
+  });
+
+  it('stripes every other row with isStriped', () => {
+    const background = (name: string) =>
+      getComputedStyle(screen.getByRole('rowheader', { name }).closest('tr') ?? document.body)
+        .backgroundColor;
+    const { rerender } = render(
+      <Wide>
+        <Table />
+      </Wide>,
+    );
+    expect(background('Globex')).toBe(background('Acme'));
+    rerender(
+      <Wide>
+        <Table isStriped />
+      </Wide>,
+    );
+    expect(background('Globex')).not.toBe(background('Acme'));
+    expect(background('Initech')).toBe(background('Acme'));
+  });
+
   it('announces the selected count politely while there are bulk actions', async () => {
     const { container } = render(
       <Wide>

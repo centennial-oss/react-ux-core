@@ -30,8 +30,8 @@ with a different type or meaning. Variances last reviewed 2026-10-19.
 | Measure | Count |
 | --- | ---: |
 | Components and props types audited | 289 |
-| Prop declarations | 3821 |
-| Distinct prop names | 1052 |
+| Prop declarations | 3822 |
+| Distinct prop names | 1053 |
 | Names used by more than one component | 423 |
 | Names with a **meaning** variance | 25 |
 | Names with a **type** variance | 113 |
@@ -758,6 +758,7 @@ than one type, the 6 most common are listed with the number of components using 
 | <a id="prop-issecondaryopen"></a>`isSecondaryOpen` | `boolean` | no | Whether the secondary pane's drawer is open (narrow containers only). Controlled; see `defaultSecondaryOpen`. |  | SplitView |
 | <a id="prop-isselected"></a>`isSelected` | `never` | no | Not supported on action buttons; only toggle buttons take a selected state (typed never). |  | CopyButton, IconButton, IconButtonAction |
 | <a id="prop-isstacked"></a>`isStacked` | `boolean` | no | Stacks the series instead of grouping them. |  | HourOfDayChart |
+| <a id="prop-isstriped"></a>`isStriped` | `boolean` | no | Alternates the background of the table's rows (zebra stripes). Not used by the phone cards. |  | DataTable |
 | <a id="prop-isstructural"></a>`isStructural` | `boolean` | no | Compares parsed data structurally (object keys sorted, then pretty-printed), so reordered keys aren't changes. Parses JSON by default; pass `parse` for other formats, such as a YAML parser. |  | DiffViewer |
 | <a id="prop-istitlehidden"></a>`isTitleHidden` | `boolean` | no | Keeps the title for screen readers only, when the surrounding card already shows it. |  | BoxPlotChart, CalendarHeatmap, CandlestickChart, CategoryBarChart, CategoryChart, CategoryFunnel, CategoryRadar, CategoryWaterfall, +13 more |
 | <a id="prop-istrue"></a>`isTrue` | `boolean \| null \| undefined` | yes | The boolean to display; null or undefined shows an empty cell. |  | BooleanCell |
@@ -1803,7 +1804,7 @@ whose props the component also accepts.
 | Component | Props type | Source | Own props | Inherits |
 | --- | --- | --- | --- | --- |
 | BooleanCell | inline | [table/cells.tsx:188](../src/table/cells.tsx#L188) | **`isTrue`**, `trueLabel`, `falseLabel` |  |
-| DataTable | `DataTableProps` | [table/DataTable.tsx:31](../src/table/DataTable.tsx#L31) | **`rows`**, **`columns`**, **`getRowId`**, `aria-label`, `aria-labelledby`, `getRowLabel`, `sort`, `defaultSort`, `onSortChange`, `sortMode`, `pagination`, `selectionMode`, `selectedKeys`, `defaultSelectedKeys`, `onSelectionChange`, `bulkActions`, `rowActions`, `onRowAction`, `getRowHref`, `renderRowDetail`, `getRowChildren`, `isRowExpandable`, `loadRowChildren`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `treeColumn`, `hiddenColumns`, `density`, `maxHeight`, `hasStickyFirstColumn`, `isLoading`, `isRefreshing`, `error`, `onRetry`, `emptyState`, `isVirtualized`, `className` |  |
+| DataTable | `DataTableProps` | [table/DataTable.tsx:31](../src/table/DataTable.tsx#L31) | **`rows`**, **`columns`**, **`getRowId`**, `aria-label`, `aria-labelledby`, `getRowLabel`, `sort`, `defaultSort`, `onSortChange`, `sortMode`, `pagination`, `selectionMode`, `selectedKeys`, `defaultSelectedKeys`, `onSelectionChange`, `bulkActions`, `rowActions`, `onRowAction`, `getRowHref`, `renderRowDetail`, `getRowChildren`, `isRowExpandable`, `loadRowChildren`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `treeColumn`, `hiddenColumns`, `density`, `maxHeight`, `hasStickyFirstColumn`, `isStriped`, `isLoading`, `isRefreshing`, `error`, `onRetry`, `emptyState`, `isVirtualized`, `className` |  |
 | EditableTable | `EditableTableProps` | [table/EditableTable.tsx:33](../src/table/EditableTable.tsx#L33) | **`rows`**, **`columns`**, **`getRowId`**, **`onChange`**, `validate`, `newRow`, `duplicateRow`, `isReorderable`, `allowsRemovingRows`, `maxItems`, `minItems`, `editMode`, `getRowLabel`, `addRowLabel`, `minGridWidth`, `isDisabled`, `aria-label`, `aria-labelledby`, `className`, `ref` |  |
 | Editor | `EditorProps` | [table/editableColumns.ts:7](../src/table/editableColumns.ts#L7) | **`value`**, **`onChange`**, **`onRowChange`**, **`row`**, **`rowIndex`**, `errorMessage`, **`isInvalid`**, **`aria-label`**, `aria-describedby`, **`isDisabled`** |  |
 | FilterPanel | inline | [table/filters.tsx:29](../src/table/filters.tsx#L29) | **`filters`**, **`values`**, **`onChange`** |  |

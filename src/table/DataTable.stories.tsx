@@ -131,6 +131,23 @@ export const ClientSide: Story = {
   },
 };
 
+/**
+ * Striped rows (`isStriped`) with multiple selection: click one checkbox, then Shift+click another to select the
+ * rows between them (Shift+click a checked row to clear a range).
+ */
+export const StripedWithRangeSelection: Story = {
+  render: () => (
+    <DataTable<Site>
+      aria-label="Sites"
+      rows={sites.slice(0, 12)}
+      columns={columns}
+      getRowId={(row) => row.id}
+      selectionMode="multiple"
+      isStriped
+    />
+  ),
+};
+
 /** Loading skeleton rows, the empty state and the error state with Retry. */
 export const States: Story = {
   render: () => (
@@ -172,6 +189,7 @@ export const Virtualised: Story = {
       density="compact"
       maxHeight="24rem"
       isVirtualized
+      isStriped
     />
   ),
 };

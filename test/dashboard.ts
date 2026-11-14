@@ -93,6 +93,12 @@ export function trafficSource(behaviour: MockBehaviour = {}, id = 'traffic') {
   });
 }
 
+/**
+ * When this module loaded. Relative times ("2 hours ago") are measured from it, so they read the same on every run;
+ * a fixed date would read "8 days ago", then "last month" as the calendar moves on, and snapshots would drift.
+ */
+const LOADED_AT = Date.now();
+
 /** Key figures, one with three variants that rotate (BI-04). */
 export const kpis: StatsData = {
   items: [
@@ -102,7 +108,7 @@ export const kpis: StatsData = {
       value: 99.982,
       unit: '%',
       sparkline: [99.9, 99.95, 99.97, 99.98],
-      timestamp: START,
+      timestamp: LOADED_AT - 2 * HOUR,
     },
     {
       id: 'latency',

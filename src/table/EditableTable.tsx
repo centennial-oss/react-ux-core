@@ -685,7 +685,7 @@ export function EditableTable<Row extends object>({
         onKeyDownCapture={onGridKeyDownCapture}
         className="w-full border-collapse text-sm"
       >
-        <thead className="bg-surface-2">
+        <thead className="bg-surface-3">
           <tr role="row" aria-rowindex={1}>
             {columns.map((column) => (
               <th
@@ -732,7 +732,7 @@ export function EditableTable<Row extends object>({
                 key={rowId}
                 role="row"
                 aria-rowindex={rowIndex + 2}
-                className="border-t border-border bg-surface-1"
+                className="border-t border-border bg-surface-2"
               >
                 {columns.map((column) => {
                   const isActive = activeRowId === rowId && activeColId === column.id;

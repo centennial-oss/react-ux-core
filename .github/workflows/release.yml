@@ -1,13 +1,24 @@
 name: Release
 
 # Publishes when a release tag is pushed (make tag-release). See Releasing in DEVELOPER.md.
-# npm's trusted publisher for this package must name this file, release.yml.
+# npm's trusted publisher for this package must name this file, release.yml, which is why the manual retry below is a
+# trigger here rather than a workflow of its own.
+#
+# Run it by hand (Actions → Release → Run workflow) to retry a failed publish without waiting for the gates: choose the
+# release tag under "Use workflow from" (Tags → vX.Y.Z), not a branch. By default it skips the gates and only builds,
+# checks the package contents, packs and publishes; the tag's commit must still be on main and match package.json.
 
 on:
   push:
     tags:
       # Semantic version tags: v1.0.0, v1.3.0-next.0, etc.
       - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      skip-checks:
+        description: Skip the gates (lint, tests, visual snapshots) and only build and publish
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -19,5 +30,7 @@ jobs:
     uses: ./.github/workflows/release-build.yml
     secrets: inherit
     with:
+      # A manual run from a branch fails here, as the branch name isn't a version: run it from the tag.
       version: ${{ github.ref_name }}
       publish: true
+      skip-checks: ${{ github.event_name == 'workflow_dispatch' && inputs.skip-checks }}

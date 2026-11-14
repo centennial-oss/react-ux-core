@@ -1,9 +1,17 @@
-// Pieces shared by the table and card views: cell content, the row link, and pointer row activation.
+// Pieces shared by the table and card views: cell content, the row link, pointer row activation and shift-click
+// range selection.
 
-import type { MouseEvent, ReactNode } from 'react';
+import {
+  useRef,
+  type KeyboardEvent,
+  type MouseEvent,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
 import { Link as AriaLink } from 'react-aria-components';
 import { useLinkComponent } from '../provider/context';
 import { cn } from '../utils/cn';
+import type { TableModel } from './model';
 import type { DataTableColumn } from './types';
 
 /** The value-and-render pair for one cell. */
@@ -89,3 +97,50 @@ export const alignClasses = {
   center: 'text-center',
   end: 'text-end',
 } as const;
+
+type TableRow<Row extends object> = ReturnType<TableModel<Row>['getRowModel']>['rows'][number];
+
+/**
+ * Row selection with shift-click ranges (multiple selection): toggling a row's checkbox with Shift held (a click, or
+ * Space) sets every row from the last toggled one to this one, in the order shown, to this row's new state. Groups in
+ * the range take their children along. Spread `captureProps` on an element holding the checkboxes: a checkbox's
+ * `onChange` doesn't say whether Shift was down, so this notes it as each press starts.
+ */
+export function useRangeSelection<Row extends object>(
+  model: TableModel<Row>,
+  selectionMode: 'none' | 'single' | 'multiple',
+) {
+  const anchorRef = useRef<string | undefined>(undefined);
+  const isShiftRef = useRef(false);
+  const noteShift = (event: PointerEvent | KeyboardEvent) => {
+    isShiftRef.current = event.shiftKey;
+  };
+  const toggle = (row: TableRow<Row>, isSelected: boolean) => {
+    const anchor = anchorRef.current;
+    anchorRef.current = row.id;
+    const rows = model.getRowModel().rows;
+    const from =
+      selectionMode === 'multiple' && isShiftRef.current && anchor !== undefined
+        ? rows.findIndex((candidate) => candidate.id === anchor)
+        : -1;
+    const to = from < 0 ? -1 : rows.findIndex((candidate) => candidate.id === row.id);
+    if (from < 0 || to < 0 || from === to) {
+      row.toggleSelected(isSelected);
+      return;
+    }
+    const ids = new Set(
+      rows
+        .slice(Math.min(from, to), Math.max(from, to) + 1)
+        .flatMap((inRange) => [inRange.id, ...inRange.getLeafRows().map((leaf) => leaf.id)]),
+    );
+    model.setRowSelection((current) =>
+      isSelected
+        ? { ...current, ...Object.fromEntries([...ids].map((id) => [id, true] as const)) }
+        : Object.fromEntries(Object.entries(current).filter(([id]) => !ids.has(id))),
+    );
+  };
+  return {
+    captureProps: { onPointerDownCapture: noteShift, onKeyDownCapture: noteShift },
+    toggle,
+  };
+}

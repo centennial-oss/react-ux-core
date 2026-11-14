@@ -95,6 +95,8 @@ export interface DataTableProps<Row extends object> {
   maxHeight?: string;
   /** Keeps the first column visible while the table scrolls sideways. Defaults to true. */
   hasStickyFirstColumn?: boolean;
+  /** Alternates the background of the table's rows (zebra stripes). Not used by the phone cards. */
+  isStriped?: boolean;
   /** The first page is loading: skeleton rows. */
   isLoading?: boolean;
   /** New rows are loading: the current rows stay, with an "Updating" indicator. */
@@ -167,7 +169,7 @@ export interface TreeRows<Row> {
 
 /**
  * A data table: sortable (client or server), paged (client, offset or cursor), selectable with a bulk-action bar
- * (ActionBar), with row actions, row links, expandable detail and tree rows. On phones (or in narrow containers) rows
+ * (ActionBar) and shift-click ranges, with row actions, row links, expandable detail and tree rows. On phones (or in narrow containers) rows
  * become cards; on tablets low-priority columns hide and the first column stays put while the table scrolls sideways.
  * All state can be controlled, so apps can keep it in the URL.
  *
@@ -207,6 +209,7 @@ export function DataTable<Row extends object>({
   density = 'regular',
   maxHeight,
   hasStickyFirstColumn = true,
+  isStriped = false,
   isLoading = false,
   isRefreshing = false,
   error,
@@ -434,6 +437,7 @@ export function DataTable<Row extends object>({
         density={density}
         maxHeight={maxHeight}
         hasStickyFirstColumn={hasStickyFirstColumn}
+        isStriped={isStriped}
         isVirtualized={isVirtualized && maxHeight !== undefined}
       />
     );
