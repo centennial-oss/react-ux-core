@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";function t(){return{field(e,t){return{...t,id:t.id??e,value:t=>t[e]}},computed(e,t,n){return{...n,id:e,value:t}},display(e,t){return{...t,id:e}}}}function n(e){return e.label??(typeof e.header==`string`?e.header:e.id)}function r(){return(r=e((()=>{})))()}export{t as n,r,n as t};

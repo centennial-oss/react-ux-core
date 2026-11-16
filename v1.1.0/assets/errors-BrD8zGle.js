@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";function t(e){return e instanceof DOMException&&e.name===`AbortError`}function n(e,t){return e instanceof Error&&e.message.trim()!==``?e.message:t}function r(){return(r=e((()=>{})))()}export{r as n,t as r,n as t};
