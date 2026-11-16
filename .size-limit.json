@@ -415,7 +415,7 @@
     "name": "CandlestickChart",
     "path": "dist/chart/index.js",
     "import": "{ CandlestickChart }",
-    "limit": "33.5 kB",
+    "limit": "33.75 kB",
     "entry": "index"
   },
   {

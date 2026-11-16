@@ -388,7 +388,8 @@ export function TableView<Row extends object>({
             };
             const treeContent = (content: ReactNode) => (
               <div
-                className={cn('flex min-w-0 items-center', !hasTreeGutter && 'gap-1')}
+                // At least the toggle's height, so rows with and without children are the same height.
+                className={cn('flex min-h-8 min-w-0 items-center', !hasTreeGutter && 'gap-1')}
                 // eslint-disable-next-line no-restricted-syntax -- dynamic geometry: the row's depth in the tree.
                 style={{ paddingInlineStart: `${String(row.depth * TREE_INDENT)}rem` }}
               >
