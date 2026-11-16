@@ -67,7 +67,7 @@ const TREE_INDENT = 1.5;
 
 /**
  * The tree toggle's hit area: the whole height of its row (past the cell's padding) and a little past its sides, so
- * it's easy to press. In the gutter it stops at the checkbox before it.
+ * it's easy to press.
  */
 const treeToggleHitArea = {
   compact: 'before:-inset-y-1.5',
@@ -191,7 +191,12 @@ export function TableView<Row extends object>({
   );
   // Right after the selection column, the toggles sit in the gutter between the checkbox and the cell's content
   // (the space the two cells' padding leaves), so the content stays under its column header.
-  const hasTreeGutter = hasSelection && !hasDetail && treeColumnIndex === 0;
+  const hasTreeGutter = tree !== undefined && hasSelection && !hasDetail && treeColumnIndex === 0;
+  // In a tree's gutter the selection column also holds the toggle, in its end padding, with 0.75rem between the
+  // checkbox, the toggle and the text; the first data column's sticky offset follows its width.
+  const selectionWidth = hasTreeGutter ? 'w-18 ps-3 pe-10' : 'w-11 px-3';
+  const stickyOffset = (position: number) =>
+    hasTreeGutter && position ? 'start-18' : stickyStart[position];
 
   // TanStack Virtual returns functions the React Compiler can't memoise, so it skips this component (as it says).
   // eslint-disable-next-line react-hooks/incompatible-library -- expected; the component re-renders on scroll anyway.
@@ -248,14 +253,14 @@ export function TableView<Row extends object>({
   };
 
   const stickyFirst = (index: number) =>
-    hasStickyFirstColumn && index === 0 ? cn('sticky z-[1] bg-inherit', stickyStart[leading]) : '';
+    hasStickyFirstColumn && index === 0 ? cn('sticky z-[1] bg-inherit', stickyOffset(leading)) : '';
   const stickyLeading = (position: number) =>
-    hasStickyFirstColumn ? cn('sticky z-[1] bg-inherit', stickyStart[position]) : '';
+    hasStickyFirstColumn ? cn('sticky z-[1] bg-inherit', stickyOffset(position)) : '';
 
   const header = (
     <tr className="bg-surface-3">
       {hasSelection && (
-        <th scope="col" className={cn('w-11 px-3 py-2', stickyLeading(0))}>
+        <th scope="col" className={cn(selectionWidth, 'py-2', stickyLeading(0))}>
           {selectionMode === 'multiple' && (
             <Checkbox
               aria-label={messages.selectAllRows}
@@ -402,11 +407,10 @@ export function TableView<Row extends object>({
                     size="sm"
                     className={cn(
                       // Only the chevron turns, so the hit area keeps its shape.
-                      'relative before:absolute [&_svg]:transition-transform',
+                      'relative before:absolute before:-inset-x-1 [&_svg]:transition-transform',
                       treeToggleHitArea[density],
-                      hasTreeGutter
-                        ? '-ms-7 w-7 before:start-0 before:-end-1'
-                        : 'before:-inset-x-1',
+                      // In the gutter: 0.75rem after the checkbox and before the text, taking no room in the cell.
+                      hasTreeGutter && '-ms-10 me-3 w-7',
                       isTreeExpanded && '[&_svg]:rotate-90',
                     )}
                     onPress={toggleTree}
@@ -457,7 +461,7 @@ export function TableView<Row extends object>({
                   )}
                 >
                   {hasSelection && (
-                    <td className={cn('w-11 px-3', stickyLeading(0))}>
+                    <td className={cn(selectionWidth, stickyLeading(0))}>
                       <Checkbox
                         aria-label={messages.selectRow({ row: label })}
                         isSelected={isSelected}

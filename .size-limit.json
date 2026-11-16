@@ -180,7 +180,7 @@
     "name": "HeatmapChart",
     "path": "dist/chart/index.js",
     "import": "{ HeatmapChart, CalendarHeatmap }",
-    "limit": "31.5 kB",
+    "limit": "31.75 kB",
     "entry": "index"
   },
   {
@@ -443,7 +443,7 @@
     "name": "BoxPlotChart",
     "path": "dist/chart/index.js",
     "import": "{ BoxPlotChart }",
-    "limit": "31 kB",
+    "limit": "31.25 kB",
     "entry": "index"
   },
   {
