@@ -219,6 +219,30 @@ describe('DataTable tree rows', () => {
     expect(names()).toEqual(['Pictures']);
   });
 
+  it.each([
+    { shouldCountParentRows: false, count: '2 selected' },
+    { shouldCountParentRows: true, count: '4 selected' },
+  ])(
+    'counts selected rows in the bulk-action bar (shouldCountParentRows: $shouldCountParentRows)',
+    async ({ shouldCountParentRows, count }) => {
+      render(
+        <Wide>
+          <Tree
+            selectionMode="multiple"
+            defaultExpandedIds={new Set(['docs', 'taxes'])}
+            // Documents and Taxes are groups; Resume and 2025 are the items in them.
+            defaultSelectedKeys={new Set(['docs', 'cv', 'taxes', 'y2025'])}
+            shouldCountParentRows={shouldCountParentRows}
+            bulkActions={(keys) => <button type="button">Archive {keys.size}</button>}
+          />
+        </Wide>,
+      );
+      expect(await screen.findByText(count)).toBeInTheDocument();
+      // The actions still get every selected key.
+      expect(screen.getByRole('button', { name: 'Archive 4' })).toBeInTheDocument();
+    },
+  );
+
   it('selects groups with tri-state checkboxes', async () => {
     const onSelectionChange = vi.fn();
     function Selectable() {

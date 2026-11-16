@@ -62,8 +62,17 @@ const stickyStart = ['start-0', 'start-11', 'start-22'] as const;
  */
 const stripeClasses = '[&:where(:nth-child(even_of_[data-stripe]))]:bg-surface-1';
 
-/** How far each tree level indents, in rem (the toggle adds its own width). */
+/** How far each tree level indents, in rem (the toggle adds its own width, unless it sits in the gutter). */
 const TREE_INDENT = 1.5;
+
+/**
+ * The tree toggle's hit area: the whole height of its row (past the cell's padding) and a little past its sides, so
+ * it's easy to press. In the gutter it stops at the checkbox before it.
+ */
+const treeToggleHitArea = {
+  compact: 'before:-inset-y-1.5',
+  regular: 'before:-inset-y-3',
+} as const;
 
 /** Moves focus between tree rows (the treegrid keys); other keys and keys from controls inside are left alone. */
 function onTreeRowKeyDown(
@@ -180,6 +189,9 @@ export function TableView<Row extends object>({
     0,
     columns.findIndex((column) => column.id === tree?.columnId),
   );
+  // Right after the selection column, the toggles sit in the gutter between the checkbox and the cell's content
+  // (the space the two cells' padding leaves), so the content stays under its column header.
+  const hasTreeGutter = hasSelection && !hasDetail && treeColumnIndex === 0;
 
   // TanStack Virtual returns functions the React Compiler can't memoise, so it skips this component (as it says).
   // eslint-disable-next-line react-hooks/incompatible-library -- expected; the component re-renders on scroll anyway.
@@ -376,7 +388,7 @@ export function TableView<Row extends object>({
             };
             const treeContent = (content: ReactNode) => (
               <div
-                className="flex min-w-0 items-center gap-1"
+                className={cn('flex min-w-0 items-center', !hasTreeGutter && 'gap-1')}
                 // eslint-disable-next-line no-restricted-syntax -- dynamic geometry: the row's depth in the tree.
                 style={{ paddingInlineStart: `${String(row.depth * TREE_INDENT)}rem` }}
               >
@@ -387,11 +399,19 @@ export function TableView<Row extends object>({
                     aria-expanded={isTreeExpanded}
                     variant="ghost"
                     size="sm"
-                    className={cn('transition-transform', isTreeExpanded && 'rotate-90')}
+                    className={cn(
+                      // Only the chevron turns, so the hit area keeps its shape.
+                      'relative before:absolute [&_svg]:transition-transform',
+                      treeToggleHitArea[density],
+                      hasTreeGutter
+                        ? '-ms-7 w-7 before:start-0 before:-end-1'
+                        : 'before:-inset-x-1',
+                      isTreeExpanded && '[&_svg]:rotate-90',
+                    )}
                     onPress={toggleTree}
                   />
                 ) : (
-                  <span aria-hidden="true" className="size-8 shrink-0" />
+                  !hasTreeGutter && <span aria-hidden="true" className="size-8 shrink-0" />
                 )}
                 <div className="min-w-0">{content}</div>
               </div>
@@ -510,10 +530,10 @@ export function TableView<Row extends object>({
                     <td colSpan={totalColumns - leading - treeColumnIndex} className={padding}>
                       <div
                         className="flex flex-wrap items-center gap-2 text-fg-muted"
-                        // The children's indentation, past the toggle (2rem and a gap).
+                        // The children's indentation, past the toggle (2rem and a gap; none in the gutter).
                         // eslint-disable-next-line no-restricted-syntax -- dynamic geometry: the children's depth.
                         style={{
-                          paddingInlineStart: `${String((row.depth + 1) * TREE_INDENT + 2.25)}rem`,
+                          paddingInlineStart: `${String((row.depth + 1) * TREE_INDENT + (hasTreeGutter ? 0 : 2.25))}rem`,
                         }}
                       >
                         {childStatus === 'loading' ? (

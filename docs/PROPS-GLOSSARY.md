@@ -30,8 +30,8 @@ with a different type or meaning. Variances last reviewed 2026-10-19.
 | Measure | Count |
 | --- | ---: |
 | Components and props types audited | 289 |
-| Prop declarations | 3822 |
-| Distinct prop names | 1053 |
+| Prop declarations | 3823 |
+| Distinct prop names | 1054 |
 | Names used by more than one component | 423 |
 | Names with a **meaning** variance | 25 |
 | Names with a **type** variance | 113 |
@@ -1236,6 +1236,7 @@ than one type, the 6 most common are listed with the number of components using 
 | <a id="prop-shouldcloseonsuccess"></a>`shouldCloseOnSuccess` | `boolean` | no | Closes the dialog after a successful submit. Defaults to true. |  | DialogForm |
 | <a id="prop-shouldconfirmdestructive"></a>`shouldConfirmDestructive` | `boolean` | no | Requires typing a word (the `planConfirmText` message, "apply") when anything is destroyed or replaced. Defaults to true. |  | PlanReview |
 | <a id="prop-shouldconfirmsave"></a>`shouldConfirmSave` | `boolean` | no | Asks before every save (EDIT-29). Shared dashboards always ask. |  | Dashboard |
+| <a id="prop-shouldcountparentrows"></a>`shouldCountParentRows` | `boolean` | no | Tree rows: the bulk-action bar's count includes selected rows that have children. By default it counts only the selected rows without children (the items, not their groups). |  | DataTable |
 | <a id="prop-shouldfollowplayhead"></a>`shouldFollowPlayhead` | `boolean` | no | Keeps the playhead scrolled into view as it moves. Defaults to true. |  | MusicNotation, PianoRoll |
 | <a id="prop-shouldloadonscroll"></a>`shouldLoadOnScroll` | `boolean` | no | Asks for more when the end of the list scrolls into view, as well as from the button. Defaults to true. |  | ActivityTimeline, ListView |
 | <a id="prop-shouldopenexternallinksinnewtab"></a>`shouldOpenExternalLinksInNewTab` | `boolean` | no | Opens links to other sites in a new tab, with a hidden "opens in a new tab" for screen readers. Defaults to true. |  | Markdown |
@@ -1804,7 +1805,7 @@ whose props the component also accepts.
 | Component | Props type | Source | Own props | Inherits |
 | --- | --- | --- | --- | --- |
 | BooleanCell | inline | [table/cells.tsx:188](../src/table/cells.tsx#L188) | **`isTrue`**, `trueLabel`, `falseLabel` |  |
-| DataTable | `DataTableProps` | [table/DataTable.tsx:31](../src/table/DataTable.tsx#L31) | **`rows`**, **`columns`**, **`getRowId`**, `aria-label`, `aria-labelledby`, `getRowLabel`, `sort`, `defaultSort`, `onSortChange`, `sortMode`, `pagination`, `selectionMode`, `selectedKeys`, `defaultSelectedKeys`, `onSelectionChange`, `bulkActions`, `rowActions`, `onRowAction`, `getRowHref`, `renderRowDetail`, `getRowChildren`, `isRowExpandable`, `loadRowChildren`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `treeColumn`, `hiddenColumns`, `density`, `maxHeight`, `hasStickyFirstColumn`, `isStriped`, `isLoading`, `isRefreshing`, `error`, `onRetry`, `emptyState`, `isVirtualized`, `className` |  |
+| DataTable | `DataTableProps` | [table/DataTable.tsx:31](../src/table/DataTable.tsx#L31) | **`rows`**, **`columns`**, **`getRowId`**, `aria-label`, `aria-labelledby`, `getRowLabel`, `sort`, `defaultSort`, `onSortChange`, `sortMode`, `pagination`, `selectionMode`, `selectedKeys`, `defaultSelectedKeys`, `onSelectionChange`, `bulkActions`, `shouldCountParentRows`, `rowActions`, `onRowAction`, `getRowHref`, `renderRowDetail`, `getRowChildren`, `isRowExpandable`, `loadRowChildren`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `treeColumn`, `hiddenColumns`, `density`, `maxHeight`, `hasStickyFirstColumn`, `isStriped`, `isLoading`, `isRefreshing`, `error`, `onRetry`, `emptyState`, `isVirtualized`, `className` |  |
 | EditableTable | `EditableTableProps` | [table/EditableTable.tsx:33](../src/table/EditableTable.tsx#L33) | **`rows`**, **`columns`**, **`getRowId`**, **`onChange`**, `validate`, `newRow`, `duplicateRow`, `isReorderable`, `allowsRemovingRows`, `maxItems`, `minItems`, `editMode`, `getRowLabel`, `addRowLabel`, `minGridWidth`, `isDisabled`, `aria-label`, `aria-labelledby`, `className`, `ref` |  |
 | Editor | `EditorProps` | [table/editableColumns.ts:7](../src/table/editableColumns.ts#L7) | **`value`**, **`onChange`**, **`onRowChange`**, **`row`**, **`rowIndex`**, `errorMessage`, **`isInvalid`**, **`aria-label`**, `aria-describedby`, **`isDisabled`** |  |
 | FilterPanel | inline | [table/filters.tsx:29](../src/table/filters.tsx#L29) | **`filters`**, **`values`**, **`onChange`** |  |

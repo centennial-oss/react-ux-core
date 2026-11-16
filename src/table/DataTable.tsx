@@ -55,6 +55,11 @@ export interface DataTableProps<Row extends object> {
    * the bottom of the view, with the count and a button that clears the selection (so does Escape in the bar).
    */
   bulkActions?: (selectedKeys: ReadonlySet<string>) => ReactNode;
+  /**
+   * Tree rows: the bulk-action bar's count includes selected rows that have children. By default it counts only the
+   * selected rows without children (the items, not their groups). `bulkActions` receives every selected key either way.
+   */
+  shouldCountParentRows?: boolean;
   /** Menu items (`MenuItem`) for a row's actions menu. */
   rowActions?: (row: Row) => ReactNode;
   onRowAction?: (key: Key, row: Row) => void;
@@ -134,6 +139,8 @@ const ActionBar = lazyComponent<ActionBarProps>(
 
 interface BulkActionBarProps {
   selectedKeys: ReadonlySet<string>;
+  /** The count the bar shows. */
+  selectedCount: number;
   bulkActions: (selectedKeys: ReadonlySet<string>) => ReactNode;
   onClearSelection: () => void;
 }
@@ -142,13 +149,18 @@ interface BulkActionBarProps {
  * The bulk actions in an ActionBar. While the bar fades out after the selection empties, it keeps the actions of the
  * last selection, as it keeps its count. Its own component, so holding them re-renders only the bar.
  */
-function BulkActionBar({ selectedKeys, bulkActions, onClearSelection }: BulkActionBarProps) {
+function BulkActionBar({
+  selectedKeys,
+  selectedCount,
+  bulkActions,
+  onClearSelection,
+}: BulkActionBarProps) {
   const [shownKeys, setShownKeys] = useState(selectedKeys);
   if (selectedKeys.size > 0 && selectedKeys !== shownKeys) {
     setShownKeys(selectedKeys);
   }
   return (
-    <ActionBar selectedCount={selectedKeys.size} onClearSelection={onClearSelection}>
+    <ActionBar selectedCount={selectedCount} onClearSelection={onClearSelection}>
       {shownKeys.size > 0 && bulkActions(shownKeys)}
     </ActionBar>
   );
@@ -194,6 +206,7 @@ export function DataTable<Row extends object>({
   defaultSelectedKeys = EMPTY_KEYS,
   onSelectionChange,
   bulkActions,
+  shouldCountParentRows,
   rowActions,
   onRowAction,
   getRowHref,
@@ -309,6 +322,11 @@ export function DataTable<Row extends object>({
 
   // Load the children of expanded rows that don't have them yet.
   const rowsById = model.getCoreRowModel().rowsById;
+  // The bar counts the selected items, not the groups that hold them (a group's subtitle or children say as much).
+  const selectedCount =
+    isTree && !shouldCountParentRows
+      ? [...selectedKeys].filter((key) => !rowsById[key]?.subRows.length).length
+      : selectedKeys.size;
   const missing = loadRowChildren
     ? [...expandedIds].flatMap((id) => {
         const row = rowsById[id]?.original;
@@ -464,6 +482,7 @@ export function DataTable<Row extends object>({
       {bulkActions && (
         <BulkActionBar
           selectedKeys={selectedKeys}
+          selectedCount={selectedCount}
           bulkActions={bulkActions}
           onClearSelection={() => {
             setSelectedKeys(new Set());
