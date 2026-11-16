@@ -215,8 +215,10 @@ describe('Menu', () => {
     expect(isPhone ? ['top', 'bottom'] : ['left', 'right']).toContain(
       submenu.closest('[data-trigger="SubmenuTrigger"]')?.getAttribute('data-placement'),
     );
-    // Focus moves into the submenu once it has finished entering, which takes longer under load.
-    await expect.poll(() => submenu.contains(document.activeElement), { timeout: 3000 }).toBe(true);
+    // Focus moves into the submenu once it has finished entering, which takes longer under load (over 3s in CI).
+    await expect
+      .poll(() => submenu.contains(document.activeElement), { timeout: 10_000 })
+      .toBe(true);
   });
 
   it.runIf(isPhone)('keeps submenus on screen on phones', async () => {
