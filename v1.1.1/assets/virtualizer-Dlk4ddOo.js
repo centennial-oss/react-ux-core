@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";function t(){let e=globalThis,t=e.process!==void 0;e.process??={env:{}};let{env:n}=e.process,r={NODE_ENV:n.NODE_ENV,VIRT_ON:n.VIRT_ON};return n.NODE_ENV??=`test`,n.VIRT_ON=`true`,()=>{t?(n.NODE_ENV=r.NODE_ENV,n.VIRT_ON=r.VIRT_ON):delete e.process}}function n(){return(n=e((()=>{})))()}export{n,t};

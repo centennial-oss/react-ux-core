@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{t}from"./react-DlPsW1c0.js";function n(e){return document.addEventListener(`visibilitychange`,e),()=>{document.removeEventListener(`visibilitychange`,e)}}function r(){return(0,i.useSyncExternalStore)(n,()=>document.visibilityState===`hidden`,()=>!1)}var i;function a(){return(a=e((()=>{i=t()})))()}export{r as n,a as t};
