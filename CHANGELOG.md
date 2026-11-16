@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- Update datatable styling
+
 ## 1.0.1
 
 ### Patch Changes
