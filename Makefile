@@ -1,6 +1,6 @@
 .PHONY: developer-setup install build dev link unlink pack test test-changed test-watch lint lint-changed typecheck \
 	format format-check format-check-changed storybook storybook-build test-visual test-visual-changed snapshots-check \
-	update-snapshots update-snapshots-changed size licenses pack-check props-glossary props-glossary-check \
+	test-ci update-snapshots update-snapshots-changed size licenses pack-check props-glossary props-glossary-check \
 	count-components catalog catalog-check check check-changed committed-check ci changeset set-release-version \
 	prerelease-enter prerelease-exit tag-release clean
 
@@ -81,6 +81,18 @@ pack:
 
 test:
 	npm test -- $(FILTER)
+
+# The unit and story tests as CI runs them: in Playwright's Linux image with CI=1 (Vitest's default workers), on fewer
+# CPUs than CI's runner has, so tests that only pass on a fast machine fail here first. Linux dependencies install
+# into a Docker volume, leaving node_modules alone. RUNS repeats the suite to catch rarer flakes.
+CI_TEST_CPUS ?= 2
+CI_TEST_MEMORY ?= 16g
+RUNS ?= 1
+test-ci:
+	docker run --rm --init --ipc=host --cpus=$(CI_TEST_CPUS) --memory=$(CI_TEST_MEMORY) -e CI=1 \
+		-v "$(CURDIR)":/work -v react-ux-core-ci-node-modules:/work/node_modules -w /work $(PLAYWRIGHT_IMAGE) \
+		bash -c 'npm ci --ignore-scripts --no-audit --no-fund > /dev/null && \
+			for run in $$(seq 1 $(RUNS)); do echo "Run $$run of $(RUNS)"; npx vitest run $(FILTER) || exit 1; done'
 
 # Only the unit and story tests your changes reach; all of them if a change reaches everything.
 test-changed:

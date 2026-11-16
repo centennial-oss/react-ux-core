@@ -115,7 +115,7 @@ describe('PriceTicker', () => {
 
   it('turns stale when no update arrives in time, and fresh again on an update', async () => {
     const { rerender } = render(
-      <PriceTicker label="Viewers" value={10} updatedAt={Date.now()} staleAfterMs={150} />,
+      <PriceTicker label="Viewers" value={10} updatedAt={Date.now()} staleAfterMs={1000} />,
     );
     const group = screen.getByRole('group');
     expect(group).not.toHaveAttribute('data-stale');

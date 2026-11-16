@@ -62,9 +62,10 @@ function Shell(props: Partial<DashboardProps>) {
 describe('Dashboard: kiosk mode (Q4)', () => {
   it('shows the pages in turn, and stops when paused', async () => {
     const onSelectionChange = vi.fn<(selection: DashboardSelection) => void>();
-    render(<Shell kioskIntervalMs={300} onSelectionChange={onSelectionChange} />);
+    // Long enough that a busy CI runner can check each page before the next one shows.
+    render(<Shell kioskIntervalMs={1500} onSelectionChange={onSelectionChange} />);
     expect(await screen.findByText('Page One')).toBeTruthy();
-    expect(await screen.findByText('Page Two', {}, { timeout: 3000 })).toBeTruthy();
+    expect(await screen.findByText('Page Two', {}, { timeout: 10_000 })).toBeTruthy();
     expect(onSelectionChange).toHaveBeenLastCalledWith({
       collectionId: 'c',
       dashboardId: 'd',

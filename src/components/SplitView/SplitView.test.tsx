@@ -169,9 +169,11 @@ describe('SplitView', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Show details' }));
     const drawer = await screen.findByRole('dialog', { name: 'Details' });
     expect(drawer.textContent).toEqual(expect.stringContaining('third planet'));
-    await expect.poll(() => drawer.contains(document.activeElement), { timeout: 2000 }).toBe(true);
+    await expect
+      .poll(() => drawer.contains(document.activeElement), { timeout: 10_000 })
+      .toBe(true);
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('stacks every pane in a narrow container when asked', async () => {

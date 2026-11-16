@@ -43,7 +43,7 @@ async function suggestions() {
           ? getComputedStyle(listbox.closest('[data-placement]') ?? listbox).opacity
           : '';
       },
-      { timeout: 3000 },
+      { timeout: 10_000 },
     )
     .toBe('1');
   return screen.getByRole('listbox');
@@ -111,25 +111,29 @@ describe('ComboBox', () => {
         );
       });
       render(
-        <ComboBox label="Customer" loadItems={loadItems} loadDelay={200}>
+        // A delay long enough that a busy CI runner types the whole query within it.
+        <ComboBox label="Customer" loadItems={loadItems} loadDelay={1500}>
           {(customer) => <Option id={customer.id}>{customer.name}</Option>}
         </ComboBox>,
       );
       await expect.poll(() => loadItems.mock.calls.length).toBe(1);
       await userEvent.type(screen.getByRole('combobox', { name: 'Customer' }), 'init');
-      await expect.poll(() => loadItems.mock.calls.length, { timeout: 2000 }).toBe(2);
+      await expect.poll(() => loadItems.mock.calls.length, { timeout: 10_000 }).toBe(2);
       expect(loadItems.mock.calls[1]?.[0]).toBe('init');
       await suggestions();
       await expect
-        .poll(() => screen.queryByRole('option', { name: 'Initech' }), { timeout: 3000 })
+        .poll(() => screen.queryByRole('option', { name: 'Initech' }), { timeout: 10_000 })
         .not.toBeNull();
     });
 
     it('aborts an in-flight request when a newer query starts', async () => {
       const signals: AbortSignal[] = [];
+      // Each load stays in flight until it's aborted, so a busy CI runner can't let one finish first.
       const loadItems = vi.fn(async (_query: string, signal: AbortSignal) => {
         signals.push(signal);
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await new Promise((resolve) => {
+          signal.addEventListener('abort', resolve);
+        });
         return customers;
       });
       render(
@@ -161,7 +165,7 @@ describe('ComboBox', () => {
       await userEvent.keyboard('{ArrowDown}');
       expect(await screen.findByText('Loading')).toBeInTheDocument();
       expect(
-        await screen.findByText('Couldn’t load options', {}, { timeout: 2000 }),
+        await screen.findByText('Couldn’t load options', {}, { timeout: 10_000 }),
       ).toBeInTheDocument();
     });
   });

@@ -147,7 +147,7 @@ describe('AudioPlayer', () => {
         preload="auto"
       />,
     );
-    const alert = await screen.findByRole('alert', {}, { timeout: 5000 });
+    const alert = await screen.findByRole('alert', {}, { timeout: 10_000 });
     expect(alert.textContent).toEqual(expect.stringContaining('404'));
   });
 
@@ -156,7 +156,7 @@ describe('AudioPlayer', () => {
       new Blob([new Uint8Array(512).fill(7)], { type: 'audio/mpeg' }),
     );
     render(<AudioPlayer track={{ id: 'junk', src: junk, title: 'Junk' }} preload="auto" />);
-    const alert = await screen.findByRole('alert', {}, { timeout: 5000 });
+    const alert = await screen.findByRole('alert', {}, { timeout: 10_000 });
     expect(alert.textContent).toEqual(expect.stringContaining('can’t play this format'));
     URL.revokeObjectURL(junk);
   });
@@ -185,7 +185,7 @@ describe('AudioPlayer', () => {
     const { container } = render(<AudioPlayer track={second} waveform="decode" />);
     await expect
       .poll(() => container.querySelector('svg path')?.getAttribute('d')?.length ?? 0, {
-        timeout: 5000,
+        timeout: 10_000,
       })
       .toBeGreaterThan(50);
   });

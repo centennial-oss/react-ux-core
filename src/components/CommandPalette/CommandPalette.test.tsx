@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
 import { demoCommands } from '../../../test/commandPalette';
+import { settleOverlay } from '../../../test/overlays';
 import type { LinkComponentProps } from '../../provider/link';
 import type { Messages } from '../../provider/messages';
 import { UIProvider } from '../../provider/UIProvider';
@@ -88,7 +89,7 @@ describe('CommandPalette', () => {
       .toBe(screen.getByRole('option', { name: /Mars › Moons/ }).id);
     await userEvent.keyboard('{Enter}');
     expect(onNavigate).toHaveBeenCalledWith('#mars/moons');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('is a combobox over a listbox, highlighting matched letters and announcing the count', async () => {
@@ -121,12 +122,12 @@ describe('CommandPalette', () => {
     await openWithShortcut();
     await userEvent.keyboard('calib{Enter}');
     expect(onAction).toHaveBeenCalledTimes(1);
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
 
     screen.getByRole('textbox', { name: 'Notes' }).focus();
     await openWithShortcut();
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     await expect
       .poll(() => document.activeElement)
       .toBe(screen.getByRole('textbox', { name: 'Notes' }));
@@ -172,11 +173,11 @@ describe('CommandPalette', () => {
     await openWithShortcut();
     await userEvent.keyboard('observ{Enter}');
     expect(onRecentChange).toHaveBeenLastCalledWith(['observatories', 'venus']);
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     await openWithShortcut();
     await userEvent.keyboard('earth{Enter}');
     expect(onRecentChange).toHaveBeenLastCalledWith(['earth', 'observatories']);
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     await openWithShortcut();
     const recentGroup = screen.getByRole('group', { name: 'Recent' });
     expect(
@@ -189,15 +190,15 @@ describe('CommandPalette', () => {
   it('loads async results after typing pauses, aborting stale loads, with a spinner row', async () => {
     const { calls, loadItems } = manualLoader();
     // Long enough that keystrokes on a busy test machine land within one pause.
-    render(<Palette defaultOpen loadItems={loadItems} loadDelay={600} />);
+    render(<Palette defaultOpen loadItems={loadItems} loadDelay={1500} />);
     await userEvent.type(input(), 'rea');
-    await expect.poll(() => calls.length, { timeout: 3000 }).toBe(1);
+    await expect.poll(() => calls.length, { timeout: 10_000 }).toBe(1);
     expect(calls[0]?.query).toBe('rea');
     expect(screen.getByText('Searching…')).toBeInTheDocument();
     await userEvent.type(input(), 'd');
     // The first load is aborted as soon as the query changes.
     expect(calls[0]?.signal.aborted).toBe(true);
-    await expect.poll(() => calls.length, { timeout: 3000 }).toBe(2);
+    await expect.poll(() => calls.length, { timeout: 10_000 }).toBe(2);
     expect(calls[1]?.query).toBe('read');
     calls[1]?.resolve(readings);
     const group = await screen.findByRole('group', { name: 'Lab readings' });
@@ -208,12 +209,12 @@ describe('CommandPalette', () => {
 
   it('keeps the highlighted row when async results arrive', async () => {
     const { calls, loadItems } = manualLoader();
-    render(<Palette defaultOpen loadItems={loadItems} loadDelay={600} />);
+    render(<Palette defaultOpen loadItems={loadItems} loadDelay={1500} />);
     await userEvent.type(input(), 'moons');
     await userEvent.keyboard('{ArrowDown}');
     const highlighted = screen.getByRole('option', { name: /Jupiter › Moons/ });
     expect(input().getAttribute('aria-activedescendant')).toBe(highlighted.id);
-    await expect.poll(() => calls.length, { timeout: 3000 }).toBe(1);
+    await expect.poll(() => calls.length, { timeout: 10_000 }).toBe(1);
     calls[0]?.resolve([{ id: 'moon-log', label: 'Moons observing log', section: 'Logs' }]);
     await screen.findByRole('group', { name: 'Logs' });
     expect(input().getAttribute('aria-activedescendant')).toBe(highlighted.id);
@@ -234,7 +235,7 @@ describe('CommandPalette', () => {
       .poll(() => Math.round(dialog.getBoundingClientRect().width))
       .toBe(window.innerWidth);
     await userEvent.click(screen.getByRole('button', { name: 'Close' }));
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('takes its strings from UIProvider', () => {
@@ -256,7 +257,7 @@ describe('CommandPalette', () => {
 
   it('has no accessibility violations', async () => {
     render(<Palette defaultOpen recentIds={['mars']} />);
-    const dialog = await screen.findByRole('dialog');
+    const dialog = await settleOverlay(await screen.findByRole('dialog'));
     await userEvent.type(input(), 'mars');
     await expectNoAxeViolations(dialog);
   });

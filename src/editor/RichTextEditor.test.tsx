@@ -5,6 +5,7 @@ import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../test/axe';
 import { findAstronomers, tidesArticleWithImages } from '../../test/editorArticle';
 import { googleDocsClipboard } from '../../test/googleDocs';
+import { settleOverlay } from '../../test/overlays';
 import type { Messages } from '../provider/messages';
 import { UIProvider } from '../provider/UIProvider';
 import { isApplePlatform } from '../utils/keyboard';
@@ -286,7 +287,7 @@ describe('RichTextEditor', () => {
     render(<Editor initial="Tides" />);
     await focusEnd();
     await userEvent.click(screen.getByRole('button', { name: 'Image' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Insert image' });
+    const dialog = await settleOverlay(await screen.findByRole('dialog', { name: 'Insert image' }));
     await userEvent.type(
       within(dialog).getByRole('textbox', { name: /Image address/ }),
       'https://example.com/moon.png',
@@ -313,7 +314,7 @@ describe('RichTextEditor', () => {
     editable().dispatchEvent(
       new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }),
     );
-    const dialog = await screen.findByRole('dialog', { name: 'Insert image' });
+    const dialog = await settleOverlay(await screen.findByRole('dialog', { name: 'Insert image' }));
     expect(uploadImage).toHaveBeenCalledOnce();
     const alt = within(dialog).getByRole('textbox', { name: /Alt text/ });
     await userEvent.type(alt, 'Craters near the terminator');
@@ -379,7 +380,9 @@ describe('RichTextEditor', () => {
     render(<Editor initial="![A crater](https://example.com/crater.png)" />);
     await userEvent.click(screen.getByRole('img', { name: 'A crater' }));
     await userEvent.keyboard('{Enter}');
-    const dialog = await screen.findByRole('dialog', { name: 'Image description' });
+    const dialog = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Image description' }),
+    );
     const alt = within(dialog).getByRole('textbox', { name: /Alt text/ });
     expect(alt).toHaveValue('A crater');
     await userEvent.clear(alt);

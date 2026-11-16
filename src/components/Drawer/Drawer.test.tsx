@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Button } from '../Button';
 import { DialogTrigger } from '../Dialog';
 import { Drawer } from './Drawer';
@@ -29,13 +30,11 @@ function Example() {
 
 async function open() {
   await userEvent.click(screen.getByRole('button', { name: 'Filters' }));
-  const dialog = await screen.findByRole('dialog', { name: 'Filters' });
-  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
-  return dialog;
+  return settleOverlay(await screen.findByRole('dialog', { name: 'Filters' }));
 }
 
 async function expectClosed() {
-  await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+  await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
 }
 
 describe('Drawer', () => {
@@ -53,7 +52,7 @@ describe('Drawer', () => {
       /^(end|right)$/,
     );
     await expect
-      .poll(() => Math.round(dialog.getBoundingClientRect().right), { timeout: 2000 })
+      .poll(() => Math.round(dialog.getBoundingClientRect().right), { timeout: 10_000 })
       .toBe(window.innerWidth);
   });
 

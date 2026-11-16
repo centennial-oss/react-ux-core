@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../test/axe';
+import { settleOverlay } from '../../test/overlays';
 import { IconButton } from '../components/IconButton/IconButton';
 import { MenuItem } from '../components/Menu/Menu';
 import type { LinkComponentProps } from '../provider/link';
@@ -108,7 +109,7 @@ function Shell({
 
 async function openDrawer() {
   await userEvent.click(screen.getByRole('button', { name: 'Open navigation' }));
-  return screen.findByRole('dialog', { name: 'Main' });
+  return settleOverlay(await screen.findByRole('dialog', { name: 'Main' }));
 }
 
 describe('panelMenuToggleIcon', () => {

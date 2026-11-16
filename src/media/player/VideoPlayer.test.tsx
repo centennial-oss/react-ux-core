@@ -118,7 +118,7 @@ describe('VideoPlayer', () => {
     );
     const stats = await screen.findByRole('region', { name: 'Playback stats' });
     await expect
-      .poll(() => stats.textContent, { timeout: 5000 })
+      .poll(() => stats.textContent, { timeout: 10_000 })
       .toEqual(expect.stringContaining('160×90'));
     expect(stats.textContent).toEqual(expect.stringContaining('Dropped frames'));
     expect(onStats.mock.lastCall?.[0].width).toBe(160);
@@ -290,7 +290,7 @@ describe('MultiView', () => {
     await expect.poll(() => video?.readyState ?? 0).toBeGreaterThan(0);
     await expect.poll(() => video?.paused).toBe(true);
     screen.getByRole('group', { name: 'Encoder 1' }).scrollIntoView();
-    await expect.poll(() => video?.paused, { timeout: 5000 }).toBe(false);
+    await expect.poll(() => video?.paused, { timeout: 10_000 }).toBe(false);
     window.scrollTo(0, 0);
   });
 

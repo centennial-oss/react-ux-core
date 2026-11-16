@@ -75,9 +75,9 @@ describe('AudioMeter', () => {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
     // Only the once-a-second readout may have re-rendered: at most once per second that passed (frames run slowly
-    // on a busy machine), and never once per push.
+    // on a busy machine), plus one readout scheduled just before the window, and never once per push.
     const seconds = Math.ceil((performance.now() - started) / 1000);
-    expect(commits - before).toBeLessThanOrEqual(seconds);
+    expect(commits - before).toBeLessThanOrEqual(seconds + 1);
     expect(commits - before).toBeLessThan(30);
     const canvas = container.querySelector('canvas');
     expect(canvas && litPixels(canvas)).toBeGreaterThan(0);
@@ -123,7 +123,9 @@ describe('AudioMeter', () => {
     await context.resume();
     render(<AudioMeter label="Synth" source={gain} channelCount={1} channelLabels={['Mono']} />);
     const meter = screen.getByRole('group', { name: 'Synth' });
-    await expect.poll(() => meter.textContent, { timeout: 4000 }).toMatch(/Mono −(5|6|7)\.\d dBFS/);
+    await expect
+      .poll(() => meter.textContent, { timeout: 10_000 })
+      .toMatch(/Mono −(5|6|7)\.\d dBFS/);
     oscillator.stop();
     await context.close();
   });

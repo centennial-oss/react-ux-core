@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { fastestRun } from '../../../test/timing';
 import {
   autoPlace,
   compactLayout,
@@ -489,15 +490,7 @@ describe('performance (PERF-01)', () => {
       { columns: 12 },
     );
     expect(layoutRows(layout)).toBeGreaterThan(20);
-    const time = (run: () => void) => {
-      const samples: number[] = [];
-      for (let index = 0; index < 30; index++) {
-        const start = performance.now();
-        run();
-        samples.push(performance.now() - start);
-      }
-      return samples.sort((a, b) => a - b)[15] ?? 0;
-    };
+    const time = (run: () => void) => fastestRun(run, 30);
     expect(time(() => moveItem(layout, 'w50', { x: 3, y: 0 }, { columns: 12 }))).toBeLessThan(2);
     expect(
       time(() => resizeItem(layout, 'w10', { w: 8, h: 6 }, 'se', { columns: 12 })),

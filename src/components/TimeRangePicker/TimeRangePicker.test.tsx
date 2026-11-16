@@ -23,7 +23,7 @@ async function open(name = /Time range/) {
 }
 
 async function closed() {
-  await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+  await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
 }
 
 describe('TimeRangePicker', () => {

@@ -379,7 +379,7 @@ describe('AssetPicker', () => {
     if (drawer) {
       await userEvent.click(within(drawer).getByRole('button', { name: 'Close' }));
       await expect
-        .poll(() => screen.queryByRole('dialog', { name: 'Details' }), { timeout: 3000 })
+        .poll(() => screen.queryByRole('dialog', { name: 'Details' }), { timeout: 10_000 })
         .toBeNull();
     }
     await userEvent.click(within(dialog).getByRole('button', { name: 'Choose' }));

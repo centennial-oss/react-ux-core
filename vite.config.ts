@@ -7,6 +7,7 @@ import type { BrowserCommand } from 'vitest/node';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 import pkg from './package.json' with { type: 'json' };
+import { WAIT_TIMEOUT } from './test/timeouts.ts';
 
 // Never bundle dependencies or peers (or their subpath imports, e.g. react/jsx-runtime); the app installs them.
 const externals = [...Object.keys(pkg.dependencies), ...Object.keys(pkg.peerDependencies)];
@@ -190,6 +191,8 @@ export default defineConfig({
     // run at once, and the unit and story groups run one after the other, so a full run doesn't starve the machine.
     // CI uses Vitest's default.
     maxWorkers: process.env.TEST_WORKERS ?? (process.env.CI ? undefined : 4),
+    // expect.poll waits as long as findBy* (test/setup.ts), not Vitest's 1s default. See test/timeouts.ts.
+    expect: { poll: { timeout: WAIT_TIMEOUT } },
     projects: [
       {
         extends: true,

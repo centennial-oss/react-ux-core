@@ -24,7 +24,7 @@ async function suggestions() {
           ? getComputedStyle(listbox.closest('[data-placement]') ?? listbox).opacity
           : '';
       },
-      { timeout: 3000 },
+      { timeout: 10_000 },
     )
     .toBe('1');
   return screen.getByRole('listbox');
@@ -42,9 +42,9 @@ async function closeList() {
   // Escape first clears unmatched text, then closes the list.
   for (let press = 0; press < 2 && input.getAttribute('aria-expanded') === 'true'; press++) {
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => input.getAttribute('aria-expanded'), { timeout: 1000 }).toBeDefined();
+    await expect.poll(() => input.getAttribute('aria-expanded'), { timeout: 10_000 }).toBeDefined();
   }
-  await expect.poll(() => input.getAttribute('aria-expanded'), { timeout: 3000 }).toBe('false');
+  await expect.poll(() => input.getAttribute('aria-expanded'), { timeout: 10_000 }).toBe('false');
 }
 
 function chips() {
@@ -146,12 +146,12 @@ describe('MultiSelect', () => {
     const input = screen.getByRole('combobox', { name: 'Regions' });
     await userEvent.type(input, 'so');
     await expect
-      .poll(() => screen.queryByRole('option', { name: 'South' }), { timeout: 3000 })
+      .poll(() => screen.queryByRole('option', { name: 'South' }), { timeout: 10_000 })
       .not.toBeNull();
     await choose('South');
     await userEvent.type(input, 'n');
     await expect
-      .poll(() => screen.queryByRole('option', { name: 'North' }), { timeout: 3000 })
+      .poll(() => screen.queryByRole('option', { name: 'North' }), { timeout: 10_000 })
       .not.toBeNull();
     await closeList();
     expect(await screen.findByRole('button', { name: 'Remove South' })).toBeInTheDocument();

@@ -24,7 +24,9 @@ describe('Popover', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Filters' }));
     const dialog = await screen.findByRole('dialog', { name: 'Filter options' });
     // Sheets animate in on phones, so focus can arrive a moment later.
-    await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
+    await expect
+      .poll(() => dialog.contains(document.activeElement), { timeout: 10_000 })
+      .toBe(true);
   });
 
   it.runIf(isPhone)('is a bottom sheet on phones', async () => {
@@ -51,9 +53,11 @@ describe('Popover', () => {
     const trigger = screen.getByRole('button', { name: 'Filters' });
     await userEvent.click(trigger);
     const dialog = await screen.findByRole('dialog', { name: 'Filter options' });
-    await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
+    await expect
+      .poll(() => dialog.contains(document.activeElement), { timeout: 10_000 })
+      .toBe(true);
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     await expect.poll(() => document.activeElement).toBe(trigger);
   });
 

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { fastestRun } from '../../test/timing';
 import {
   alignmentPositions,
   encodeQr,
@@ -301,14 +302,7 @@ describe('encodeQr', () => {
 
   it('encodes a version-40 code in under 50 ms', () => {
     const value = 'a'.repeat(2900);
-    encodeQr(value, { errorCorrection: 'L' });
-    const times = Array.from({ length: 5 }, () => {
-      const start = performance.now();
-      const matrix = encodeQr(value, { errorCorrection: 'L' });
-      const elapsed = performance.now() - start;
-      expect(matrix.version).toBe(40);
-      return elapsed;
-    }).sort((a, b) => a - b);
-    expect(times[2]).toBeLessThan(50);
+    expect(encodeQr(value, { errorCorrection: 'L' }).version).toBe(40);
+    expect(fastestRun(() => encodeQr(value, { errorCorrection: 'L' }))).toBeLessThan(50);
   });
 });

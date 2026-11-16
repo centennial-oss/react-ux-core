@@ -4,6 +4,7 @@ import { render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { kpiSource, regionTableSource, sampleLibrary } from '../../../test/dashboard';
+import { settleOverlay } from '../../../test/overlays';
 import { toast } from '../../components/Toast/toastStore';
 import { UIProvider } from '../../provider/UIProvider';
 import { tableWidget } from '../table/tableWidget';
@@ -58,7 +59,9 @@ describe('Dashboard: Manage dashboards (§13)', () => {
     render(<Shell onApplyCollectionChanges={onApply} />);
     await screen.findByRole('region', { name: 'Health' });
     await editMenu('Manage dashboards');
-    const dialog = await screen.findByRole('dialog', { name: 'Manage dashboards' });
+    const dialog = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Manage dashboards' }),
+    );
     await userEvent.click(within(dialog).getByRole('row', { name: 'Operations' }));
     await userEvent.click(within(dialog).getByRole('button', { name: 'Edit Title' }));
     const title = within(dialog).getByRole('textbox', { name: 'Title' });
@@ -122,7 +125,9 @@ describe('Dashboard: templates (NAV-12, NAV-13)', () => {
     await editMenu('Edit this page');
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }));
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Page from template…' }));
-    const picker = await screen.findByRole('dialog', { name: 'Add a page from a template' });
+    const picker = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Add a page from a template' }),
+    );
     await userEvent.click(within(picker).getByRole('option', { name: /Key figures/ }));
     expect(await screen.findByRole('region', { name: 'Figures' })).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
@@ -162,7 +167,9 @@ describe.runIf(isDesktop)('Dashboard: page settings (EDIT-26, acceptance 20)', (
     await screen.findByRole('region', { name: 'Health' });
     await editMenu('Edit this page');
     await userEvent.click(screen.getByRole('button', { name: 'Page settings' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Page settings' });
+    const dialog = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Page settings' }),
+    );
     await userEvent.click(within(dialog).getByRole('button', { name: /Columns/ }));
     await userEvent.click(await screen.findByRole('option', { name: '24' }));
     expect(
@@ -189,7 +196,9 @@ describe.runIf(isDesktop)('Dashboard: page settings (EDIT-26, acceptance 20)', (
     expect(screen.queryByRole('button', { name: 'Page settings' })).toBeNull();
     rerender(<Shell gridSettingsPolicy={{ lockedFields: ['columns'] }} defaultMode="edit" />);
     await userEvent.click(await screen.findByRole('button', { name: 'Page settings' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Page settings' });
+    const dialog = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Page settings' }),
+    );
     expect(within(dialog).getByRole('button', { name: /Columns/ })).toBeDisabled();
   });
 });
@@ -226,7 +235,7 @@ describe('Dashboard: save conflicts (PERS-07)', () => {
     await userEvent.clear(title);
     await userEvent.type(title, 'Mine{Enter}');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
-    const dialog = await screen.findByRole('alertdialog');
+    const dialog = await settleOverlay(await screen.findByRole('alertdialog'));
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reload latest' }));
     await expect
       .poll(() => screen.getByRole<HTMLInputElement>('textbox', { name: 'Page title' }).value)

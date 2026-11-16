@@ -3,6 +3,7 @@ import { Profiler } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleCount } from '../../../test/settle';
 import { Button } from '../Button';
 import { PopoverTrigger, Popover } from '../Popover';
 import { HoverCard, type HoverCardProps } from './HoverCard';
@@ -107,7 +108,8 @@ describe('HoverCard', () => {
   it.runIf(!isPhone)(
     'opens on hover after its delay and closes once the pointer leaves',
     async () => {
-      render(<Example delay={300} />);
+      // A delay long enough that a busy CI runner can't spend it before the check below.
+      render(<Example delay={1500} />);
       await hover(trigger());
       await wait(100);
       expect(screen.queryByRole('dialog')).toBeNull();
@@ -115,7 +117,7 @@ describe('HoverCard', () => {
       expect(within(dialog).getByText('Lead analyst')).toBeVisible();
       expect(trigger()).toHaveAttribute('aria-expanded', 'true');
       await leave();
-      await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+      await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
       expect(trigger()).toHaveAttribute('aria-expanded', 'false');
     },
   );
@@ -158,7 +160,7 @@ describe('HoverCard', () => {
       await userEvent.tab();
       expect(document.activeElement).toBe(within(dialog).getByRole('button', { name: 'Message' }));
       await userEvent.keyboard('{Escape}');
-      await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+      await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
       await expect.poll(() => document.activeElement).toBe(trigger());
       // Focus coming back doesn't reopen it.
       await wait(300);
@@ -171,7 +173,7 @@ describe('HoverCard', () => {
     await userEvent.tab();
     await card();
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     expect(document.activeElement).toBe(trigger());
   });
 
@@ -211,11 +213,13 @@ describe('HoverCard', () => {
     // The trigger names the sheet as the card it controls.
     expect(trigger()).toHaveAttribute('aria-controls', dialog.id);
     // The sheet takes focus from the trigger; that alone doesn't close it.
-    await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
+    await expect
+      .poll(() => dialog.contains(document.activeElement), { timeout: 10_000 })
+      .toBe(true);
     await wait(400);
     expect(screen.getByRole('dialog', { name: 'Ada Lovelace' })).toBe(dialog);
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it.runIf(!isPhone)('is anchored to its trigger with an arrow on tablet and desktop', async () => {
@@ -308,11 +312,6 @@ describe('HoverCard', () => {
       </Profiler>,
     );
     await card();
-    const settled = async () => {
-      const before = commits;
-      await wait(300);
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 5000 }).toBe(0);
+    await settleCount(() => commits, 300);
   });
 });

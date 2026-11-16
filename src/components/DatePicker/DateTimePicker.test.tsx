@@ -118,7 +118,7 @@ describe('DateTimePicker', () => {
     } else {
       await userEvent.keyboard('{Escape}');
     }
-    await expect.poll(() => onChange.mock.calls.length, { timeout: 3000 }).toBe(1);
+    await expect.poll(() => onChange.mock.calls.length, { timeout: 10_000 }).toBe(1);
     const value = onChange.mock.lastCall?.[0] as ZonedDateTime;
     expect([value.day, value.hour, value.minute, value.second, value.timeZone]).toEqual([
       20,

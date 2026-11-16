@@ -150,12 +150,17 @@ describe('useWidgetData (TEST-03)', () => {
 
   it('runs fetch then transform, aborting the superseded request when the range changes (acceptance 6)', async () => {
     const signals: AbortSignal[] = [];
+    // The first (24 h) answer arrives only when the test says so, after the range has changed.
+    let answerFirst: () => void = () => undefined;
+    const firstAnswered = new Promise<void>((resolve) => {
+      answerFirst = resolve;
+    });
     const fetch = vi.fn(async ({ timeRange, signal }: DataRequest<JsonObject>) => {
       signals.push(signal);
       const hours =
         ((timeRange?.resolved.end.getTime() ?? 0) - (timeRange?.resolved.start.getTime() ?? 0)) /
         3_600_000;
-      await wait(hours === 24 ? 80 : 5);
+      await (hours === 24 ? firstAnswered : wait(5));
       return { hours };
     });
     const transform = vi.fn((raw: unknown) => stats((raw as { hours: number }).hours));
@@ -181,6 +186,7 @@ describe('useWidgetData (TEST-03)', () => {
     expect(signals[0]?.aborted).toBe(true);
     expect(fetch.mock.calls[1]?.[0].reason).toBe('contextChanged');
     // The slow first answer never shows, even though its fetch ignored the signal.
+    answerFirst();
     await wait(120);
     expect(text()).toBe('1');
     expect(transform).toHaveBeenCalledTimes(1);
@@ -269,7 +275,8 @@ describe('useWidgetData (TEST-03)', () => {
       <Harness
         sources={[source(load, { dependsOn: { hasTimeRange: false } })]}
         refreshIntervalMs={5}
-        minRefreshIntervalMs={60}
+        // Long enough that a busy CI runner can't let it pass before the check below.
+        minRefreshIntervalMs={1000}
         isAutoRefreshPaused={isPaused}
       >
         <Probe instance={instance()} />
@@ -278,9 +285,9 @@ describe('useWidgetData (TEST-03)', () => {
     const { rerender } = render(view(false));
     await expect.poll(() => load.mock.calls.length).toBe(1);
     await wait(40);
-    // 5 ms is held to the 60 ms minimum.
+    // 5 ms is held to the 1 s minimum.
     expect(load).toHaveBeenCalledTimes(1);
-    await expect.poll(() => load.mock.calls.length, { timeout: 2000 }).toBeGreaterThanOrEqual(2);
+    await expect.poll(() => load.mock.calls.length, { timeout: 10_000 }).toBeGreaterThanOrEqual(2);
     expect(load.mock.calls[1]?.[0]).toMatchObject({ reason: 'autoRefresh' });
     rerender(view(true));
     const paused = load.mock.calls.length;
@@ -301,7 +308,7 @@ describe('useWidgetData (TEST-03)', () => {
         <Probe instance={instance()} />
       </Harness>,
     );
-    await expect.poll(() => load.mock.calls.length, { timeout: 2000 }).toBeGreaterThanOrEqual(3);
+    await expect.poll(() => load.mock.calls.length, { timeout: 10_000 }).toBeGreaterThanOrEqual(3);
     expect(load.mock.calls.at(-1)?.[0]).toMatchObject({ reason: 'autoRefresh' });
   });
 
@@ -357,7 +364,7 @@ describe('useWidgetData (TEST-03)', () => {
         ))}
       </Harness>,
     );
-    await expect.poll(() => load.mock.calls.length, { timeout: 3000 }).toBe(5);
+    await expect.poll(() => load.mock.calls.length, { timeout: 10_000 }).toBe(5);
     await expect.poll(() => text('w5')).toBe('1');
     expect(most).toBe(2);
   });

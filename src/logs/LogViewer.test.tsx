@@ -165,12 +165,11 @@ describe('LogViewer', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Previous match' }));
     expect(position('3 of 3')).toBeInTheDocument();
 
-    await userEvent.clear(field);
-    await userEvent.type(field, '/shutter|mount fault/i');
+    // Filled in one go: typing a long pattern key by key takes many seconds on a busy CI runner.
+    await userEvent.fill(field, '/shutter|mount fault/i');
     // "Shutter opening", "the shutter limit", "Shutter timeout" and "Mount fault".
     await expect.poll(() => getLog().querySelectorAll('mark').length).toBe(4);
-    await userEvent.clear(field);
-    await userEvent.type(field, '/(unclosed/');
+    await userEvent.fill(field, '/(unclosed/');
     await expect.poll(() => live?.textContent).toBe('Invalid regular expression');
     expect(position('Invalid regular expression')).toHaveClass('text-danger-fg');
     expect(getLog().querySelectorAll('mark')).toHaveLength(0);
@@ -300,9 +299,7 @@ describe('LogViewer', () => {
     ];
     rerender(<LogViewer lines={withMore} timeZone="UTC" />);
     expect(live?.textContent).toBe('ERROR: Shutter timeout');
-    await expect
-      .poll(() => live?.textContent, { timeout: 5000 })
-      .toBe('2 new errors. Latest: Cooler fault');
+    await expect.poll(() => live?.textContent).toBe('2 new errors. Latest: Cooler fault');
   });
 
   it('loads older lines at the top and keeps the view in place', async () => {

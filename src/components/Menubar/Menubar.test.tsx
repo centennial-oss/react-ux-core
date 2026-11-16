@@ -4,6 +4,7 @@ import { I18nProvider, type Key } from 'react-aria-components';
 import { describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleCount } from '../../../test/settle';
 import {
   DEFAULT_EDITOR_VIEW,
   editorMenus,
@@ -63,11 +64,11 @@ function focusedItem(): string | null {
 }
 
 async function expectFocusOnName(label: string) {
-  await expect.poll(() => document.activeElement, { timeout: 2000 }).toBe(nameOf(label));
+  await expect.poll(() => document.activeElement, { timeout: 10_000 }).toBe(nameOf(label));
 }
 
 async function expectFocusOnItem(label: string) {
-  await expect.poll(focusedItem, { timeout: 2000 }).toBe(label);
+  await expect.poll(focusedItem, { timeout: 10_000 }).toBe(label);
 }
 
 /** Waits until only the menu named `label` is open (others finish closing). */
@@ -436,14 +437,7 @@ describe.runIf(!isPhone)('Menubar', () => {
     );
     await userEvent.click(nameOf('Edit'));
     await expectOnlyOpen('Edit');
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 300);
-      });
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 5000 }).toBe(0);
+    await settleCount(() => commits, 300);
   });
 });
 

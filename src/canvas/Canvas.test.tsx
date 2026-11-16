@@ -236,7 +236,7 @@ describe('Canvas', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Zoom in' }));
     expect(reset()).toHaveTextContent('125%');
     await expect
-      .poll(() => document.querySelector('[aria-live="polite"]')?.textContent, { timeout: 3000 })
+      .poll(() => document.querySelector('[aria-live="polite"]')?.textContent, { timeout: 10_000 })
       .toBe('Zoom 125%');
     await userEvent.click(screen.getByRole('button', { name: 'Zoom out' }));
     expect(reset()).toHaveTextContent('100%');

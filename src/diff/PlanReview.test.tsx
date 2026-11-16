@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../test/axe';
 import { safeChanges, sampleChanges } from '../../test/diff';
+import { settleOverlay } from '../../test/overlays';
 import type { Messages } from '../provider/messages';
 import { UIProvider } from '../provider/UIProvider';
 import type { DiffMessages } from './messages';
@@ -15,9 +16,7 @@ const textOf = (element: Element | null | undefined) => element?.textContent ?? 
 
 async function openApply() {
   await userEvent.click(screen.getByRole('button', { name: 'Apply' }));
-  const dialog = await screen.findByRole('alertdialog');
-  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
-  return dialog;
+  return settleOverlay(await screen.findByRole('alertdialog'));
 }
 
 describe('PlanReview', () => {
@@ -117,7 +116,7 @@ describe('PlanReview', () => {
     expect(confirm).toBeEnabled();
     await userEvent.click(confirm);
     await expect.poll(() => onApply.mock.calls.length).toBe(1);
-    await expect.poll(() => screen.queryByRole('alertdialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('alertdialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('confirms a non-destructive plan without a typed word', async () => {

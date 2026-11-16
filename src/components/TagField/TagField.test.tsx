@@ -70,7 +70,7 @@ async function suggestions() {
           ? getComputedStyle(listbox.closest('[data-placement]') ?? listbox).opacity
           : '';
       },
-      { timeout: 3000 },
+      { timeout: 10_000 },
     )
     .toBe('1');
   return screen.getByRole('listbox');

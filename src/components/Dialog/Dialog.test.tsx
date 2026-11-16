@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Button } from '../Button';
 import { ButtonGroup } from '../ButtonGroup';
 import { Dialog, DialogTrigger, type DialogProps } from './Dialog';
@@ -37,13 +38,11 @@ function Example(props: Partial<DialogProps>) {
 
 async function open(name = 'Edit customer') {
   await userEvent.click(screen.getByRole('button', { name }));
-  const dialog = await screen.findByRole('dialog');
-  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
-  return dialog;
+  return settleOverlay(await screen.findByRole('dialog'));
 }
 
 async function expectClosed() {
-  await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+  await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
 }
 
 describe('Dialog', () => {
@@ -146,7 +145,7 @@ describe('Dialog', () => {
     await screen.findByRole('dialog', { name: 'Second' });
     await userEvent.keyboard('{Escape}');
     await expect
-      .poll(() => screen.queryByRole('dialog', { name: 'Second' }), { timeout: 3000 })
+      .poll(() => screen.queryByRole('dialog', { name: 'Second' }), { timeout: 10_000 })
       .toBeNull();
     expect(screen.getByRole('dialog', { name: 'First' })).toBeInTheDocument();
   });

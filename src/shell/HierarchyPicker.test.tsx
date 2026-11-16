@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../test/axe';
+import { settleOverlay } from '../../test/overlays';
 import { HierarchyPicker } from './hierarchy/HierarchyPicker';
 import type { HierarchyNode, HierarchyPath } from './types';
 
@@ -25,7 +26,7 @@ function ids(path: HierarchyPath) {
 
 async function open(name: RegExp | string) {
   await userEvent.click(screen.getByRole('button', { name }));
-  return screen.findByRole('dialog', { name: 'Choose a scope' });
+  return settleOverlay(await screen.findByRole('dialog', { name: 'Choose a scope' }));
 }
 
 describe('HierarchyPicker', () => {

@@ -51,7 +51,7 @@ describe('CopyField', () => {
     expect(document.querySelector('[aria-live="polite"]')?.textContent).toBe('Copied');
     // The name stays the same, so focus doesn't announce a different button.
     expect(button).toHaveAccessibleName('Copy Observation ID');
-    await expect.poll(() => button.getAttribute('data-status'), { timeout: 3000 }).toBe('idle');
+    await expect.poll(() => button.getAttribute('data-status'), { timeout: 10_000 }).toBe('idle');
   });
 
   it('copies the full value of a middle-truncated 120-character identifier', async () => {

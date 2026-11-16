@@ -8,7 +8,7 @@ const hasTouch = navigator.maxTouchPoints > 0;
 
 async function expectOpen(name: string) {
   const dialog = await screen.findByRole('dialog', { name });
-  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
+  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 10_000 }).toBe(true);
   return dialog;
 }
 
@@ -19,7 +19,7 @@ describe('InfoTip', () => {
     const dialog = await expectOpen('More information');
     expect(dialog.textContent).toContain('The dates a bill covers.');
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('opens from the keyboard and uses a custom label', async () => {

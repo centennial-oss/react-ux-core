@@ -73,7 +73,7 @@ describe('rotator widget (§10.7)', () => {
     // The next widget is mounted ahead of its turn, but hidden.
     expect(within(rotator).queryByRole('region', { name: 'Second' })).toBeNull();
     expect(
-      await within(rotator).findByRole('region', { name: 'Second' }, { timeout: 3000 }),
+      await within(rotator).findByRole('region', { name: 'Second' }, { timeout: 10_000 }),
     ).toBeTruthy();
     const controls = within(rotator).getByRole('group', { name: 'Rotation' });
     await userEvent.click(within(controls).getByRole('button', { name: 'Next widget' }));
@@ -110,7 +110,7 @@ describe('rotator widget (§10.7)', () => {
     expect(second).not.toHaveBeenCalled();
     // Hovering pauses rotation: the pointer may still be where an earlier test left it.
     await userEvent.unhover(screen.getByRole('region', { name: 'Highlights' }));
-    await expect.poll(() => second.mock.calls.length, { timeout: 3000 }).toBe(1);
+    await expect.poll(() => second.mock.calls.length, { timeout: 10_000 }).toBe(1);
     // It loaded before its turn: the first is still shown.
     expect(screen.getByRole('region', { name: 'one' })).toBeTruthy();
   });

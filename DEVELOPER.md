@@ -47,6 +47,7 @@ unapproved.
 | `make test`                     | Unit tests (phone, tablet, desktop) and story tests (light, dark, high contrast)  |
 | `make test FILTER=…`            | Only matching test files, e.g. `FILTER=ComboBox` (also for `test-watch`)          |
 | `make test-changed`             | Only the unit and story tests that import a file you changed                      |
+| `make test-ci`                  | Unit and story tests as CI runs them, in Docker on 2 CPUs (`RUNS=3` repeats them) |
 | `make test-watch`               | Tests in watch mode                                                               |
 | `make lint`                     | ESLint and the project's convention rules; also fails if a generated doc is stale |
 | `make lint-changed`             | ESLint on the files you changed                                                   |
@@ -128,6 +129,27 @@ Real browsers and React Aria have a few behaviours worth knowing before writing 
 
 - Overlays animate, and on phones they're sheets that slide in: wait with `expect.poll(...)` (for example for focus
   to move inside a dialog) instead of fixed delays.
+
+#### Writing tests that pass in CI
+
+CI runs the whole suite on a small runner that sits near 100% CPU for its whole run, so timers fire late, animations
+run long and each `userEvent` call can take hundreds of milliseconds. A test that depends on timing passes locally and
+fails there now and then. To keep CI repeatable:
+
+- Wait for things with `expect.poll`, `findBy*` or `waitFor`. All of them wait up to `WAIT_TIMEOUT` (10 s,
+  `test/timeouts.ts`) and end as soon as the condition holds; don't pass shorter `timeout`s.
+- Interact with an overlay only once `settleOverlay(element)` (`test/overlays.ts`) says it has arrived, and call
+  `settleExit()` before touching the page under an overlay that's closing.
+- Before counting renders caused by an action, let stray work finish with `settleCount(() => commits)`
+  (`test/settle.ts`), not a fixed sleep.
+- Assert speed with `fastestRun(run)` (`test/timing.ts`), the fastest of several runs after a warm-up, never a single
+  or median timing, and don't time anything that includes `userEvent` or polls.
+- When a test checks that something hasn't happened yet (a debounce, a hover delay, a throttle, a toast countdown),
+  make the component's delay long (1.5 s or more) compared with the test's own steps, or make it wait on a promise the
+  test resolves (or on its abort signal) instead of a real timer.
+- Prove a timing fix under load before trusting it: `make test-ci` runs the unit and story tests as CI does (the
+  Linux image, `CI=1`), on 2 CPUs so it's slower than CI's runner. `FILTER` narrows it, `RUNS=3` repeats it to catch
+  rarer flakes, and `CI_TEST_CPUS` changes the CPUs (a full run takes 20 to 30 minutes on 2 CPUs).
 - On touch devices React Aria reveals a combo box's list only after the on-screen keyboard settles, and it doesn't
   open lists from arrow keys on mobile user agents. Wait for the popover to be visible, and keep keyboard tests on
   the desktop instance.

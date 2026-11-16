@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
 import { buildPdf, statementPages } from '../../../test/media';
+import { settleCount } from '../../../test/settle';
 import type { Messages } from '../../provider/messages';
 import { UIProvider } from '../../provider/UIProvider';
 import { PdfViewer } from './PdfViewer';
@@ -101,7 +102,7 @@ describe('PdfViewer', () => {
     await pageText(4);
     await expect
       .poll(() => document.querySelector('.sr-only[aria-live="polite"]')?.textContent, {
-        timeout: 3000,
+        timeout: 10_000,
       })
       .toBe('Page 4 of 5');
   });
@@ -253,14 +254,7 @@ describe('PdfViewer', () => {
       </Profiler>,
     );
     await pageText(1);
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 300);
-      });
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 10_000 }).toBe(0);
+    await settleCount(() => commits, 300);
   });
 
   it.runIf(!isWideScreen)('opens the thumbnails in a drawer on narrow viewers', async () => {

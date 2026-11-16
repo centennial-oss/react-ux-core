@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { generateOrg } from '../../test/org';
+import { fastestRun } from '../../test/timing';
 import type { CanvasRect } from '../canvas/geometry';
 import {
   indexTree,
@@ -225,11 +226,9 @@ describe('layoutTree', () => {
       parentId: person.managerId,
       isAssistant: person.isAssistant,
     }));
-    const started = performance.now();
     const layout = layoutTree(nodes, { stackAbove: 3 });
-    const elapsed = performance.now() - started;
     expect(layout.nodes.size).toBe(5000);
-    expect(elapsed).toBeLessThan(500);
+    expect(fastestRun(() => layoutTree(nodes, { stackAbove: 3 }), 3)).toBeLessThan(500);
     expect(overlaps(layout)).toEqual([]);
     const tree = indexTree(
       nodes,

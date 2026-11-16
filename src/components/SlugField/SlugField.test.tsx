@@ -79,7 +79,8 @@ describe('SlugField', () => {
         });
       });
     });
-    render(<SlugField label="Slug" validate={validate} validateDelay={50} />);
+    // A delay long enough that a busy CI runner types the whole slug within it.
+    render(<SlugField label="Slug" validate={validate} validateDelay={1500} />);
     await userEvent.type(textbox('Slug'), 'about');
     // Typing within the delay produces a single check, for the final slug.
     await expect.poll(() => validate.mock.calls.length).toBe(1);

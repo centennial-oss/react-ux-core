@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Button } from '../../components/Button/Button';
 import { DialogTrigger } from '../../components/Dialog/Dialog';
 import type { FormConfig, SubmitContext, SubmitResult } from '../types';
@@ -46,7 +47,7 @@ describe('DialogForm', () => {
     const update = vi.fn<Action>(() => Promise.resolve({ ok: true }));
     render(<Example update={update} />);
     await userEvent.click(screen.getByRole('button', { name: 'Edit meter' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Edit meter' });
+    const dialog = await settleOverlay(await screen.findByRole('dialog', { name: 'Edit meter' }));
     await userEvent.type(textbox(/Label/, dialog), ' meter');
     await userEvent.click(within(dialog).getByRole('button', { name: 'Save' }));
     await expect.poll(() => update.mock.calls.length).toBe(1);
@@ -56,10 +57,10 @@ describe('DialogForm', () => {
   it('asks before discarding changes and starts over when reopened', async () => {
     render(<Example update={() => Promise.resolve({ ok: true })} />);
     await userEvent.click(screen.getByRole('button', { name: 'Edit meter' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Edit meter' });
+    const dialog = await settleOverlay(await screen.findByRole('dialog', { name: 'Edit meter' }));
     await userEvent.type(textbox(/Label/, dialog), ' meter');
     await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }));
-    const confirm = await screen.findByRole('alertdialog');
+    const confirm = await settleOverlay(await screen.findByRole('alertdialog'));
     expect(confirm.textContent).toContain('Discard unsaved changes?');
     await userEvent.click(within(confirm).getByRole('button', { name: 'Discard' }));
     await expect.poll(() => screen.queryByRole('dialog')).toBeNull();
@@ -79,7 +80,7 @@ describe('DialogForm', () => {
     );
     render(<Example update={update} />);
     await userEvent.click(screen.getByRole('button', { name: 'Edit meter' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Edit meter' });
+    const dialog = await settleOverlay(await screen.findByRole('dialog', { name: 'Edit meter' }));
     await userEvent.type(textbox('Serial', dialog), '9');
     await userEvent.click(within(dialog).getByRole('button', { name: 'Save' }));
     await expect.poll(() => update.mock.calls.length).toBe(1);
@@ -174,7 +175,9 @@ describe('WizardForm', () => {
     const create = vi.fn<RefundAction>(() => Promise.resolve({ ok: true }));
     render(<Wizard create={create} />);
     await userEvent.click(screen.getByRole('button', { name: 'Refund' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Issue a refund' });
+    const dialog = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Issue a refund' }),
+    );
     expect(dialog.textContent).toContain('Step 1 of 3');
     await userEvent.click(within(dialog).getByRole('button', { name: 'Next' }));
     await expect.poll(() => dialog.textContent).toContain('1 field needs attention');
@@ -199,7 +202,9 @@ describe('WizardForm', () => {
     );
     render(<Wizard create={create} />);
     await userEvent.click(screen.getByRole('button', { name: 'Refund' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Issue a refund' });
+    const dialog = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Issue a refund' }),
+    );
     await userEvent.type(textbox(/Account/, dialog), 'ACC-1');
     await userEvent.click(within(dialog).getByRole('button', { name: 'Next' }));
     await userEvent.type(textbox(/Amount/, dialog), '5');

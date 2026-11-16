@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
 import { generateOrg, observatoryOrg } from '../../../test/org';
+import { settleCount } from '../../../test/settle';
 import { UIProvider } from '../../provider/UIProvider';
 import { OrgChart, type OrgChartProps } from './OrgChart';
 
@@ -210,7 +211,7 @@ describe('OrgChart', () => {
     render(<Observatory height="360px" />);
     const field = screen.getByRole('searchbox', { name: 'Search people' });
     await userEvent.type(field, 'rita');
-    await expect.poll(() => queryPerson('Rita Costa'), { timeout: 3000 }).not.toBeNull();
+    await expect.poll(() => queryPerson('Rita Costa'), { timeout: 10_000 }).not.toBeNull();
     expect(shownPosition()).toEqual(['1 of 1']);
     expect(person('Rita Costa')).toHaveAttribute('data-match');
     await settle();
@@ -323,13 +324,6 @@ describe('OrgChart', () => {
         <Observatory />
       </Profiler>,
     );
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 300);
-      });
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 5000 }).toBe(0);
+    await settleCount(() => commits, 300);
   });
 });

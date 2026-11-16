@@ -3,6 +3,7 @@ import { Profiler, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleCount } from '../../../test/settle';
 import { UIProvider } from '../../provider/UIProvider';
 import { Option } from '../ListBox/ListBoxParts';
 import { NumberField } from '../NumberField/NumberField';
@@ -500,16 +501,9 @@ describe('InlineEdit', () => {
         <InlineEdit label="Project name" defaultValue="Apollo" />
       </Profiler>,
     );
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 200);
-      });
-      return commits - before;
-    };
-    await expect.poll(settled).toBe(0);
+    await settleCount(() => commits);
     await startEditing();
-    await expect.poll(settled).toBe(0);
+    await settleCount(() => commits);
   });
 
   it('has no accessibility violations, reading and editing', async () => {

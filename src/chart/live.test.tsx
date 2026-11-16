@@ -88,7 +88,7 @@ describe('LiveTimeSeries', () => {
       .poll(
         () => (chartInstance()?.data.datasets[0]?.data.at(-1) as { x: number } | undefined)?.x,
         {
-          timeout: 5000,
+          timeout: 10_000,
         },
       )
       .toBe(LIVE_START + 60_000);

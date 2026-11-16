@@ -2,7 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "lib": ["ES2023", "DOM"],
-    "types": ["node"]
+    "types": ["node"],
+    // vite.config.ts imports test/timeouts.ts by its full name, as Vite's native config loader (Node) needs.
+    "allowImportingTsExtensions": true
   },
   "include": ["vite.config.ts", "playwright.config.ts", ".storybook/main.ts", "test/visual"],
   "exclude": []

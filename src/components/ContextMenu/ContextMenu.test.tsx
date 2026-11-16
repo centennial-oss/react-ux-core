@@ -27,7 +27,7 @@ function Area({
 
 async function waitForMenu() {
   const menu = await screen.findByRole('menu');
-  await expect.poll(() => menu.contains(document.activeElement), { timeout: 2000 }).toBe(true);
+  await expect.poll(() => menu.contains(document.activeElement), { timeout: 10_000 }).toBe(true);
   return menu;
 }
 
@@ -60,7 +60,7 @@ describe('ContextMenuTrigger', () => {
     const menu = await waitForMenu();
     // Measure once the menu has finished scaling in.
     await expect
-      .poll(() => document.querySelector('[data-entering]'), { timeout: 2000 })
+      .poll(() => document.querySelector('[data-entering]'), { timeout: 10_000 })
       .toBeNull();
     const rect = area.getBoundingClientRect();
     const popover = (menu.closest('[data-trigger]') ?? menu).getBoundingClientRect();

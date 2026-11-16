@@ -65,7 +65,7 @@ async function openMenu() {
   await userEvent.click(button);
   const menu = await screen.findByRole('menu');
   // Phone menus open as animated bottom sheets, so focus may land a moment later.
-  await expect.poll(() => menu.contains(document.activeElement), { timeout: 2000 }).toBe(true);
+  await expect.poll(() => menu.contains(document.activeElement), { timeout: 10_000 }).toBe(true);
   return menu;
 }
 
@@ -191,11 +191,11 @@ describe('Breadcrumbs', () => {
     await userEvent.keyboard('{Enter}');
     const menu = await screen.findByRole('menu');
     await expect
-      .poll(() => document.activeElement?.getAttribute('role'), { timeout: 2000 })
+      .poll(() => document.activeElement?.getAttribute('role'), { timeout: 10_000 })
       .toBe('menuitem');
     expect(menu.contains(document.activeElement)).toBe(true);
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('menu'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('menu'), { timeout: 10_000 }).toBeNull();
     await expect.poll(() => document.activeElement).toBe(button);
   });
 
@@ -222,11 +222,11 @@ describe('Breadcrumbs', () => {
     const column = screen.getByTestId('column');
     // Short labels fit on every screen size (the column is capped at the viewport), but not in 120 px.
     column.style.maxWidth = '100%';
-    await expect.poll(() => trigger(), { timeout: 2000 }).toBeNull();
+    await expect.poll(() => trigger(), { timeout: 10_000 }).toBeNull();
     column.style.width = '120px';
-    await expect.poll(() => trigger(), { timeout: 2000 }).not.toBeNull();
+    await expect.poll(() => trigger(), { timeout: 10_000 }).not.toBeNull();
     column.style.width = '1000px';
-    await expect.poll(() => trigger(), { timeout: 2000 }).toBeNull();
+    await expect.poll(() => trigger(), { timeout: 10_000 }).toBeNull();
     expect(screen.getAllByRole('link')).toHaveLength(5);
   });
 

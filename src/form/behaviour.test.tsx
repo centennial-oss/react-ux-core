@@ -109,7 +109,8 @@ describe('validation', () => {
       <ConfigForm
         config={{
           defaultValues: { name: '' },
-          fields: [{ type: 'text', name: 'name', label: 'Name', validate, debounceMs: 50 }],
+          // A delay long enough that a busy CI runner types the whole name within it.
+          fields: [{ type: 'text', name: 'name', label: 'Name', validate, debounceMs: 1500 }],
           actions: { create },
         }}
       />,

@@ -63,14 +63,15 @@ describe('IconButton', () => {
           icon={Plus}
           aria-label="Increase"
           onRepeat={onRepeat}
-          repeatDelay={60}
+          // Long enough that the repeats can't start during the key press on a busy CI runner.
+          repeatDelay={1000}
           repeatInterval={20}
         />,
       );
       await userEvent.keyboard('{Tab}');
       await userEvent.keyboard('{Enter>}');
       expect(onRepeat).toHaveBeenCalledTimes(1);
-      await wait(250);
+      await expect.poll(() => onRepeat.mock.calls.length).toBeGreaterThanOrEqual(4);
       await userEvent.keyboard('{/Enter}');
       const calls = onRepeat.mock.calls.length;
       expect(calls).toBeGreaterThanOrEqual(4);
@@ -90,7 +91,8 @@ describe('IconButton', () => {
           repeatInterval={20}
         />,
       );
-      await commands.hold('[data-testid="hold-target"]', 250);
+      // Long enough for several repeats even when a busy CI runner delays the timers.
+      await commands.hold('[data-testid="hold-target"]', 1500);
       const calls = onRepeat.mock.calls.length;
       expect(calls).toBeGreaterThanOrEqual(4);
       await wait(120);

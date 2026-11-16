@@ -291,8 +291,9 @@ describe('ImageViewer', () => {
       const scale = /scale\(([\d.]+)\)/.exec(layer().style.transform)?.[1];
       expect(Number(scale)).toBeCloseTo(4, 5);
       expect(image?.getAttribute('style')).toBeNull();
-      // Each pinch update (event, state, render) fits well inside a frame.
-      expect(perMove).toBeLessThan(16);
+      // Each pinch update (event, state, render) fits in a frame here (well under 16 ms); the bound leaves room for a
+      // busy CI runner while still catching a per-pixel re-layout, which costs over 100 ms a move.
+      expect(perMove).toBeLessThan(50);
     });
   });
 });

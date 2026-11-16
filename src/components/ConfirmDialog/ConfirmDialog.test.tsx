@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Button } from '../Button';
 import { DialogTrigger } from '../Dialog';
 import { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog';
@@ -25,9 +26,7 @@ function Example(props: Partial<ConfirmDialogProps>) {
 
 async function open() {
   await userEvent.click(screen.getByRole('button', { name: 'Delete meter' }));
-  const dialog = await screen.findByRole('alertdialog');
-  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
-  return dialog;
+  return settleOverlay(await screen.findByRole('alertdialog'));
 }
 
 const deferred = () => {
@@ -54,7 +53,7 @@ describe('ConfirmDialog', () => {
     render(<Example onConfirm={onConfirm} />);
     await open();
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
-    await expect.poll(() => screen.queryByRole('alertdialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('alertdialog'), { timeout: 10_000 }).toBeNull();
     expect(onConfirm).not.toHaveBeenCalled();
   });
 
@@ -85,7 +84,7 @@ describe('ConfirmDialog', () => {
     await userEvent.keyboard('{Escape}');
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     pending.resolve();
-    await expect.poll(() => screen.queryByRole('alertdialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('alertdialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('shows the error inline and stays open when an async confirm fails', async () => {
@@ -115,7 +114,7 @@ describe('ConfirmDialog', () => {
     await open();
     await userEvent.type(screen.getByRole('textbox', { name: 'Type M-1042 to confirm' }), 'M-10');
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
-    await expect.poll(() => screen.queryByRole('alertdialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('alertdialog'), { timeout: 10_000 }).toBeNull();
     await open();
     expect(screen.getByRole('textbox', { name: 'Type M-1042 to confirm' })).toHaveValue('');
   });

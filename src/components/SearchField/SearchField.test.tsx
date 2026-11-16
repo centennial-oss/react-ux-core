@@ -40,10 +40,10 @@ describe('SearchField', () => {
   it('debounces onSearch until typing pauses', async () => {
     const onSearch = vi.fn();
     // A long delay, so a slow, loaded machine still types the whole word within it.
-    render(<SearchField label="Search" onSearch={onSearch} searchDelay={1500} />);
+    render(<SearchField label="Search" onSearch={onSearch} searchDelay={3000} />);
     await userEvent.type(searchbox(), 'solar');
     expect(onSearch).not.toHaveBeenCalled();
-    await expect.poll(() => onSearch.mock.calls, { timeout: 6000 }).toEqual([['solar']]);
+    await expect.poll(() => onSearch.mock.calls).toEqual([['solar']]);
   });
 
   it('uses a 300 ms delay by default', async () => {
@@ -62,7 +62,7 @@ describe('SearchField', () => {
       />,
     );
     await userEvent.type(searchbox(), 'a');
-    await expect.poll(() => onSearch.mock.calls.length, { timeout: 3000 }).toBe(1);
+    await expect.poll(() => onSearch.mock.calls.length, { timeout: 10_000 }).toBe(1);
     // Measured from the keystroke itself, so a slow test runner can't shorten it.
     expect(searchedAt - typedAt).toBeGreaterThanOrEqual(295);
     expect(onSearch).toHaveBeenCalledWith('a');

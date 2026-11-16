@@ -248,10 +248,10 @@ describe('Tabs', () => {
     expect(list.scrollLeft).toBe(0);
     rerender(<Many selectedKey="Settings" />);
     const settings = screen.getByRole('tab', { name: 'Settings' });
-    await expect.poll(() => isInView(settings, list), { timeout: 2000 }).toBe(true);
+    await expect.poll(() => isInView(settings, list), { timeout: 10_000 }).toBe(true);
     rerender(<Many selectedKey="Meters" />);
     const meters = screen.getByRole('tab', { name: 'Meters' });
-    await expect.poll(() => isInView(meters, list), { timeout: 2000 }).toBe(true);
+    await expect.poll(() => isInView(meters, list), { timeout: 10_000 }).toBe(true);
   });
 
   it('keeps the focused tab in view while arrowing through an overflowing list', async () => {
@@ -260,7 +260,7 @@ describe('Tabs', () => {
     await userEvent.keyboard('{Tab}{End}');
     const settings = screen.getByRole('tab', { name: 'Settings' });
     expect(settings).toHaveFocus();
-    await expect.poll(() => isInView(settings, list), { timeout: 2000 }).toBe(true);
+    await expect.poll(() => isInView(settings, list), { timeout: 10_000 }).toBe(true);
   });
 
   it('renders actions after the tab list, outside it', async () => {

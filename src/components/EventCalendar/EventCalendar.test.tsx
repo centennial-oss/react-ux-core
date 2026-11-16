@@ -12,6 +12,7 @@ import {
   octoberGrid,
 } from '../../../test/events';
 import { observatoryItems, SCHEDULE_NOW, weekRange } from '../../../test/schedule';
+import { settleCount } from '../../../test/settle';
 import type { Messages } from '../../provider/messages';
 import { UIProvider } from '../../provider/UIProvider';
 import type { TimelineRange } from '../ScheduleTimeline';
@@ -663,13 +664,6 @@ describe('EventCalendar (navigation)', () => {
         <Calendar defaultView="week" defaultRange={eventsWeek} />
       </Profiler>,
     );
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 300);
-      });
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 10_000 }).toBe(0);
+    await settleCount(() => commits, 300);
   });
 });

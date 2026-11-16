@@ -12,6 +12,7 @@ import {
   type Task,
 } from '../../../test/kanban';
 import { enableVirtualizer } from '../../../test/virtualizer';
+import { settleCount } from '../../../test/settle';
 import { UIProvider } from '../../provider/UIProvider';
 import { itemText } from '../../utils/text';
 import { Button } from '../Button/Button';
@@ -259,14 +260,7 @@ describe('KanbanBoard columns', () => {
         <Board lanes={priorityLanes} selectionMode="multiple" isVirtualized />
       </Profiler>,
     );
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 300);
-      });
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 10_000 }).toBe(0);
+    await settleCount(() => commits, 300);
   });
 });
 

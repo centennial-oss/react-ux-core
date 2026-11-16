@@ -5,6 +5,7 @@ import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
 import { pasteText } from '../../../test/clipboard';
 import { inventoryColumns, makeProducts, productId } from '../../../test/spreadsheet';
+import { settleOverlay } from '../../../test/overlays';
 import { Spreadsheet, type SpreadsheetProps } from './Spreadsheet';
 import type { SpreadsheetColumn, SpreadsheetRow } from './types';
 
@@ -100,8 +101,7 @@ const selectedCount = () =>
 const lastRows = (spy: ReturnType<typeof vi.fn>) => spy.mock.lastCall?.[0] as SpreadsheetRow[];
 
 async function openMenuItem(name: RegExp | string) {
-  const menu = await screen.findByRole('menu');
-  await expect.poll(() => document.querySelector('[data-entering]'), { timeout: 2000 }).toBeNull();
+  const menu = await settleOverlay(await screen.findByRole('menu'));
   await userEvent.click(within(menu).getByRole('menuitem', { name }));
 }
 

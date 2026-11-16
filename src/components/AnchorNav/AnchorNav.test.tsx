@@ -3,6 +3,7 @@ import { Profiler, createRef, useRef, type ReactNode, type RefObject } from 'rea
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleCount } from '../../../test/settle';
 import { Markdown } from '../../markdown/Markdown';
 import { UIProvider } from '../../provider/UIProvider';
 import { REDUCED_MOTION_QUERY } from '../../utils/useMediaQuery';
@@ -203,7 +204,7 @@ describe('AnchorNav', () => {
     // Below the phone's sticky menu bar, or at the very top.
     const bar = isPhone ? nav().getBoundingClientRect().height : 0;
     await expect
-      .poll(() => Math.round(target.getBoundingClientRect().top - bar), { timeout: 3000 })
+      .poll(() => Math.round(target.getBoundingClientRect().top - bar), { timeout: 10_000 })
       .toBe(0);
     expect(onCurrentIdChange).toHaveBeenLastCalledWith('usage');
     expect(window.location.href).toBe(startUrl);
@@ -256,7 +257,7 @@ describe('AnchorNav', () => {
     const bar = isPhone ? nav().getBoundingClientRect().height : 0;
     await expect
       .poll(() => Math.round(heading('usage').getBoundingClientRect().top - bar), {
-        timeout: 3000,
+        timeout: 10_000,
       })
       .toBe(100);
     // A heading under the header has been scrolled past: its section is the one being read.
@@ -547,13 +548,6 @@ describe('AnchorNav', () => {
       </Doc>,
     );
     await expectCurrent('intro');
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 300);
-      });
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 10_000 }).toBe(0);
+    await settleCount(() => commits, 300);
   });
 });

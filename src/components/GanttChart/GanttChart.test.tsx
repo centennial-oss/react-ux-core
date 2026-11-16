@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
 import { manyTasks, PROJECT_NOW, projectDependencies, projectTasks } from '../../../test/gantt';
+import { settleCount } from '../../../test/settle';
 import type { Messages } from '../../provider/messages';
 import { UIProvider } from '../../provider/UIProvider';
 import { GanttChart, type GanttChartProps } from './GanttChart';
@@ -667,13 +668,6 @@ describe('GanttChart', () => {
         <Chart tasks={tasks} dependencies={dependencies} isEditable onTaskChange={vi.fn()} />
       </Profiler>,
     );
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 300);
-      });
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 10_000 }).toBe(0);
+    await settleCount(() => commits, 300);
   });
 });

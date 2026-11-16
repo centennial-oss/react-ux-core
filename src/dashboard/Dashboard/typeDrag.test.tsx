@@ -4,6 +4,7 @@ import { act, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { kpiSource, regionTableSource, sampleLibrary } from '../../../test/dashboard';
+import { settleExit } from '../../../test/overlays';
 import { toast } from '../../components/Toast/toastStore';
 import { UIProvider } from '../../provider/UIProvider';
 import { tableWidget } from '../table/tableWidget';
@@ -155,6 +156,8 @@ describe.runIf(!isDesktop)('Dashboard: dragging a type where the grid can’t be
     pointer('pointermove', window, start.x + 20, start.y + 100);
     pointer('pointerup', window, start.x + 20, start.y + 100);
     expect(screen.queryByRole('region', { name: 'Stat group' })).toBeNull();
+    // The Add a widget sheet slides away after the drag left it; it covers the Add button until it's gone.
+    await settleExit();
     await userEvent.click(screen.getByRole('button', { name: 'Add' }));
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Widget…' }));
     await userEvent.click(await screen.findByRole('option', { name: /Stat group/ }));

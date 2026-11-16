@@ -53,7 +53,7 @@ describe('Tooltip', () => {
       await commands.tap('[data-testid="tooltip-trigger"]');
       expect(onPress).toHaveBeenCalledTimes(1);
       expect(await screen.findByRole('tooltip')).toBeInTheDocument();
-      await expect.poll(() => screen.queryByRole('tooltip'), { timeout: 3000 }).toBeNull();
+      await expect.poll(() => screen.queryByRole('tooltip'), { timeout: 10_000 }).toBeNull();
     },
   );
 

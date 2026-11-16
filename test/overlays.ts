@@ -7,10 +7,18 @@ import { expect } from 'vitest';
  * Aria can then see the sheet leave the screen and close it, taking its content (and any element a test holds) away.
  */
 export async function settleOverlay(dialog: HTMLElement) {
-  await expect.poll(() => document.querySelector('[data-entering]'), { timeout: 3000 }).toBeNull();
+  await expect.poll(() => document.querySelector('[data-entering]')).toBeNull();
   if (dialog.closest('[data-position]')) {
-    await expect.poll(() => dialog.closest('[data-expanded]'), { timeout: 3000 }).not.toBeNull();
+    await expect.poll(() => dialog.closest('[data-expanded]')).not.toBeNull();
   }
-  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 3000 }).toBe(true);
+  await expect.poll(() => dialog.contains(document.activeElement)).toBe(true);
   return dialog;
+}
+
+/**
+ * Waits for every closing overlay to finish leaving. A sheet or popover on its way out still covers the page, so a
+ * click on something beneath it lands on the overlay instead.
+ */
+export async function settleExit() {
+  await expect.poll(() => document.querySelector('[data-exiting]')).toBeNull();
 }

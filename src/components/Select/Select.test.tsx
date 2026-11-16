@@ -4,6 +4,7 @@ import type { Key } from 'react-aria-components';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Option, OptionSection } from '../ListBox';
 import { Select } from './Select';
 
@@ -26,9 +27,7 @@ function RegionSelect(props: { onChange?: (key: Key | null) => void; isInvalid?:
 
 async function openList() {
   await userEvent.click(screen.getByRole('button', { name: /Region/ }));
-  const listbox = await screen.findByRole('listbox');
-  await expect.poll(() => listbox.contains(document.activeElement), { timeout: 2000 }).toBe(true);
-  return listbox;
+  return settleOverlay(await screen.findByRole('listbox'));
 }
 
 describe('Select', () => {
@@ -44,7 +43,7 @@ describe('Select', () => {
     const listbox = await openList();
     await userEvent.click(within(listbox).getByRole('option', { name: 'East' }));
     expect(onChange.mock.calls[0]?.[0]).toBe('east');
-    await expect.poll(() => screen.queryByRole('listbox'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('listbox'), { timeout: 10_000 }).toBeNull();
     expect(screen.getByRole('button', { name: /Region/ }).textContent).toContain('East');
   });
 
@@ -54,7 +53,9 @@ describe('Select', () => {
     screen.getByRole('button', { name: /Region/ }).focus();
     await userEvent.keyboard('{ArrowDown}');
     const listbox = await screen.findByRole('listbox');
-    await expect.poll(() => listbox.contains(document.activeElement), { timeout: 2000 }).toBe(true);
+    await expect
+      .poll(() => listbox.contains(document.activeElement), { timeout: 10_000 })
+      .toBe(true);
     await userEvent.keyboard('w');
     await expect.poll(() => document.activeElement?.textContent).toContain('West');
     await userEvent.keyboard('{Enter}');

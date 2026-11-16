@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Calendar, RangeCalendar } from './Calendar';
 
 const march15 = new CalendarDate(2025, 3, 15);
@@ -230,9 +231,7 @@ describe('Calendar month and year Cyclers (the default header)', () => {
   /** Opens a Cycler's picker and waits for focus to move into it. */
   async function openPicker(name: 'Month' | 'Year') {
     await userEvent.click(cycler(name).value());
-    const listbox = await screen.findByRole('listbox', { name });
-    await expect.poll(() => listbox.contains(document.activeElement), { timeout: 3000 }).toBe(true);
-    return listbox;
+    return settleOverlay(await screen.findByRole('listbox', { name }));
   }
 
   function headingOf(container: HTMLElement) {
@@ -302,7 +301,7 @@ describe('Calendar month and year Cyclers (the default header)', () => {
         .map((option) => option.textContent),
     ).toEqual(['2025', '2026']);
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('listbox'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('listbox'), { timeout: 10_000 }).toBeNull();
     const months = await openPicker('Month');
     expect(within(months).getByRole('option', { name: 'February' })).toHaveAttribute(
       'aria-disabled',

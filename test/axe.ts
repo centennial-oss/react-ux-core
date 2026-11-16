@@ -2,7 +2,7 @@ import axe from 'axe-core';
 import { expect } from 'vitest';
 
 /**
- * Waits (up to 2 s) for finite animations, such as an overlay fading in, so axe doesn't measure colour contrast
+ * Waits (up to 5 s, as CI runs slowly) for finite animations, such as an overlay fading in, so axe doesn't measure colour contrast
  * mid-fade. Infinite animations (spinners) and scroll-driven ones (sheets) are ignored.
  */
 async function settleAnimations(): Promise<void> {
@@ -16,7 +16,7 @@ async function settleAnimations(): Promise<void> {
     );
   await Promise.race([
     Promise.allSettled(pending.map((animation) => animation.finished)),
-    new Promise((resolve) => setTimeout(resolve, 2000)),
+    new Promise((resolve) => setTimeout(resolve, 5000)),
   ]);
 }
 

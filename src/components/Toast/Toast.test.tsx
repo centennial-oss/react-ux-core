@@ -83,21 +83,23 @@ describe('ToastRegion', () => {
     render(<UIProvider />);
     show({ tone: 'info', title: 'Quick note', timeout: 300 });
     show({ tone: 'warning', title: 'Quota nearly used' });
-    await expect.poll(() => inToasts('Quick note'), { timeout: 2000 }).toBeNull();
+    await expect.poll(() => inToasts('Quick note'), { timeout: 10_000 }).toBeNull();
     expect(inToasts('Quota nearly used')).not.toBeNull();
   });
 
   it.runIf(!hasTouch)('pauses every countdown while hovered', async () => {
     render(<UIProvider />);
-    // The timeout leaves room for the pointer to arrive under load; the wait then outlasts it.
-    show({ tone: 'info', title: 'Paused note', timeout: 1500 });
-    await userEvent.hover(document.body);
-    const note = inToasts('Paused note') ?? document.body;
-    await userEvent.hover(note);
-    await wait(2000);
+    // The pointer is over the toasts before the timed one arrives, so a busy CI runner can't let its countdown run
+    // out while the pointer is on its way.
+    show({ tone: 'warning', title: 'Quota nearly used' });
+    const anchor = inToasts('Quota nearly used') ?? document.body;
+    await userEvent.hover(anchor);
+    await expect.poll(() => anchor.closest('[data-paused]')).not.toBeNull();
+    show({ tone: 'info', title: 'Paused note', timeout: 300 });
+    await wait(700);
     expect(inToasts('Paused note')).not.toBeNull();
-    await userEvent.unhover(note);
-    await expect.poll(() => inToasts('Paused note'), { timeout: 4000 }).toBeNull();
+    await userEvent.unhover(anchor);
+    await expect.poll(() => inToasts('Paused note'), { timeout: 10_000 }).toBeNull();
   });
 
   it('pauses while focus is inside, and dismissing moves focus to the next toast', async () => {

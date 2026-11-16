@@ -54,7 +54,7 @@ describe('DatePicker', () => {
       await userEvent.click(day);
     }
     expect(onChange).toHaveBeenLastCalledWith(new CalendarDate(2025, 3, 20));
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     await expect
       .poll(
         () =>
@@ -78,7 +78,7 @@ describe('DatePicker', () => {
     expect(document.activeElement?.getAttribute('aria-label')).toContain('March 15, 2025');
     await userEvent.keyboard('{ArrowRight}{ArrowDown}{Enter}');
     expect(onChange).toHaveBeenLastCalledWith(new CalendarDate(2025, 3, 23));
-    await expect.poll(() => dialog.isConnected, { timeout: 3000 }).toBe(false);
+    await expect.poll(() => dialog.isConnected, { timeout: 10_000 }).toBe(false);
   });
 
   it('steps segments with the arrow keys', async () => {
@@ -112,11 +112,11 @@ describe('DatePicker', () => {
     const sheet = dialog.closest('[data-position="bottom"]');
     expect(sheet).not.toBeNull();
     await expect
-      .poll(() => Math.round(dialog.getBoundingClientRect().height + 8), { timeout: 3000 })
+      .poll(() => Math.round(dialog.getBoundingClientRect().height + 8), { timeout: 10_000 })
       .toBeGreaterThanOrEqual(window.innerHeight * 0.9);
     expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(window.innerWidth);
     await userEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it.runIf(isPhone)('uses touch-sized day buttons on phones', async () => {
@@ -135,7 +135,7 @@ describe('DatePicker', () => {
       screen.getByRole('group', { name: 'Start date' }).getBoundingClientRect().bottom,
     );
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('works controlled', async () => {
@@ -254,9 +254,11 @@ describe('DatePicker', () => {
     const year = within(dialog).getByRole('group', { name: 'Year' });
     await userEvent.click(within(year).getByRole('button', { name: 'Year 1990' }));
     const listbox = await screen.findByRole('listbox', { name: 'Year' });
-    await expect.poll(() => listbox.contains(document.activeElement), { timeout: 3000 }).toBe(true);
+    await expect
+      .poll(() => listbox.contains(document.activeElement), { timeout: 10_000 })
+      .toBe(true);
     await userEvent.click(within(listbox).getByRole('option', { name: '1994' }));
-    await expect.poll(() => screen.queryByRole('listbox'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('listbox'), { timeout: 10_000 }).toBeNull();
     // The calendar is still open, now on June 1994; pick a day there.
     expect(screen.getByRole('dialog')).toBe(dialog);
     expect(within(year).getByRole('button', { name: 'Year 1994' })).toBeInTheDocument();

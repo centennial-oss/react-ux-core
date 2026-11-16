@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Cycler, type CyclerOption } from './Cycler';
 
 const sizes = [
@@ -21,10 +22,7 @@ const years: CyclerOption<number>[] = Array.from({ length: 30 }, (_, index) => {
 /** Waits for the picker's fade-in (or the phone sheet's slide-in) and for focus to move into it. */
 async function openPicker(name: RegExp) {
   await userEvent.click(screen.getByRole('button', { name }));
-  const dialog = await screen.findByRole('dialog');
-  await expect.poll(() => document.querySelector('[data-entering]'), { timeout: 3000 }).toBeNull();
-  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 3000 }).toBe(true);
-  return dialog;
+  return settleOverlay(await screen.findByRole('dialog'));
 }
 
 describe('Cycler', () => {
@@ -111,7 +109,7 @@ describe('Cycler', () => {
     expect(document.activeElement).toBe(within(listbox).getByRole('option', { name: 'Small' }));
     await userEvent.click(within(listbox).getByRole('option', { name: 'Large' }));
     expect(onChange).toHaveBeenLastCalledWith('lg');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     await expect
       .poll(() => document.activeElement === screen.getByRole('button', { name: 'Size Large' }))
       .toBe(true);
@@ -122,7 +120,7 @@ describe('Cycler', () => {
     render(<Cycler aria-label="Size" options={sizes} defaultValue="sm" onChange={onChange} />);
     const dialog = await openPicker(/Size Small/);
     await userEvent.click(within(dialog).getByRole('option', { name: 'Small' }));
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     expect(onChange).not.toHaveBeenCalled();
   });
 

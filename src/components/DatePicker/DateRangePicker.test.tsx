@@ -50,7 +50,7 @@ describe('DateRangePicker', () => {
       start: new CalendarDate(2025, 3, 20),
       end: new CalendarDate(2025, 3, 24),
     });
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('works from the keyboard', async () => {

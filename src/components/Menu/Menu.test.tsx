@@ -5,6 +5,7 @@ import type { Selection } from 'react-aria-components';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Button } from '../Button';
 import { Menu, MenuItem, MenuSection, MenuSeparator, MenuTrigger, SubmenuTrigger } from './Menu';
 import { MenuButton, OverflowMenu, SplitButton } from './MenuButtons';
@@ -13,23 +14,17 @@ const isPhone = window.matchMedia('(max-width: 639.98px)').matches;
 
 async function openMenu(name: string) {
   await userEvent.click(screen.getByRole('button', { name }));
-  const menu = await screen.findByRole('menu');
-  // Phone sheets animate in, so focus may land a moment later.
-  await expect.poll(() => menu.contains(document.activeElement), { timeout: 2000 }).toBe(true);
-  return menu;
+  return settleOverlay(await screen.findByRole('menu'));
 }
 
 /** Opens with the keyboard (focus the trigger, press Enter), which focuses the first item. */
 async function openMenuWithKeyboard(name: string) {
   screen.getByRole('button', { name }).focus();
   await userEvent.keyboard('{Enter}');
-  const menu = await screen.findByRole('menu');
-  // React Aria focuses the menu, then its first item once the overlay has finished entering.
-  await expect.poll(() => document.querySelector('[data-entering]'), { timeout: 2000 }).toBeNull();
+  const menu = await settleOverlay(await screen.findByRole('menu'));
+  // React Aria focuses the menu, then its first item.
   await expect
-    .poll(() => document.activeElement?.getAttribute('role')?.startsWith('menuitem') ?? false, {
-      timeout: 2000,
-    })
+    .poll(() => document.activeElement?.getAttribute('role')?.startsWith('menuitem') ?? false)
     .toBe(true);
   return menu;
 }
@@ -100,7 +95,7 @@ describe('Menu', () => {
     expect(document.activeElement).toBe(within(menu).getByRole('menuitem', { name: /Delete/ }));
     await userEvent.keyboard('{Enter}');
     expect(onAction.mock.calls[0]?.[0]).toBe('delete');
-    await expect.poll(() => screen.queryByRole('menu'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('menu'), { timeout: 10_000 }).toBeNull();
   });
 
   it('skips disabled items and shows shortcut hints and separators', async () => {
@@ -121,7 +116,7 @@ describe('Menu', () => {
     render(<Actions />);
     await openMenu('Actions');
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('menu'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('menu'), { timeout: 10_000 }).toBeNull();
     await expect
       .poll(() => document.activeElement)
       .toBe(screen.getByRole('button', { name: 'Actions' }));

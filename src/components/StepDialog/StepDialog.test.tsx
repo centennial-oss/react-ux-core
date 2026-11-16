@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleOverlay } from '../../../test/overlays';
 import { Button } from '../Button';
 import { DialogTrigger } from '../Dialog';
 import { StepDialog, type DialogStep, type StepDialogProps } from './StepDialog';
@@ -31,9 +32,7 @@ function Example(props: Partial<StepDialogProps>) {
 
 async function open() {
   await userEvent.click(screen.getByRole('button', { name: 'Issue refund' }));
-  const dialog = await screen.findByRole('dialog', { name: 'Issue refund' });
-  await expect.poll(() => dialog.contains(document.activeElement), { timeout: 2000 }).toBe(true);
-  return dialog;
+  return settleOverlay(await screen.findByRole('dialog', { name: 'Issue refund' }));
 }
 
 describe('StepDialog', () => {
@@ -92,7 +91,7 @@ describe('StepDialog', () => {
       confirmButtons[confirmButtons.length - 1] ?? confirmButtons[0] ?? document.body,
     );
     expect(onConfirm).toHaveBeenCalledTimes(1);
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
   });
 
   it('shows a failed confirm inline and stays open', async () => {
@@ -109,7 +108,7 @@ describe('StepDialog', () => {
     await open();
     await userEvent.click(screen.getByRole('button', { name: 'Next' }));
     await userEvent.keyboard('{Escape}');
-    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 3000 }).toBeNull();
+    await expect.poll(() => screen.queryByRole('dialog'), { timeout: 10_000 }).toBeNull();
     await open();
     expect(screen.getByText('Step 1 of 2')).toBeInTheDocument();
   });

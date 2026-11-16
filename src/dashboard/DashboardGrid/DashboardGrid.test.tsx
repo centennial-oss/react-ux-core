@@ -3,6 +3,7 @@ import { Profiler, useCallback, useEffect, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
+import { settleCount } from '../../../test/settle';
 import { UIProvider } from '../../provider/UIProvider';
 import type { LayoutEntry } from '../layout/engine';
 import type { GridSpec } from '../layout/metrics';
@@ -192,12 +193,7 @@ describe('DashboardGrid', () => {
         <Grid isEditable />
       </Profiler>,
     );
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 5000 }).toBe(0);
+    await settleCount(() => commits);
   });
 
   it('passes axe in view and edit mode', async () => {
@@ -261,7 +257,7 @@ describe.runIf(isDesktop)('DashboardGrid editing', () => {
     await expect
       .poll(() => screen.getAllByRole('group').every((group) => group.textContent.includes('near')))
       .toBe(true);
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await settleCount(() => Object.values(renders).reduce((total, count) => total + count, 0));
     for (const key of Object.keys(renders)) {
       renders[key] = 0;
     }

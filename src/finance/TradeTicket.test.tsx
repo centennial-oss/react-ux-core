@@ -181,7 +181,7 @@ describe('TradeTicket', () => {
       }),
     );
     await expect
-      .poll(() => status?.textContent, { timeout: 3000 })
+      .poll(() => status?.textContent, { timeout: 10_000 })
       .toBe('Estimate: 161.29 for $100.00. Pays $161.29 if right, a +61.28% return.');
   });
 

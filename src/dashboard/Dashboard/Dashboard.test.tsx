@@ -4,6 +4,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { expectNoAxeViolations } from '../../../test/axe';
 import { kpiSource, regionTableSource, sampleLibrary, widget } from '../../../test/dashboard';
+import { settleExit, settleOverlay } from '../../../test/overlays';
+import { settleCount } from '../../../test/settle';
 import { toast } from '../../components/Toast/toastStore';
 import { UIProvider } from '../../provider/UIProvider';
 import { tableWidget } from '../table/tableWidget';
@@ -268,12 +270,7 @@ describe('Dashboard: view mode', () => {
       </Profiler>,
     );
     await screen.findAllByText('Uptime');
-    const settled = async () => {
-      const before = commits;
-      await new Promise((resolve) => setTimeout(resolve, 250));
-      return commits - before;
-    };
-    await expect.poll(settled, { timeout: 8000 }).toBe(0);
+    await settleCount(() => commits, 250);
     await expectNoAxeViolations(container);
   });
 });
@@ -285,9 +282,11 @@ describe('Dashboard: editing', () => {
     await editPage();
     await userEvent.click(screen.getByRole('button', { name: 'Add' }));
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Widget…' }));
-    const picker = await screen.findByRole('dialog', { name: 'Add a widget' });
+    const picker = await settleOverlay(await screen.findByRole('dialog', { name: 'Add a widget' }));
     await userEvent.click(within(picker).getByRole('option', { name: /Stat group/ }));
-    const configure = await screen.findByRole('dialog', { name: 'Configure Stat group' });
+    const configure = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Configure Stat group' }),
+    );
     const apply = within(configure).getByRole('button', { name: 'Apply' });
     expect(apply.hasAttribute('disabled') || apply.getAttribute('aria-disabled') === 'true').toBe(
       true,
@@ -353,11 +352,15 @@ describe('Dashboard: editing', () => {
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Remove' }));
     await expect.poll(() => onDirtyChange.mock.calls.at(-1)?.[0]).toBe(true);
     await userEvent.click(screen.getByRole('button', { name: 'Done' }));
-    let dialog = await screen.findByRole('alertdialog', { name: 'Save your changes?' });
+    let dialog = await settleOverlay(
+      await screen.findByRole('alertdialog', { name: 'Save your changes?' }),
+    );
     await userEvent.click(within(dialog).getByRole('button', { name: 'Keep editing' }));
     expect(screen.getByRole('toolbar', { name: 'Editing tools' })).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: 'Done' }));
-    dialog = await screen.findByRole('alertdialog', { name: 'Save your changes?' });
+    dialog = await settleOverlay(
+      await screen.findByRole('alertdialog', { name: 'Save your changes?' }),
+    );
     await userEvent.click(within(dialog).getByRole('button', { name: 'Save and exit' }));
     await expect.poll(() => screen.queryByRole('toolbar', { name: 'Editing tools' })).toBeNull();
     expect(saves).toHaveLength(1);
@@ -371,7 +374,9 @@ describe('Dashboard: editing', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Actions for Regions' }));
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Remove' }));
     await userEvent.click(screen.getByRole('button', { name: 'Done' }));
-    const dialog = await screen.findByRole('alertdialog', { name: 'Save your changes?' });
+    const dialog = await settleOverlay(
+      await screen.findByRole('alertdialog', { name: 'Save your changes?' }),
+    );
     await userEvent.click(within(dialog).getByRole('button', { name: 'Discard and exit' }));
     expect(await screen.findByRole('region', { name: 'Regions' })).toBeTruthy();
     expect(saves).toHaveLength(0);
@@ -389,7 +394,9 @@ describe('Dashboard: editing', () => {
     await userEvent.clear(title);
     await userEvent.type(title, 'Renamed{Enter}');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
-    const confirm = await screen.findByRole('alertdialog', { name: 'Save this shared dashboard?' });
+    const confirm = await settleOverlay(
+      await screen.findByRole('alertdialog', { name: 'Save this shared dashboard?' }),
+    );
     expect(confirm.textContent).toContain(notice);
     await userEvent.click(within(confirm).getByRole('button', { name: 'Save' }));
     await expect.poll(() => saves[0]?.pages[0]?.title).toBe('Renamed');
@@ -452,7 +459,9 @@ describe('Dashboard: editing', () => {
     render(<Host />);
     await userEvent.click(await screen.findByRole('button', { name: 'Actions for Health' }));
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Configure' }));
-    let dialog = await screen.findByRole('dialog', { name: 'Configure Health' });
+    let dialog = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Configure Health' }),
+    );
     await userEvent.click(within(dialog).getByRole('tab', { name: 'General' }));
     let field = within(dialog).getByRole('textbox', { name: 'Title' });
     await userEvent.clear(field);
@@ -461,9 +470,13 @@ describe('Dashboard: editing', () => {
     expect(await screen.findByRole('region', { name: 'Uptime figures' })).toBeTruthy();
     expect(onSaveDashboard).toHaveBeenCalledTimes(1);
     shouldFail = true;
+    // The first configure sheet is still sliding away on phones.
+    await settleExit();
     await userEvent.click(screen.getByRole('button', { name: 'Actions for Uptime figures' }));
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Configure' }));
-    dialog = await screen.findByRole('dialog', { name: 'Configure Uptime figures' });
+    dialog = await settleOverlay(
+      await screen.findByRole('dialog', { name: 'Configure Uptime figures' }),
+    );
     await userEvent.click(within(dialog).getByRole('tab', { name: 'General' }));
     field = within(dialog).getByRole('textbox', { name: 'Title' });
     await userEvent.clear(field);

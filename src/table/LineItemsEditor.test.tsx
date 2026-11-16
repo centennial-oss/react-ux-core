@@ -147,7 +147,7 @@ describe('LineItemsEditor', () => {
       // 72.00 less 10% (7.20) is 64.80 taxed at 8.25% (5.346 → 5.35): 330.58 + 72.00 − 7.20 + 5.35.
       await expect.poll(() => totalsText().at(-1)).toBe('Total: $400.73');
       await expect
-        .poll(() => screen.queryByText('Total $400.73'), { timeout: 3000 })
+        .poll(() => screen.queryByText('Total $400.73'), { timeout: 10_000 })
         .toBeInTheDocument();
     },
   );

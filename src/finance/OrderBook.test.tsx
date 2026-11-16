@@ -133,6 +133,14 @@ describe('OrderBook', () => {
   it('batches a burst of updates into a frame and marks changed sizes', async () => {
     const first = starBook(20, 0);
     const { rerender } = render(<OrderBook bids={first.bids} asks={first.asks} depth={20} />);
+    // Marks last 1.5 s, which a busy CI runner can spend on the burst below, so record them as they appear.
+    const marked: string[] = [];
+    const observer = new MutationObserver(() => {
+      for (const row of document.querySelectorAll('tr[data-changed]')) {
+        marked.push(row.textContent);
+      }
+    });
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true });
     // 20 levels a side, many updates before the next frame: nothing throws and the last one wins.
     for (let version = 1; version <= 20; version += 1) {
       const book = starBook(20, version);
@@ -147,13 +155,13 @@ describe('OrderBook', () => {
     expect(within(bestBid as HTMLElement).getAllByRole('cell')[0]?.textContent).toEqual(
       expect.stringContaining(last.bids[0]?.size ?? '-'),
     );
-    const changed = document.querySelectorAll('tr[data-changed]');
-    expect(changed.length).toBeGreaterThan(0);
+    observer.disconnect();
+    expect(marked.length).toBeGreaterThan(0);
     // Changed sizes get ▲ or ▼ (and words for screen readers), not only a flash.
-    expect(changed[0]?.textContent).toMatch(/[▲▼](up|down)/);
+    expect(marked[0]).toMatch(/[▲▼](up|down)/);
     // The marks go away after a moment.
     await expect
-      .poll(() => document.querySelectorAll('tr[data-changed]').length, { timeout: 4000 })
+      .poll(() => document.querySelectorAll('tr[data-changed]').length, { timeout: 10_000 })
       .toBe(0);
   });
 
